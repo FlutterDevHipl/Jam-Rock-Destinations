@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "794457403902",
+    "project_id": "solfana-app",
+    "storage_bucket": "solfana-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:794457403902:android:23efc12954dad77d4490af",
+        "android_client_info": {
+          "package_name": "com.solfana"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAA7l_HWcO360-lDx-sJbBfVb7BuUv68eM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
