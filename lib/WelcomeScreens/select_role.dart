@@ -31,14 +31,11 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
           child: Column(
             children: [
               const SizedBox(height: 40),
-
               Image.asset(
                 Images.logoIcon,
                 height: 90,
               ),
-
               const SizedBox(height: 40),
-
               const Text(
                 "How would you like to\ncontinue?",
                 textAlign: TextAlign.center,
@@ -48,67 +45,56 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-
               const SizedBox(height: 50),
-
               Row(
                 children: [
                   Expanded(
                     child: roleCard(
                       index: 0,
                       title: "I'm a Explorer",
-                      subtitle:
-                      "Book rides & explore destinations",
+                      subtitle: "Book rides & explore destinations",
                       image: Images.explorerIcon,
                       iconImage: Images.personLogo,
                     ),
                   ),
-
                   const SizedBox(width: 12),
-
                   Expanded(
                     child: roleCard(
                       index: 1,
                       title: "I'm a Driver",
-                      subtitle:
-                      "Accept rides & earn on your terms",
+                      subtitle: "Accept rides & earn on your terms",
                       image: Images.driverLogo,
                       iconImage: Images.steeringIcon,
                     ),
                   ),
                 ],
               ),
-
               const Spacer(),
-
               SizedBox(
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
                     onPressed: () {
                       final userTypes =
-                      selectedIndex == 0 ? 'EXPLORER' : 'DRIVER';
+                          selectedIndex == 0 ? 'EXPLORER' : 'DRIVER';
                       userBox.put('user_type', userTypes);
-                      userType= userTypes;
+                      userType = userTypes;
                       debugPrint(userBox.get('user_type'));
                       debugPrint("App const = $userType");
 
-
-                      Get.to(() =>  OnboardingScreen());
+                      Get.to(() => OnboardingScreen());
                     },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff2F8F3A),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff2F8F3A),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                  ),
-                  child:
-                  CustomWidget().buildTextWidget(title: "Continue",
-                  fontSize: 18,textColor: Colors.white)
-
-                ),
+                    child: CustomWidget().buildTextWidget(
+                        title: "Continue",
+                        fontSize: 18,
+                        textColor: Colors.white)),
               ),
-
               const SizedBox(height: 20),
             ],
           ),
@@ -143,9 +129,7 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: isSelected
-                    ?  AppColors.green500
-                    : Colors.grey.shade300,
+                color: isSelected ? AppColors.green500 : Colors.grey.shade300,
               ),
             ),
             child: Column(
@@ -154,55 +138,49 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                   image,
                   height: 90,
                 ),
-
                 const SizedBox(height: 16),
-                Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 10),child:    CustomWidget().buildTextWidget(
-                    title: title,
-                    textAlign: TextAlign.center,
-                    textColor:
-                    isSelected
-                        ?  AppColors.green500
-                        : AppColors.black400,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18
-
-                ))
-
-                ,
+                Padding(
+                    padding:
+                        // EdgeInsetsGeometry.symmetric(horizontal: 10),
+                        EdgeInsets.symmetric(horizontal: 10),
+                    child: CustomWidget().buildTextWidget(
+                        title: title,
+                        textAlign: TextAlign.center,
+                        textColor: isSelected
+                            ? AppColors.green500
+                            : AppColors.black400,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18)),
                 const SizedBox(height: 8),
-
-                CustomWidget().buildTextWidget(title: subtitle,
-                textAlign: TextAlign.center,textColor:  Colors.grey.shade600,fontSize: 13),heightSpace5
+                CustomWidget().buildTextWidget(
+                    title: subtitle,
+                    textAlign: TextAlign.center,
+                    textColor: Colors.grey.shade600,
+                    fontSize: 13),
+                heightSpace5
               ],
             ),
           ),
-
           Positioned(
             bottom: -22,
             child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isSelected
-                    ? const Color(0xffEAF6EC)
-                    : Colors.grey.shade100,
-                border: Border.all(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
                   color: isSelected
-                      ? AppColors.green500
-                      : Colors.grey.shade300,
+                      ? const Color(0xffEAF6EC)
+                      : Colors.grey.shade100,
+                  border: Border.all(
+                    color:
+                        isSelected ? AppColors.green500 : Colors.grey.shade300,
+                  ),
                 ),
-              ),
-              child:
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset(
-                  iconImage,
-                  color: isSelected
-                      ?  AppColors.green500
-                      : Colors.grey,
-
-                ),
-              )
-            ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.asset(
+                    iconImage,
+                    color: isSelected ? AppColors.green500 : Colors.grey,
+                  ),
+                )),
           ),
         ],
       ),

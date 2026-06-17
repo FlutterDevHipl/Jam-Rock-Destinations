@@ -621,7 +621,8 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
 
                   menuItemStyleData: const MenuItemStyleData(
                     height: 48,
-                    padding: EdgeInsetsGeometry.symmetric(horizontal:20)
+                    // padding: EdgeInsetsGeometry.symmetric(horizontal:20)
+                     padding: EdgeInsets.symmetric(horizontal: 20),
                   ),
                 ),
                 ),

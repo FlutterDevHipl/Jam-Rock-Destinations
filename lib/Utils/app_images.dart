@@ -17,9 +17,18 @@ class Images {
   static const String privacyIcon = "assets/image/privacyIcon.svg";
   static const String deleteIcon = "assets/image/deleteIcon.svg";
   static const String deleteAccIcon = "assets/image/deleteAccIcon.svg";
+  static const String personOutlineIcon = "assets/image/personOutlineIcon.svg";
+  static const String contactOutlineIcon = "assets/image/contactOutlineIcon.svg";
+  static const String wallet = "assets/image/wallet.svg";
+  static const String emailOutlineIcon = "assets/image/emailOutlineIcon.svg";
+  static const String tabler_payment_filled = "assets/image/tabler_payment_filled.svg";
+  static const String tabler_ride_filled = "assets/image/tabler_ride_filled.svg";
+  static const String tabler_gift_filled = "assets/image/tabler_gift-filled.svg";
   static const String onBoardingOne = "assets/image/onBoardingOne.png";
   static const String onBoardingTwo = "assets/image/onBoardingTwo.png";
   static const String onBoardingThree = "assets/image/onBoardingThree.png";
+  static const String walletImage = "assets/image/walletImage.png";
+  static const String walletBg = "assets/image/walletBg.png";
 
   static const String googleLogo = "assets/image/googleLogo.svg";
   static const String messageIcon = "assets/image/MessageIcon.svg";
