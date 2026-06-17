@@ -1,0 +1,631 @@
+import 'dart:io';
+
+import 'package:Jam_Rock_Destinations/Auth/Controller/registration_Controller.dart';
+import 'package:Jam_Rock_Destinations/Auth/Login_View.dart';
+import 'package:Jam_Rock_Destinations/Auth/profileSetup1.dart';
+import 'package:Jam_Rock_Destinations/Auth/verify_OTP.dart';
+import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
+import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
+import 'package:country_picker/country_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../Utils/app_images.dart';
+import '../Utils/custom_widget.dart';
+class RegistrationView extends StatefulWidget {
+  const RegistrationView({super.key});
+
+  @override
+  State<RegistrationView> createState() => _RegistrationViewState();
+}
+
+class _RegistrationViewState extends State<RegistrationView> {
+  final RegistrationController registrationController=Get.put(RegistrationController());
+
+  @override
+  Widget build(BuildContext context) {
+    return   Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 20,
+          ),
+          child: Form(
+            key: registrationController.formKey,
+            child: Obx(
+              () =>  Stack(
+                children: [
+
+                  Column(
+                    children: [
+                      heightSpace20,
+                      /// Logo
+                      Image.asset(
+                        Images.logoIcon,
+                        height: Get.height * .10,
+                      ),
+
+                      heightSpace24,
+
+                      CustomWidget().buildTextWidget(
+                        title: "Create Account",
+                        fontSize: 24,
+                        textColor: Colors.black,
+                        fontWeight: FontWeight.w700,
+                        textAlign: TextAlign.center,
+                      ),
+
+                      heightSpace5,
+
+                      CustomWidget().buildTextWidget(
+                        title: "Join us and start riding",
+                        fontSize: 16,
+                        textColor: AppColors.black400,
+                        fontWeight: FontWeight.w400,
+                        textAlign: TextAlign.center,
+                      ),
+                      heightSpace30,
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          registrationController.selectedImage.value != null?
+                          CircleAvatar(
+                            radius: 55,
+                            backgroundColor: AppColors.green100,
+                            // backgroundImage: selectedImage != null
+                            //     ? FileImage(selectedImage!)
+                            //     : null,
+                            backgroundImage:
+                                 FileImage(registrationController.selectedImage.value!),
+                            child: registrationController.selectedImage.value == null
+                                ? const Icon(
+                              Icons.person,
+                              size: 120,
+                              color: Color(0xffF2F2F2),
+                            )
+                                : null,
+                          ):
+                          SvgPicture.asset(Images.profileIcon),
+                          Positioned(
+                            bottom: -13,
+                            right: 0,
+                            left: 5,
+                            child: GestureDetector(
+                              onTap: () {
+                                registrationController.showImagePickerOptions(context);
+                              },
+                              child: Container(
+                                height: 34,
+                                width: 34,
+                                decoration: BoxDecoration(
+                                  color: AppColors.green500,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 1,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.50),
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 3),
+                                      spreadRadius: 0,
+                                    ),
+                                  ],
+                                ),
+
+                                child: const Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      heightSpace20,
+
+
+                      /// Password
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: CustomWidget().buildTextWidget(
+                          title: "Full Name",
+                          fontSize: 14,
+                          textColor: AppColors.black300,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+
+                      heightSpace8,
+
+                      CustomWidget().buildTextFormField(darkMode: true, radius: 8,
+                        controller: registrationController.nameController,
+                        keyboardType: TextInputType.name,
+                        hintText: "Enter Full Name",
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(14),
+
+                          child: SvgPicture.asset(
+                              Images.outlinePerson
+                          ),
+
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return "Please enter full name";
+                          }
+
+                          if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(value.trim())) {
+                            return "Name can contain only letters";
+                          }
+
+                          return null;
+                        },
+                      ),
+                      heightSpace24,
+                      /// Email
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: CustomWidget().buildTextWidget(
+                          title:  "Email",
+                          fontSize: 14,
+                          textColor: AppColors.black300,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+
+                      heightSpace8,
+
+                      CustomWidget().buildTextFormField(darkMode: true, radius: 8,
+                        readOnly: registrationController.isEmailVerified.value,
+                        controller:
+                        registrationController.emailController ,
+                        keyboardType: registrationController.isEmailSelected
+                            ? TextInputType.emailAddress
+                            : TextInputType.phone,
+                        hintText:
+                             "Enter Your Email",
+                          suffixIcon:  GestureDetector(
+                          onTap: () {
+                            // registrationController.showVerificationDialog(
+                            //   context: context,
+                            //   isPhoneVerification: false,
+                            //   value: registrationController.emailController.text,
+                            // );
+                          },
+                          child: Padding(
+                              padding: EdgeInsetsGeometry.only(top: 10,bottom: 10,right: 15),
+                              child:
+                              GestureDetector(onTap: () {
+                                final email = registrationController.emailController.text.trim();
+                                registrationController.otpController.clear();
+
+                                final emailRegex = RegExp(
+                                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                                );
+
+                                if (email.isEmpty) {
+                                  CustomWidget().showCustomToast(message: "Please enter email first", );
+                                  return;
+                                }
+
+                                if (!emailRegex.hasMatch(email)) {
+                                  CustomWidget().showCustomToast(message: "Please enter valid email");
+
+                                  return;
+                                }
+                               if( !registrationController.isEmailVerified.value)
+                                 {
+                                   registrationController.sendEmailOTp(email,context);
+                                 }
+
+                              },
+                              child: CustomWidget().buildTextWidget(title:
+                              registrationController.isEmailVerified.value?
+                                  "Verified":
+                              "Verify",textColor:
+                              registrationController.isEmailVerified.value?AppColors.green500:AppColors.yellow700,fontSize: 16,fontWeight: FontWeight.w600
+                              )))
+                              ,
+                        )
+                          ,
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(14),
+
+                          child: SvgPicture.asset(
+                            registrationController.isEmailSelected
+                                ? Images.messageIcon
+                                : Images.phoneIcon,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return "Please enter email";
+                          }
+
+                          if (!RegExp(r'^[\x00-\x7F]+$').hasMatch(value)) {
+                            return "Email cannot contain special unicode characters";
+                          }
+
+                          final emailRegex = RegExp(
+                            r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                          );
+
+                          if (!emailRegex.hasMatch(value.trim())) {
+                            return "Please enter valid email";
+                          }
+
+                          return null;
+                        },
+                      ),
+
+                  heightSpace24,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: CustomWidget().buildTextWidget(
+                          title: "Phone number",
+                          fontSize: 14,
+                          textColor:AppColors.black300,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      CustomWidget().buildPhoneField(
+                        darkMode: registrationController.isDarkMode?true:false,
+                        readOnly: registrationController.isPhoneVerified.value,
+                        radius: 8,
+                        color:  const Color(0xffF5F5F5),
+
+                        suffixIcon:
+                            GestureDetector(
+                              onTap: () {
+                                // registrationController.showVerificationDialog(
+                                //   context: context,
+                                //   isPhoneVerification: true,
+                                //   value: "+1 ${registrationController.phoneController.text}",
+                                // );
+                              },
+                              child: Padding(
+                                  padding: EdgeInsetsGeometry.only(top: 10,bottom: 10),
+                                  child:
+                                  GestureDetector(
+                                      onTap: () {
+                                        registrationController.otpController.clear();
+                                        final phone = registrationController.phoneController.text.trim();
+
+                                        if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
+                                          CustomWidget().showCustomToast(message:"Please enter valid 10 digit phone number" );
+                                          return;
+                                        }
+                                        if(!registrationController.isPhoneVerified.value)
+                                          {
+                                            registrationController.sendPhoneOTp(phone, context);
+                                          }
+
+
+                                      },
+                                      child:    CustomWidget().buildTextWidget(title:
+                                      registrationController.isPhoneVerified.value?"Verified":"Verify",textColor: registrationController.isPhoneVerified.value?AppColors.green500: AppColors.yellow700,fontSize: 16,fontWeight: FontWeight.w600)),)
+
+                            ),
+                        controller: registrationController.phoneController,
+                        selectedCountry: registrationController.selectedCountry,
+                        hintText: "Enter phone number",
+                        maxLength: 10,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return "Please enter phone number";
+                          }
+
+                          if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
+                            return "Phone number must be 10 digits";
+                          }
+
+                          return null;
+                        },
+                        onCountryChanged: (country) {
+                          registrationController.countryCode.value=country.phoneCode;
+                          print(
+                            "Selected Country: ${country.name} (+${country.phoneCode})",
+                          );
+                        },
+                      ),
+                      heightSpace24,
+
+                      /// Password
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: CustomWidget().buildTextWidget(
+                          title: "Password",
+                          fontSize: 14,
+                          textColor:AppColors.black300,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      heightSpace8,
+                      CustomWidget().buildTextFormField(darkMode: true, radius: 8,
+                        controller: registrationController.passwordController,
+                        obscureText: !registrationController.isPasswordVisible,
+                        keyboardType: TextInputType.name,
+                        hintText: "Enter Your Password",
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: SvgPicture.asset(
+                              Images.lockIcon
+                          ),
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              registrationController.isPasswordVisible = !registrationController.isPasswordVisible;
+                            });
+                          },
+                          icon: Icon(
+                            registrationController.isPasswordVisible
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                            size: 19,
+                            color: Colors.black38,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter password";
+                          }
+
+                          if (value.length < 7) {
+                            return "Password must be at least 7 characters";
+                          }
+
+                          if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                            return "Password must contain one uppercase letter";
+                          }
+
+                          if (!RegExp(r'[0-9]').hasMatch(value)) {
+                            return "Password must contain one number";
+                          }
+
+                          if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+                            return "Password must contain one special character";
+                          }
+
+                          return null;
+                        },
+
+                      ),
+                      heightSpace24,
+
+                      /// Password
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: CustomWidget().buildTextWidget(
+                          title: "Confirm Password",
+                          fontSize: 14,
+                          textColor:AppColors.black300,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      heightSpace8,
+                      CustomWidget().buildTextFormField(darkMode: true, radius: 8,
+                        controller: registrationController.confirmPassController,
+                        obscureText: !registrationController.isConfirmPassVisible.value,
+                        keyboardType: TextInputType.name,
+                        hintText: "Enter Your Confirm Password",
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: SvgPicture.asset(
+                              Images.lockIcon
+                          ),
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+
+                              registrationController.isConfirmPassVisible.value = !registrationController.isConfirmPassVisible.value;
+
+                          },
+                          icon: Icon(
+                            registrationController.isConfirmPassVisible.value
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                            size: 19,
+                            color: Colors.black38,
+                          ),
+                        ),
+                      ),
+                      heightSpace24,
+
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (registrationController.selectedImage == null && userType!="EXPLORER") {
+                             CustomWidget().showCustomToast(message: "Please upload profile picture",backgroundColor: Colors.red);
+                              return;
+                            }
+                            if (!registrationController.formKey.currentState!.validate()) {
+                              return;
+                            }
+                            if(registrationController.confirmPassController.text!=registrationController.passwordController.text)
+                              {
+                                CustomWidget().showCustomToast(message: "Confirm password does not match the entered password.",backgroundColor: Colors.red);
+                                return;
+                              }
+                            if(userType=="EXPLORER")
+                              {
+                                registrationController.registerUser();
+                                // CustomWidget().showCustomToast(message: "Login Screen Redirections");
+                              }
+                            else
+                            {
+                           registrationController.driverRegistration();
+                            }
+
+                            // Call Login API
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xff2F8F3A),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: CustomWidget().buildTextWidget(
+                            title: "Signup",
+                            textColor: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      heightSpace24,
+                      Column(
+                        children: [
+                          CustomWidget().buildTextWidget(
+                              title: "By signing up, you agree to our",
+                              textColor: AppColors.black400,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16
+                          ),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+
+                              CustomWidget().buildTextWidget(
+                                title: "Terms of Service",
+                                textColor:AppColors.green,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16
+                              ),
+                              widthSpace5,
+                              CustomWidget().buildTextWidget(
+                                title: "and",
+                                textColor: AppColors.black400,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              widthSpace5,
+                              CustomWidget().buildTextWidget(
+                                title: "Privacy Policy.",
+                                textColor: AppColors.green,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16
+                              )
+
+
+                            ],
+                          ),
+                        ],
+                      ),
+                      heightSpace15,
+
+                      Row(
+                        children: [
+                          const Expanded(child: Divider(color: Colors.black12,)),
+                          widthSpace15,
+                          CustomWidget().buildTextWidget(
+                            title: "Or",
+                            fontSize: 14,
+                            textColor: Colors.black,
+                          ),
+                          widthSpace15,
+                          const Expanded(child: Divider(color: Colors.black12)),
+                        ],
+                      ),
+
+                      heightSpace15,
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomWidget().buildTextWidget(
+                              title: "Already have an account? ",
+                              textColor: AppColors.black400,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16
+                          ),
+                          GestureDetector(onTap: () {
+                            Get.to(LoginScreen());
+                          },
+                            child: CustomWidget().buildTextWidget(
+                            title: "Login",
+                            textColor: const Color(0xff2F8F3A),
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16
+                          ),)
+
+                        ],
+                      ),
+                    ],
+                  ),
+                  if (registrationController.isLoading.value)
+                    Positioned.fill(
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+  }
+
+
+  Widget _socialButton({
+    IconData? icon,
+    String? image,
+    required String title,
+  }) {
+    return Container(
+      height: 55,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.14),
+            blurRadius: 27.8,
+            offset: const Offset(0, 0),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (icon != null)
+            Icon(
+              icon,
+              color: Colors.black,
+            ),
+
+          if (image != null)
+            Image.asset(
+              image,
+              height: 22,
+            ),
+
+          widthSpace8,
+
+          CustomWidget().buildTextWidget(
+            title: title,
+            fontSize: 14,
+            textColor: Colors.black,
+          ),
+        ],
+      ),
+    );
+  }
+}

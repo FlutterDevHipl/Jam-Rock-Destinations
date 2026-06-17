@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com" "\0"
-            VALUE "FileDescription", "solfana" "\0"
+            VALUE "FileDescription", "Jam Rock Destinations" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "solfana" "\0"
+            VALUE "InternalName", "Jam Rock Destinations" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com. All rights reserved." "\0"
-            VALUE "OriginalFilename", "solfana.exe" "\0"
-            VALUE "ProductName", "solfana" "\0"
+            VALUE "OriginalFilename", "Jam Rock Destinations.exe" "\0"
+            VALUE "ProductName", "Jam Rock Destinations" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

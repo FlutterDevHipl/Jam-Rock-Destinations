@@ -1,0 +1,211 @@
+import 'package:Jam_Rock_Destinations/Utils/api_url.dart';
+import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
+import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
+import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+
+import '../Utils/app_const.dart';
+import '../Utils/storage.dart';
+import 'onBoardingScreen.dart';
+
+class SelectRoleScreen extends StatefulWidget {
+  const SelectRoleScreen({super.key});
+
+  @override
+  State<SelectRoleScreen> createState() => _SelectRoleScreenState();
+}
+
+class _SelectRoleScreenState extends State<SelectRoleScreen> {
+  int selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18),
+          child: Column(
+            children: [
+              const SizedBox(height: 40),
+
+              Image.asset(
+                Images.logoIcon,
+                height: 90,
+              ),
+
+              const SizedBox(height: 40),
+
+              const Text(
+                "How would you like to\ncontinue?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+
+              const SizedBox(height: 50),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: roleCard(
+                      index: 0,
+                      title: "I'm a Explorer",
+                      subtitle:
+                      "Book rides & explore destinations",
+                      image: Images.explorerIcon,
+                      iconImage: Images.personLogo,
+                    ),
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  Expanded(
+                    child: roleCard(
+                      index: 1,
+                      title: "I'm a Driver",
+                      subtitle:
+                      "Accept rides & earn on your terms",
+                      image: Images.driverLogo,
+                      iconImage: Images.steeringIcon,
+                    ),
+                  ),
+                ],
+              ),
+
+              const Spacer(),
+
+              SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: ElevatedButton(
+                    onPressed: () {
+                      final userTypes =
+                      selectedIndex == 0 ? 'EXPLORER' : 'DRIVER';
+                      userBox.put('user_type', userTypes);
+                      userType= userTypes;
+                      debugPrint(userBox.get('user_type'));
+                      debugPrint("App const = $userType");
+
+
+                      Get.to(() =>  OnboardingScreen());
+                    },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff2F8F3A),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child:
+                  CustomWidget().buildTextWidget(title: "Continue",
+                  fontSize: 18,textColor: Colors.white)
+
+                ),
+              ),
+
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget roleCard({
+    required int index,
+    required String title,
+    required String subtitle,
+    required String image,
+    required String iconImage,
+  }) {
+    bool isSelected = selectedIndex == index;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedIndex = index;
+        });
+      },
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            // height: 220,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: isSelected
+                    ?  AppColors.green500
+                    : Colors.grey.shade300,
+              ),
+            ),
+            child: Column(
+              children: [
+                Image.asset(
+                  image,
+                  height: 90,
+                ),
+
+                const SizedBox(height: 16),
+                Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 10),child:    CustomWidget().buildTextWidget(
+                    title: title,
+                    textAlign: TextAlign.center,
+                    textColor:
+                    isSelected
+                        ?  AppColors.green500
+                        : AppColors.black400,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18
+
+                ))
+
+                ,
+                const SizedBox(height: 8),
+
+                CustomWidget().buildTextWidget(title: subtitle,
+                textAlign: TextAlign.center,textColor:  Colors.grey.shade600,fontSize: 13),heightSpace5
+              ],
+            ),
+          ),
+
+          Positioned(
+            bottom: -22,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected
+                    ? const Color(0xffEAF6EC)
+                    : Colors.grey.shade100,
+                border: Border.all(
+                  color: isSelected
+                      ? AppColors.green500
+                      : Colors.grey.shade300,
+                ),
+              ),
+              child:
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.asset(
+                  iconImage,
+                  color: isSelected
+                      ?  AppColors.green500
+                      : Colors.grey,
+
+                ),
+              )
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

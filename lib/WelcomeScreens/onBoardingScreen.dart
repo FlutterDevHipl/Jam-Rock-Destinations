@@ -1,13 +1,11 @@
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
+import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
+import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
+import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
-// import 'package:solfana/Auth/Views/onboarding_auth_view.dart';
-import 'package:solfana/Utils/app_colors.dart';
-import 'package:solfana/Utils/app_images.dart';
-import 'package:solfana/Utils/custom_widget.dart';
+import 'package:get/get.dart';
+
+import '../Auth/Login_View.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -17,261 +15,212 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
+  final PageController pageController = PageController();
+
   int currentIndex = 0;
-  final CarouselSliderController carouselController =
-      CarouselSliderController();
-  final List<Map<String, dynamic>> slides = [
+
+  final List<Map<String, String>> onboardingData = [
     {
-      "type": "onboarding",
-      "image": "assets/images/onBoarding1.png",
-      "title": Translation("onboarding_title_1").tr(),
-      "desc": Translation("onboarding_desc_1").tr()
+      "image": "assets/image/onBoardingOne.png",
+      "title": "Explore destinations\nin Jamaica",
+      "desc": "Find rides to the places you love",
     },
     {
-      "type": "onboarding",
-      "image": "assets/images/onBoarding2.jpg",
-      "title": Translation("onboarding_title_2").tr(),
-      "desc": Translation("onboarding_desc_2").tr()
+      "image": "assets/image/onBoardingTwo.png",
+      "title": "Book in minutes",
+      "desc": "Book your ride in just a few taps.",
     },
     {
-      "type": "auth", // 👈 NEW (index 3)
-      "image": "assets/images/onBoarding3.png",
+      "image": "assets/image/onBoardingThree.png",
+      "title": "Travel with trusted drivers",
+      "desc": "Verified. Rated. Ready.",
+    },
+  ];
+  final List<Map<String, String>> driverOnboardingData = [
+    {
+      "image": Images.driverOnboarding1,
+      "title": "Earn on Your Terms",
+      "desc": "Accept rides anytime, on your schedule.",
+    },
+    {
+      "image": Images.driverOnboarding2,
+      "title": "Grow With Every Trip",
+      "desc": "Track earnings and get more bookings.",
+    },
+    {
+      "image": Images.driverOnboarding3,
+      "title": "Get Started in Minutes",
+      "desc": "Upload docs, get verified, start earning.",
     },
   ];
 
   @override
-  void initState() {
-    print("Current code ${LocalizeAndTranslate.getCountryCode()}");
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          CarouselSlider.builder(
-            carouselController: carouselController,
-            itemCount: slides.length,
-            itemBuilder: (context, index, realIndex) {
-              if (slides[index]["type"] == "auth") {
-                return _buildAuthSlide();
-              }
-              return _buildSlide(slides[index]);
-            },
-            options: CarouselOptions(
-              height: Get.height,
-              viewportFraction: 1,
-              enableInfiniteScroll: false,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  currentIndex = index;
-                });
-              },
-            ),
-          ),
-      
-          /// DOTS
-          if (currentIndex < 2)
-            Positioned(
-              bottom: 40,
-              left: 24,
-              child: SafeArea(
-                child: Row(
-                  children: List.generate(
-                    slides.length - 1,
-                    (index) => Container(
-                      margin: const EdgeInsets.only(right: 6),
-                      width: currentIndex == index ? 20 : 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color:
-                            currentIndex == index ? Colors.purple : Colors.grey.shade700,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-      
-          /// NEXT BUTTON
-          if (currentIndex < 2)
-            Positioned(
-              bottom: 30,
-              right: 24,
-              child: SafeArea(
-                child: GestureDetector(
-                  onTap: () {
-                    if (currentIndex < slides.length - 1) {
-                      carouselController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                    } else {
-                      // Get.to(() => LoginTypeScreen());
-                    }
-                  },
-                  child: Container(
-                    height: 48,
-                    width: 48,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xFFA125EB),
-                          Color(0xFFFD56C9),
-                        ],
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: PageView.builder(
+          controller: pageController,
+          itemCount: userType=="EXPLORER"?  onboardingData.length:driverOnboardingData.length,
+          onPageChanged: (index) {
+            setState(() {
+              currentIndex = index;
+            });
+          },
+          itemBuilder: (context, index) {
+            final item = userType=="EXPLORER"? onboardingData[index]:driverOnboardingData[index];
 
-  /// SINGLE SLIDE
-  Widget _buildSlide(Map data) {
-    return Container(
-      width: Get.width,
-      height: Get.height,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(data["image"]),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(24, 24, 24, 100),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              colors: [
-                Colors.black.withOpacity(0.9),
-                Colors.transparent,
-              ],
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ShaderMask(
-                shaderCallback: (Rect bounds) {
-                  return const LinearGradient(
-                    colors: [
-                      AppColors.whiteColor,
-                      AppColors.pinkColor400,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ).createShader(bounds);
-                },
-                child: CustomWidget().buildTextWidget(
-                  title: data["title"],
-                  fontSize: 40,
-                  fontWeight: FontWeight.w700,
-                  textColor: AppColors.whiteColor, 
-                ),
-              ),
-              const SizedBox(height: 12),
-              CustomWidget().buildTextWidget(
-                  title: data["desc"],
-                  textColor: AppColors.whiteColor,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16),
-              heightSpace20,
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 10),
+              child: Stack(
+                children: [
 
-  Widget _buildAuthSlide() {
-    return Container(
-      width: Get.width,
-      height: Get.height,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/onBoarding3.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(24, 24, 24, 30),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              colors: [
-                Colors.black.withOpacity(0.9),
-                Colors.transparent,
-              ],
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SvgPicture.asset(Images.logoName),
-              heightSpace10,
-              ShaderMask(
-                shaderCallback: (Rect bounds) {
-                  return const LinearGradient(
-                    colors: [
-                      AppColors.whiteColor,
-                      AppColors.pinkColor400,
-                    ],
-                  ).createShader(bounds);
-                },
-                child: CustomWidget().buildTextWidget(
-                  title: Translation('onboarding_title_3').tr(),
-                  fontSize: 35,
-                  fontWeight: FontWeight.w700,
-                  textColor: Colors.white,
-                ),
-              ),
-              heightSpace30,
-              GestureDetector(
-                onTap: () {
-                  // Get.offAll(() => OnboardingAuthView());
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border:
-                        Border.all(color: AppColors.borderColor.withOpacity(0.2)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Column(
                     children: [
-                      SvgPicture.asset(Images.emailIcon, width: 24, height: 18),
-                      widthSpace8,
+                      heightSpace10,
+                      Spacer(),
+
+                      /// Illustration
+                      Image.asset(
+                        item["image"]!,
+                        height: Get.height * 0.5,
+                        fit: BoxFit.contain,
+                      ),
+                      heightSpace30,
+                      /// Title
                       CustomWidget().buildTextWidget(
-                          title: 'Continue with email',
-                          textColor: AppColors.whiteColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400),
+                        title:  item["title"]!,
+                        textAlign: TextAlign.center,
+                        textColor: Colors.black,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 24,
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      /// Description
+                      CustomWidget().buildTextWidget(
+                        title:  item["desc"]!,
+                        textAlign: TextAlign.center,
+                        textColor:AppColors.black400,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16,
+                      ),
+                 heightSpace24,
+                      /// Indicator
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          onboardingData.length,
+                              (dotIndex) => Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                            width: currentIndex == dotIndex ? 20 : 6,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: currentIndex == dotIndex
+                                  ? AppColors.yellow600
+                                  : AppColors.yellow100,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const Spacer(),
+
+                      /// Bottom Button
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (currentIndex <
+                                onboardingData.length - 1) {
+                              pageController.nextPage(
+                                duration:
+                                const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            } else {
+                              /// Navigate
+                              Get.offAll(() => LoginScreen());
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                            const Color(0xff2F8F3A),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.circular(8),
+                            ),
+                          ),
+                          child:
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                CustomWidget().buildTextWidget(title:
+                                currentIndex ==
+                                    onboardingData.length - 1
+                                    ? "Get Started"
+                                    : "Next",
+                                    textColor: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600
+                                ),
+                                widthSpace5,
+                                currentIndex ==
+                                    onboardingData.length - 1?
+                                    SizedBox():
+                                    Icon(Icons.arrow_forward_outlined,color: Colors.white,)
+                              ],)
+                        ),
+                      ),
+
+                      SizedBox(height: Get.height * .03),
                     ],
                   ),
-                ),
+                  /// Top Section
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Image.asset(
+                        Images.logoIcon,
+                        height: 100,
+                      ),
+
+                      if (currentIndex != onboardingData.length - 1)
+                        OutlinedButton(
+                          onPressed: () {
+                            pageController.animateToPage(
+                              onboardingData.length - 1,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(65, 30),
+                            side: BorderSide(
+                              color: AppColors.amberColor700,
+                              width: 1.5
+                            ),
+                            shape: const StadiumBorder(),
+                            backgroundColor: AppColors.yellow50
+                          ),
+                          child: Text(
+                            "Skip",
+                            style: TextStyle(
+                              color: AppColors.amberColor700,
+                              fontSize: 12,
+                            ),
+                          ),
+                        )
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

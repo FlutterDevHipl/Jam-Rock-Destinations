@@ -5,19 +5,19 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:localize_and_translate/localize_and_translate.dart';
-
-import 'package:solfana/Utils/custom_widget.dart';
-import 'package:solfana/Utils/storage.dart';
 import 'package:path/path.dart' as path;
 import 'package:http_parser/http_parser.dart';
 
+import '../Utils/custom_widget.dart';
+import '../Utils/storage.dart';
+
 class ApiProvider {
-  final String lang = LocalizeAndTranslate.getLanguageCode() ?? 'fr';
+  // final String lang = LocalizeAndTranslate.getLanguageCode() ?? 'fr';
   Future<dynamic> postRequest(
       {required apiUrl, data = const <String, String>{}, token}) async {
     var response = await http.post(Uri.parse('$apiUrl'), body: data, headers: {
       'Content-Type': 'application/json',
-      'Accept-Language': lang,
+      // 'Accept-Language': lang,
       'Authorization': 'Bearer $token',
     });
     log("statusCode + apiUrl ${response.statusCode}  $apiUrl");
@@ -57,7 +57,7 @@ class ApiProvider {
       {required apiUrl, data = const <String, String>{}, token}) async {
     var response = await http.delete(Uri.parse('$apiUrl'), body: data, headers: {
       // 'Content-Type': 'application/json',
-      'Accept-Language': lang,
+      // 'Accept-Language': lang,
       'Authorization': 'Bearer $token',
     });
     log("statusCode + apiUrl ${response.statusCode}  $apiUrl");
@@ -94,10 +94,15 @@ class ApiProvider {
   }
 
   Future<dynamic> postRequest1(
-      {required apiUrl, data = const <String, String>{}, token}) async {
-    var response = await http.post(Uri.parse('$apiUrl'), body: data, headers: {
+      {
+        required apiUrl, data = const <String, String>{},
+        token
+      })
+  async
+  {
+    var response = await http.post(Uri.parse('$apiUrl'), body: data,
+        headers: {
       'Accept': 'application/json',
-      'Accept-Language': lang,
       if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
     });
 
@@ -114,7 +119,7 @@ class ApiProvider {
     } else if (response.statusCode == 400) {
       return res;
     } else if (response.statusCode == 401) {
-      handleSessionExpire();
+      // handleSessionExpire();
       return res;
     } else if (response.statusCode == 403) {
       return res;
@@ -139,12 +144,12 @@ class ApiProvider {
       {required apiUrl, body = const <String, String>{}, token}) async {
     var response = await http.put(Uri.parse('$apiUrl'), body: body, headers: {
       'Content-Type': 'application/json',
-      'Accept-Language': lang,
+      // 'Accept-Language': lang,
       if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
     });
 
     log("data ${jsonEncode(body)}");
-    log("statusCode + apiUrl ${response.statusCode}  $apiUrl  $lang");
+    log("statusCode + apiUrl ${response.statusCode}  $apiUrl");
     var res = jsonDecode(response.body);
     if (response.statusCode == 200) {
       return res;
@@ -179,7 +184,7 @@ class ApiProvider {
   Future<dynamic> getRequest({required apiUrl, token}) async {
     var response = await http.get(Uri.parse(apiUrl), headers: {
       'Accept': 'application/json',
-      'Accept-Language': lang,
+      // 'Accept-Language': lang,
       'Authorization': 'Bearer $token',
     });
     log("statusCode + apiUrl ${getToken()}  $apiUrl");
@@ -207,6 +212,54 @@ class ApiProvider {
       return Future.error('Network Problem');
     }
   }
+  Future<dynamic> getRequestWithBody({
+    required String apiUrl,
+    required Map<String, dynamic> body,
+    String? token,
+  }) async {
+    try {
+      var request = http.Request('GET', Uri.parse(apiUrl));
+
+      request.headers.addAll({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      request.body = jsonEncode(body);
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      log("GET WITH BODY => $apiUrl");
+      log("BODY => ${jsonEncode(body)}");
+
+      var res = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return res;
+      } else if (response.statusCode == 401) {
+        handleSessionExpire();
+        return res;
+      } else if (response.statusCode == 400) {
+        return res;
+      } else if (response.statusCode == 404) {
+        return res;
+      } else if (response.statusCode == 422) {
+        return res;
+      } else if (response.statusCode == 500) {
+        return res;
+      } else if (response.statusCode == 502) {
+        return res;
+      } else if (response.statusCode == 503) {
+        return res;
+      } else {
+        return Future.error('Network Problem');
+      }
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
 
   Future<dynamic> putRequestProfile(
       {required apiUrl,
@@ -214,7 +267,7 @@ class ApiProvider {
       imageKey,
       required Rx<File?> userImage}) async {
     try {
-      var request = http.MultipartRequest("PUT", Uri.parse(apiUrl));
+      var request = http.MultipartRequest("POST", Uri.parse(apiUrl));
       fields.forEach((key, value) {
         request.fields[key] = value.toString();
       });
@@ -232,7 +285,7 @@ class ApiProvider {
       }
       request.headers.addAll({
         "Accept": "application/json",
-        'Accept-Language': lang,
+        // 'Accept-Language': lang,
         "Authorization": 'Bearer ${getToken()}',
       });
 
@@ -274,6 +327,77 @@ class ApiProvider {
       } else {
         return Future.error('Network Problem');
       }
+    } catch (e) {
+      log("catch ${e.toString()}");
+    }
+  }
+  Future<dynamic> putRequestProfileWithDocuments({
+    required String apiUrl,
+    required Map<String, dynamic> fields,
+
+    required Map<String, File?> documents,
+
+  }) async {
+    try {
+      var request = http.MultipartRequest(
+        "POST",
+        Uri.parse(apiUrl),
+      );
+
+      /// Text fields
+      fields.forEach((key, value) {
+        request.fields[key] = value.toString();
+      });
+
+      /// Documents
+      for (final entry in documents.entries) {
+        if (entry.value != null) {
+          request.files.add(
+            await http.MultipartFile.fromPath(
+              entry.key,
+              entry.value!.path,
+            ),
+          );
+        }
+      }
+
+      request.headers.addAll({
+        "Accept": "application/json",
+        "Authorization": "Bearer ${getToken()}",
+      });
+
+      var response = await request.send();
+      var res = await response.stream.bytesToString();
+      final res2= jsonDecode(res);
+      if (response.statusCode == 200) {
+        return res2;
+      } else if (response.statusCode == 201) {
+        return res2;
+      } else if (response.statusCode == 202) {
+        return res2;
+      } else if (response.statusCode == 400) {
+        return res2;
+      } else if (response.statusCode == 401) {
+        handleSessionExpire();
+        return res2;
+      } else if (response.statusCode == 403) {
+        return res2;
+      } else if (response.statusCode == 404) {
+        return res2;
+      } else if (response.statusCode == 422) {
+        return res2;
+      } else if (response.statusCode == 429) {
+        return res2;
+      } else if (response.statusCode == 500) {
+        return res2;
+      } else if (response.statusCode == 502) {
+        return res2;
+      } else if (response.statusCode == 503) {
+        return res2;
+      } else {
+        return Future.error('Network Problem');
+      }
+
     } catch (e) {
       log("catch ${e.toString()}");
     }

@@ -1,5 +1,46 @@
 class Images {
-  static const String logoIcon = "assets/images/logo.svg";
+  static const String logoIcon = "assets/image/splash_logo.png";
+  static const String explorerIcon = "assets/image/ExplorerLogo.png";
+  static const String driverLogo = "assets/image/DriverLogo.png";
+  static const String steeringIcon = "assets/image/steeringIcon.svg";
+  static const String personLogo = "assets/image/personLogo.svg";
+  static const String homeIcon = "assets/image/homeIcon.svg";
+  static const String earningIcon = "assets/image/earningIcon.svg";
+  static const String riderHistory = "assets/image/riderHistory.svg";
+  static const String settingIcon = "assets/image/settingIcon.svg";
+  static const String serviceIcon = "assets/image/serviceIcon.svg";
+  static const String walletIcon = "assets/image/walletIcon.svg";
+  static const String deleteAccount = "assets/image/deleteAccount.svg";
+  static const String raiseTicketIcon = "assets/image/raiseTicketIcon.svg";
+  static const String faqIcon = "assets/image/faqIcon.svg";
+  static const String termCondition = "assets/image/termCondition.svg";
+  static const String privacyIcon = "assets/image/privacyIcon.svg";
+  static const String deleteIcon = "assets/image/deleteIcon.svg";
+  static const String deleteAccIcon = "assets/image/deleteAccIcon.svg";
+  static const String onBoardingOne = "assets/image/onBoardingOne.png";
+  static const String onBoardingTwo = "assets/image/onBoardingTwo.png";
+  static const String onBoardingThree = "assets/image/onBoardingThree.png";
+
+  static const String googleLogo = "assets/image/googleLogo.svg";
+  static const String messageIcon = "assets/image/MessageIcon.svg";
+  static const String lockIcon = "assets/image/lockIcon.svg";
+  static const String phoneIcon = "assets/image/phoneIcon.svg";
+  static const String outlinePerson = "assets/image/outlinePerson.svg";
+  static const String tickIcon = "assets/image/tickIcon.svg";
+  static const String profileIcon = "assets/image/profileIcon.svg";
+  static const String fileIcon = "assets/image/fileIcon.svg";
+  static const String uploadIcon = "assets/image/uploadIcon.svg";
+  static const String carIcon = "assets/image/carIcon.svg";
+  static const String carEmailIcon = "assets/image/carEmailIcon.svg";
+  static const String twoPerson = "assets/image/twoPerson.svg";
+  static const String logout = "assets/image/logout.svg";
+  static const String driverOnboarding1 = "assets/image/driverOnboarding1.png";
+  static const String driverOnboarding2 = "assets/image/driverOnboarding2.png";
+  static const String driverOnboarding3 = "assets/image/driverOnboarding3.png";
+  static const String profileReview = "assets/image/profileReview.png";
+
+
+
   static const String drawerIcons = "assets/images/drawerIcons.svg";
 
   static const String logoName = "assets/images/logoName.svg";

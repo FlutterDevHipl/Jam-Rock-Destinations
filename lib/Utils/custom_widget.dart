@@ -11,9 +11,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:solfana/Utils/AppGradients.dart';
-import 'package:solfana/Utils/app_colors.dart';
-import 'package:solfana/Utils/app_images.dart';
+
+import 'AppGradients.dart';
+import 'app_colors.dart';
+import 'app_images.dart';
+
 
 enum ImageType { rectangle, circle, user }
 
@@ -114,13 +116,15 @@ class CustomWidget {
     double? radius,
     double? fontSize,
     Color textColor = AppColors.whiteColor,
-    Gradient? gradient,
+     Color? color,
+    // Gradient? gradient,
   }) {
     return Container(
       height: height ?? 48,
       width: minWidth ?? Get.width,
+
       decoration: BoxDecoration(
-        gradient: gradient ?? AppGradients.pinkPurple,
+        color: color,
         borderRadius: BorderRadius.circular(radius ?? 30),
       ),
       child: MaterialButton(
@@ -138,7 +142,7 @@ class CustomWidget {
           title: text,
           fontSize: fontSize ?? 16,
           textColor: textColor,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
@@ -354,10 +358,11 @@ class CustomWidget {
             ],
       enabled: enabled,
       readOnly: readOnly ?? false,
-      style: GoogleFonts.inter(color: AppColors.pinkColor400, fontSize: 16),
+      style: GoogleFonts.inter(color:  AppColors.black500, fontSize: 15),
       // autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
-        fillColor: Colors.black,
+        fillColor: const Color(0xffF5F5F5),
+
 
         filled: filled,
         isDense: true,
@@ -366,11 +371,13 @@ class CustomWidget {
         errorStyle: GoogleFonts.inter(
           fontSize: 12,
           color: Colors.red,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
+
         ),
+        errorMaxLines: 2,
         hintText: hintText,
         hintStyle: GoogleFonts.inter(
-          fontSize: 16,
+          fontSize: 15,
           color: Colors.grey.shade400,
           fontWeight: FontWeight.w400,
         ),
@@ -383,18 +390,18 @@ class CustomWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius ?? 30),
           borderSide: BorderSide(
-              color: AppColors.borderColor.withOpacity(0.2), width: 1),
+              color: AppColors.black50, width: 1),
         ),
         hoverColor: Colors.red,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius ?? 30),
           borderSide: BorderSide(
-              color: AppColors.borderColor.withOpacity(0.2), width: 1),
+              color: AppColors.black50, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius ?? 30),
           borderSide: BorderSide(
-              color: AppColors.borderColor.withOpacity(0.2), width: 1),
+              color: AppColors.black50, width: 1),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius ?? 30),
@@ -426,6 +433,7 @@ class CustomWidget {
     void Function(Country)? onCountryChanged,
     int? maxLength,
     Function()? onTap,
+    bool enableCountryPicker = true, // 👈 new flag
   }) {
     final focusNode = FocusNode();
 
@@ -434,6 +442,7 @@ class CustomWidget {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: validator,
       builder: (state) {
+        print("dark mode $darkMode");
         final hasError = state.hasError;
         final borderColor = hasError
             ? Colors.red
@@ -455,10 +464,12 @@ class CustomWidget {
                   borderRadius: BorderRadius.circular(radius ?? 30),
                   border: Border.all(color: borderColor, width: 1),
                 ),
+
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap: () {
+                      onTap:enableCountryPicker
+                          ?  () {
                         showCountryPicker(
                           context: Get.context!,
                           showPhoneCode: true,
@@ -470,7 +481,7 @@ class CustomWidget {
                               top: Radius.circular(16),
                             ),
                             inputDecoration: InputDecoration(
-                              hintText: Translation('Search country').tr(),
+                              hintText: "Search country",
                               isDense: true,
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 12,
@@ -484,7 +495,7 @@ class CustomWidget {
                             textStyle: GoogleFonts.lato(
                               fontSize: 14,
                               color:
-                                  darkMode ? Colors.white : AppColors.appColor,
+                              Get.isDarkMode ? Colors.white : Colors.black
                             ),
                           ),
                           onSelect: (Country country) {
@@ -495,14 +506,20 @@ class CustomWidget {
                             state.setState(() {});
                           },
                         );
-                      },
-                      child: Text(
-                        '+${selectedCountry.value?.phoneCode}',
-                        style: GoogleFonts.lato(
-                          fontSize: 14,
-                          color: AppColors.pinkColor400,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      }: null,
+                      child: Row(
+                        children: [
+                         SvgPicture.asset(Images.phoneIcon),
+                          widthSpace8,
+                          Text(
+                            '+${selectedCountry.value?.phoneCode}',
+                            style: GoogleFonts.lato(
+                              fontSize: 14,
+                              color: AppColors.green500,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
 
@@ -520,14 +537,15 @@ class CustomWidget {
                         enabled: enabled,
                         readOnly: readOnly,
                         onTap: onTap,
+
                         keyboardType: TextInputType.phone,
                         inputFormatters: [
                           if (maxLength != null)
                             LengthLimitingTextInputFormatter(maxLength),
                           FilteringTextInputFormatter.digitsOnly,
                         ],
-                        style: GoogleFonts.lato(
-                          color: AppColors.pinkColor400,
+                        style: GoogleFonts.inter(
+                          color: AppColors.black500,
                           fontSize: 15,
                         ),
                         decoration: InputDecoration(
@@ -958,7 +976,7 @@ class CustomWidget {
                                     text: buttonText ?? "Upgrade",
                                     // btBorderColor:
                                     //     AppColors.borderColor.withOpacity(0.2),
-                                    onPressed: onPressed,
+                                    onPressed: onPressed, color: Colors.white,
                                   ),
                                 ),
                               ],
@@ -1061,6 +1079,7 @@ class CustomWidget {
   }
 }
 
+const widthSpace3 = SizedBox(width: 3);
 const widthSpace5 = SizedBox(width: 5);
 const widthSpace8 = SizedBox(width: 8);
 const widthSpace10 = SizedBox(width: 10);

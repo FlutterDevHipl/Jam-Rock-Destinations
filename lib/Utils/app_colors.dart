@@ -6,6 +6,21 @@ class AppColors {
   static const purpleColor700 = Color(0xFFCF3EDA);
   static const purpleColor800 = Color(0xFF5C28A4);
   static const borderColor = Color(0xFFE6D2F9);
+  static const amberColor700 = Color(0xFFB19A04);
+  static const yellow50 = Color(0xFFFEFBE6);
+  static const yellow100 = Color(0xFFFDF3B2);
+  static const yellow600 = Color(0xFFE3C505);
+  static const yellow700 = Color(0xFFB19A04);
+  static const black300 = Color(0xFF707276);
+  static const black400 = Color(0xFF55575B);
+  static const black200 = Color(0xFF707276);
+  static const black500 = Color(0xFF2A2D32);
+  static const green = Color(0xFF308B43);
+  static const black50 = Color(0xFFEAEAEB);
+  static const green500 = Color(0xFF308B43);
+  static const green100 = Color(0xFFBFDBC5);
+  static const offWhite = Color(0XFFF5F5F5);
+
 
 
   static const redColor600 = Color(0xFFDE3535);

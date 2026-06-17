@@ -5,6 +5,13 @@ final userBox = Hive.box('userBox');
 String getUserId() {
   return userBox.get('user_id', defaultValue: '');
 }
+String isLogin()
+{
+  return userBox.get('isLogin', defaultValue: '');
+}
+String getUserType() {
+  return userBox.get('user_type', defaultValue: '');
+}
 
 String getUserName() {
   return userBox.get('name', defaultValue: '');
