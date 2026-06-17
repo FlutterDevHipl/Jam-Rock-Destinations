@@ -24,6 +24,7 @@ class AppConstants {
   static const String logout = "${BASE_URL}/auth/logout";
   static const String deleteAccount = "${BASE_URL}/profile/destroy";
   static const String getVehicles = "${BASE_URL}/common/get-vehicles";
+  static const String editProfile = "${BASE_URL}/profile";
 
 
 

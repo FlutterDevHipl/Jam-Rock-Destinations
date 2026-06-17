@@ -122,25 +122,34 @@ class LoginController extends GetxController
         userType=="EXPLORER"?
         Get.offAll(CustomerBottomNavigation(index: 0,)):
         Get.offAll(DriverBottomNavigation(index: 0,));
+        isLoading.value=false;
       }
       else {
-        String errorMessage = "Registration failed";
 
-        if (response['errors'] != null &&
-            response['errors'] is Map &&
-            response['errors'].isNotEmpty) {
-          final firstKey = response['errors'].keys.first;
-          errorMessage = response['errors'][firstKey].first.toString();
-        } else if (response['message'] != null &&
+        String errorMessage = "Something went wrong";
+
+        if (response['message'] != null &&
             response['message'].toString().isNotEmpty) {
           errorMessage = response['message'].toString();
+        } else if (response['errors'] != null &&
+            response['errors'] is Map &&
+            response['errors'].isNotEmpty) {
+
+          final firstKey = response['errors'].keys.first;
+          final errorValue = response['errors'][firstKey];
+
+          if (errorValue is List && errorValue.isNotEmpty) {
+            errorMessage = errorValue.first.toString();
+          } else {
+            errorMessage = errorValue.toString();
+          }
         }
 
         CustomWidget().showCustomToast(
           message: errorMessage,
           backgroundColor: Colors.red,
         );
-        isLoading.value = false;
+        isLoading.value=false;
       }
       }
 

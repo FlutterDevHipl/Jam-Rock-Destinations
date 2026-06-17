@@ -6,17 +6,30 @@ import 'package:get/get.dart';
 
 import '../Utils/app_colors.dart';
 import '../Utils/custom_widget.dart';
+import 'Controller/Driver_Registration.dart';
 
 class ProfileReviewView extends StatefulWidget {
-  const ProfileReviewView({super.key});
+  final token;
+
+  const ProfileReviewView({super.key, this.token, });
 
   @override
   State<ProfileReviewView> createState() => _ProfileReviewViewState();
 }
 
 class _ProfileReviewViewState extends State<ProfileReviewView> {
+  final VehicleDetailsController controller = Get.put(VehicleDetailsController());
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.driverRegistration3(widget.token);
+    });
+  }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       body: SafeArea(

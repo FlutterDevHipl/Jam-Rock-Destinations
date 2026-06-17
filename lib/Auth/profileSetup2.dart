@@ -146,9 +146,9 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
               }
               if (
               controller.exteriorImage1.value == null ||
-              controller.exteriorImage2.value == null ||
-              controller.exteriorImage3.value == null ||
-              controller.exteriorImage4.value == null
+                  controller.exteriorImage2.value == null ||
+                  controller.exteriorImage3.value == null ||
+                  controller.exteriorImage4.value == null
               ) {
                 CustomWidget().showCustomToast(
                   message: "Please Upload Vehicle Exterior Images",
@@ -156,7 +156,8 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                 isValid = false;
               }
               if (!isValid) return;
-              Get.to(ProfileReviewView());
+              controller.driverRegistration2(widget.token, widget.step);
+              //
             },
             child: CustomWidget().buildTextWidget(
               title: "Submit",
@@ -200,13 +201,23 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
               Obx(
                     () => buildDropdown(
                   hint: "Select Vehicle Type",
-                  items: controller.vehicleTypes,
+                  items: controller.vehicleTypes
+                      .map((e) => e["name"].toString())
+                      .toList(),
                   value: controller.selectedVehicleType.value.isEmpty
                       ? null
                       : controller.selectedVehicleType.value,
                   errorText: controller.vehicleTypeError.value,
                   onChanged: (value) {
-                    controller.selectedVehicleType.value = value ?? '';
+                    final selected = controller.vehicleTypes.firstWhere(
+                          (e) => e["name"] == value,
+                    );
+
+                    controller.selectedVehicleType.value = selected["name"];
+                    controller.selectedVehicleTypeId.value = selected["id"];
+
+                    print("Type ID: ${controller.selectedVehicleTypeId.value}");
+
                     controller.vehicleTypeError.value = '';
                   },
                 ),
@@ -245,24 +256,36 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
               Obx(
                     () => buildBrandDropdown(
                   hint: "Select vehicle brand",
-                  items: controller.vehicleBrands,
-                  value: controller.selectedVehicleBrand.value,
+                  items: controller.vehicleBrands
+                      .map((e) => e["name"].toString())
+                      .toList(),
+                  value: controller.selectedVehicleBrand.value.isEmpty
+                      ? null
+                      : controller.selectedVehicleBrand.value,
                   prefixImage: Images.carEmailIcon,
-                  errorText:
-                  controller.vehicleBrandError.value,
+                  errorText: controller.vehicleBrandError.value,
                   onChanged: (value) {
-                    controller.selectedVehicleBrand.value = value ?? "";
+                    final selected = controller.vehicleBrands.firstWhere(
+                          (e) => e["name"] == value,
+                    );
+
+                    controller.selectedVehicleBrand.value = selected["name"];
+                    controller.selectedVehicleBrandId.value = selected["id"];
+
+                    print("Brand Name: ${controller.selectedVehicleBrand.value}");
+                    print("Brand Id: ${controller.selectedVehicleBrandId.value}");
+
                     controller.vehicleBrandError.value = "";
                   },
                 ),
               ),
               Obx(() =>   controller.vehicleBrandError.value.isNotEmpty?
               heightSpace5:heightSpace16,),
-          Obx(
-                () =>
-              controller.vehicleBrandError.value!="" ?
-               SizedBox(height: 16): SizedBox(height: 0),
-          ),
+              Obx(
+                    () =>
+                controller.vehicleBrandError.value!="" ?
+                SizedBox(height: 16): SizedBox(height: 0),
+              ),
               // heightSpace16,
 
               /// Model
@@ -270,7 +293,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                 controller: controller.modelController,
                 darkMode: false,
                 hintText: "Enter Model",
-                  radius: 8,
+                radius: 8,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return "Please enter model number";
@@ -295,11 +318,12 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                   items: controller.vehicleCapacities,
                   value: controller.selectedVehicleCapacity.value,
                   prefixImage: Images.twoPerson,
-                      errorText: (controller.selectedVehicleCapacity.value==""||controller.selectedVehicleCapacity.value==null)
-                          ? controller.vehicleCapacityError.value
-                          : null,
+                  errorText: (controller.selectedVehicleCapacity.value==""||controller.selectedVehicleCapacity.value==null)
+                      ? controller.vehicleCapacityError.value
+                      : null,
                   onChanged: (value) {
                     controller.selectedVehicleCapacity.value = value ?? "";
+                    print( controller.selectedVehicleCapacity.value);
                     controller.vehicleCapacityError.value = "";
                   },
                 ),
@@ -325,77 +349,77 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 15),
                 decoration: BoxDecoration(
-                  color:  Color(0xffF7F7F7),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 1,color: AppColors.black50)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                _labelSmall("Interior Images"),
-
-                const SizedBox(height: 10),
-
-                Row(
+                    color:  Color(0xffF7F7F7),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(width: 1,color: AppColors.black50)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Obx(
-                            () => _uploadBox(
-                          image: controller.interiorImage1.value,
-                          onTap: () =>
-                              controller.pickImage(controller.interiorImage1), title: '',
+                    _labelSmall("Interior Images"),
+
+                    const SizedBox(height: 10),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Obx(
+                                () => _uploadBox(
+                              image: controller.interiorImage1.value,
+                              onTap: () =>
+                                  controller.pickImage(controller.interiorImage1), title: '',
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Obx(
-                            () => _uploadBox(
-                          image: controller.interiorImage2.value,
-                          onTap: () =>
-                              controller.pickImage(controller.interiorImage2), title: '',
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Obx(
+                                () => _uploadBox(
+                              image: controller.interiorImage2.value,
+                              onTap: () =>
+                                  controller.pickImage(controller.interiorImage2), title: '',
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
 
-                const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                _labelSmall("Exterior Images"),
+                    _labelSmall("Exterior Images"),
 
-                const SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 2.0,
-                  children: [
-                    Obx(() => _uploadBox(
-                      image: controller.exteriorImage1.value,
-                      onTap: () =>
-                          controller.pickImage(controller.exteriorImage1), title: '',
-                    )),
-                    Obx(() => _uploadBox(
-                      image: controller.exteriorImage2.value,
-                      onTap: () =>
-                          controller.pickImage(controller.exteriorImage2), title: '',
-                    )),
-                    Obx(() => _uploadBox(
-                      image: controller.exteriorImage3.value,
-                      onTap: () =>
-                          controller.pickImage(controller.exteriorImage3), title: '',
-                    )),
-                    Obx(() => _uploadBox(
-                      image: controller.exteriorImage4.value,
-                      onTap: () =>
-                          controller.pickImage(controller.exteriorImage4), title: '',
-                    )),
-                  ],
-                ),
-              ],),),
+                    GridView.count(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 2.0,
+                      children: [
+                        Obx(() => _uploadBox(
+                          image: controller.exteriorImage1.value,
+                          onTap: () =>
+                              controller.pickImage(controller.exteriorImage1), title: '',
+                        )),
+                        Obx(() => _uploadBox(
+                          image: controller.exteriorImage2.value,
+                          onTap: () =>
+                              controller.pickImage(controller.exteriorImage2), title: '',
+                        )),
+                        Obx(() => _uploadBox(
+                          image: controller.exteriorImage3.value,
+                          onTap: () =>
+                              controller.pickImage(controller.exteriorImage3), title: '',
+                        )),
+                        Obx(() => _uploadBox(
+                          image: controller.exteriorImage4.value,
+                          onTap: () =>
+                              controller.pickImage(controller.exteriorImage4), title: '',
+                        )),
+                      ],
+                    ),
+                  ],),),
 
 
 
@@ -549,82 +573,67 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
               Expanded(
                 child:
                 DropdownButtonHideUnderline(
-                  // child: DropdownButton<String>(
-                  //   value: selectedValue,
-                  //   isExpanded: true,
-                  //   hint: Text(hint),
-                  //   items: uniqueItems.map((item) {
-                  //     return DropdownMenuItem<String>(
-                  //       value: item,
-                  //       child: Text(
-                  //         item,
-                  //         overflow: TextOverflow.ellipsis,
-                  //       ),
-                  //     );
-                  //   }).toList(),
-                  //   onChanged: onChanged,
-                  // ),
-                  child: DropdownButton2<String>(
+                  child:
+                  DropdownButton2<String>(
 
-                  value: selectedValue,
-                  isExpanded: true,
-                  hint: Text(
-                    hint,
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
-
-                  items: uniqueItems.map((item) {
-                    return DropdownMenuItem<String>(
-                      value: item,
-                      child: Text(
-                        item,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          color: Colors.black,
-                        ),
+                    value: selectedValue,
+                    isExpanded: true,
+                    hint: Text(
+                      hint,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: Colors.grey,
                       ),
-                    );
-                  }).toList(),
-
-                  onChanged: onChanged,
-
-                  buttonStyleData: const ButtonStyleData(
-                    height: 48,
-                    padding: EdgeInsets.zero,
-                  ),
-
-                  iconStyleData: const IconStyleData(
-                    icon: Icon(Icons.keyboard_arrow_down),
-                    iconSize: 24,
-                  ),
-
-                  dropdownStyleData: DropdownStyleData(
-                    maxHeight: 48 * 5, // show 5 items
-                    width: MediaQuery.of(context).size.width-20,
-                    // padding: EdgeInsetsGeometry.symmetric(horizontal: 18),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
                     ),
-                    elevation: 4,
 
-                    // Opens below the dropdown
-                    offset: const Offset(-12, 5),
+                    items: uniqueItems.map((item) {
+                      return DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(
+                          item,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: Colors.black,
+                          ),
+                        ),
+                      );
+                    }).toList(),
 
-                    // Prevent clipping in bottom sheet
-                    isOverButton: false,
+                    onChanged: onChanged,
+
+                    buttonStyleData: const ButtonStyleData(
+                      height: 48,
+                      padding: EdgeInsets.zero,
+                    ),
+
+                    iconStyleData: const IconStyleData(
+                      icon: Icon(Icons.keyboard_arrow_down),
+                      iconSize: 24,
+                    ),
+
+                    dropdownStyleData: DropdownStyleData(
+                      maxHeight: 48 * 5, // show 5 items
+
+                      // padding: EdgeInsetsGeometry.symmetric(horizontal: 18),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
+
+                      // Opens below the dropdown
+                      offset: const Offset(-12, 5),
+
+                      // Prevent clipping in bottom sheet
+                      isOverButton: false,
+                    ),
+
+                    menuItemStyleData: const MenuItemStyleData(
+                      height: 48,
+
+                    ),
                   ),
-
-                  menuItemStyleData: const MenuItemStyleData(
-                    height: 48,
-                    // padding: EdgeInsetsGeometry.symmetric(horizontal:20)
-                     padding: EdgeInsets.symmetric(horizontal: 20),
-                  ),
-                ),
                 ),
               ),
             ],
@@ -645,76 +654,131 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
       ],
     );
   }
-   Widget buildDropdown({
-     required String hint,
-     required List<String> items,
-     required String? value,
-     required Function(String?) onChanged,
-     String? prefixImage,
-     String? errorText,
-   }) {
-     return Column(
-       crossAxisAlignment: CrossAxisAlignment.start,
-       children: [
-         Container(
-           height: 48,
-           padding: const EdgeInsets.symmetric(horizontal: 12),
-           decoration: BoxDecoration(
-             color: Color(0xffF5F5F5),
-             borderRadius: BorderRadius.circular(8),
-             border: Border.all(
-                 color: (errorText != null && errorText.isNotEmpty)
-                     ? Colors.red
-                     : Colors.transparent,
-             )
-           ),
-           child: Row(
-             children: [
-               if (prefixImage != null) ...[
-                 SvgPicture.asset(
-                   prefixImage,
-                   width: 25,
-                   height: 25,
-                 ),
-                 const SizedBox(width: 10),
-               ],
-               Expanded(
-                 child:
-                 DropdownButtonHideUnderline(
-                   child:
-                   DropdownButton<String>(
-                     value: value,
-                     isExpanded: true,
-                     hint: Text(hint),
-                     items: items.map((item) {
-                       return DropdownMenuItem(
-                         value: item,
-                         child: Text(item),
-                       );
-                     }).toList(),
-                     onChanged: onChanged,
-                   ),
-                 ),
-               ),
-             ],
-           ),
-         ),
-         if (errorText != null)
-           Padding(
-             padding: const EdgeInsets.only(left: 12, top: 4),
-             child: Text(
-               errorText,
-               style:  GoogleFonts.inter(
-                 fontSize: 12,
-                 color: Colors.red,
-                 fontWeight: FontWeight.w600,
+  Widget buildDropdown({
+    required String hint,
+    required List<String> items,
+    required String? value,
+    required Function(String?) onChanged,
+    String? prefixImage,
+    String? errorText,
+  }) {
+    final uniqueItems = items.toSet().toList();
 
-               ),
-             ),
-           ),
-       ],
-     );
-   }
+    // Ensure selected value exists in the list
+    final selectedValue =
+    (value != null && uniqueItems.contains(value))
+        ? value
+        : null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 48,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+              color: Color(0xffF5F5F5),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: (errorText != null && errorText.isNotEmpty)
+                    ? Colors.red
+                    : Colors.transparent,
+              )
+          ),
+          child: Row(
+            children: [
+              if (prefixImage != null) ...[
+                SvgPicture.asset(
+                  prefixImage,
+                  width: 25,
+                  height: 25,
+                ),
+                const SizedBox(width: 10),
+              ],
+              Expanded(
+                child:
+                DropdownButtonHideUnderline(
+                  child:
+                  DropdownButton2<String>(
+
+                    value: selectedValue,
+                    isExpanded: true,
+                    hint: Text(
+                      hint,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+
+                    items: uniqueItems.map((item) {
+                      return DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(
+                          item,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: Colors.black,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+
+                    onChanged: onChanged,
+
+                    buttonStyleData: const ButtonStyleData(
+                      height: 48,
+                      padding: EdgeInsets.zero,
+                    ),
+
+                    iconStyleData: const IconStyleData(
+                      icon: Icon(Icons.keyboard_arrow_down),
+                      iconSize: 24,
+                    ),
+
+                    dropdownStyleData: DropdownStyleData(
+                      maxHeight: 48 * 5, // show 5 items
+
+                      // padding: EdgeInsetsGeometry.symmetric(horizontal: 18),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
+
+                      // Opens below the dropdown
+                      offset: const Offset(-12, 5),
+
+                      // Prevent clipping in bottom sheet
+                      isOverButton: false,
+                    ),
+
+                    menuItemStyleData: const MenuItemStyleData(
+                      height: 48,
+
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (errorText != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 12, top: 4),
+            child: Text(
+              errorText,
+              style:  GoogleFonts.inter(
+                fontSize: 12,
+                color: Colors.red,
+                fontWeight: FontWeight.w600,
+
+              ),
+            ),
+          ),
+      ],
+    );
+  }
   Widget _uploadBox({
     required String title,
     required VoidCallback onTap,
@@ -728,59 +792,59 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
         borderType: BorderType.RRect,
         radius: const Radius.circular(8),
         child: Container(
-          height: 80,
-          width: double.infinity,
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: image != null
-              ? Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.file(
-                image,
-                fit: BoxFit.cover,
-              ),
+            height: 80,
+            width: double.infinity,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: image != null
+                ? Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.file(
+                  image,
+                  fit: BoxFit.cover,
+                ),
 
-              Positioned(
-                top: 4,
-                right: 4,
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.edit,
-                    size: 14,
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.edit,
+                      size: 14,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          )
-              :
-          title!=""?
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(Images.uploadIcon,height: 30,width: 30),
-              SizedBox(height: 6),
-              CustomWidget().buildTextWidget(
-                title: title,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                textColor: AppColors.black400,
-              ),
-            ],
-          ):
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(Images.uploadIcon,height: 30,width: 30),
-            ],
-          )
+              ],
+            )
+                :
+            title!=""?
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(Images.uploadIcon,height: 30,width: 30),
+                SizedBox(height: 6),
+                CustomWidget().buildTextWidget(
+                  title: title,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  textColor: AppColors.black400,
+                ),
+              ],
+            ):
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(Images.uploadIcon,height: 30,width: 30),
+              ],
+            )
 
         ),
       ),
@@ -808,8 +872,8 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: const Color(0xffF7F7F7),
-            borderRadius: BorderRadius.circular(10),
+              color: const Color(0xffF7F7F7),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(width: 1,color: AppColors.black50)
           ),
           child: Row(

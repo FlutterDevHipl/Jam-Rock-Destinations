@@ -317,6 +317,7 @@ class CustomWidget {
 
   buildTextFormField({
     TextEditingController? controller,
+    String? initialValue,
     String? Function(String?)? validator,
     String? labelText,
     String? hintText,
@@ -341,6 +342,7 @@ class CustomWidget {
     return TextFormField(
       textAlign: textAlign,
       controller: controller,
+      initialValue: controller == null ? initialValue : null,
       validator: validator,
       obscureText: obscureText,
       keyboardType: keyboardType,
@@ -350,58 +352,58 @@ class CustomWidget {
       maxLines: maxLines,
       inputFormatters: keyboardType == TextInputType.number
           ? [
-              LengthLimitingTextInputFormatter(maxLength),
-              FilteringTextInputFormatter.digitsOnly
-            ]
+        LengthLimitingTextInputFormatter(maxLength),
+        FilteringTextInputFormatter.digitsOnly,
+      ]
           : [
-              LengthLimitingTextInputFormatter(maxLength),
-            ],
+        LengthLimitingTextInputFormatter(maxLength),
+      ],
       enabled: enabled,
       readOnly: readOnly ?? false,
-      style: GoogleFonts.inter(color:  AppColors.black500, fontSize: 15),
-      // autovalidateMode: AutovalidateMode.onUserInteraction,
+      style: GoogleFonts.inter(
+        color: AppColors.black500,
+        fontSize: 15,
+      ),
       decoration: InputDecoration(
         fillColor: const Color(0xffF5F5F5),
-
-
         filled: filled,
         isDense: true,
         contentPadding:
-            const EdgeInsets.symmetric(vertical: 13, horizontal: 20),
+        const EdgeInsets.symmetric(vertical: 13, horizontal: 20),
         errorStyle: GoogleFonts.inter(
           fontSize: 12,
           color: Colors.red,
           fontWeight: FontWeight.w600,
-
         ),
         errorMaxLines: 2,
         hintText: hintText,
         hintStyle: GoogleFonts.inter(
           fontSize: 15,
-          color: Colors.grey.shade400,
+          color: Colors.grey,
           fontWeight: FontWeight.w400,
         ),
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
-        prefixIconConstraints: BoxConstraints(
+        prefixIconConstraints: const BoxConstraints(
           minWidth: 40,
           minHeight: 15,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius ?? 30),
-          borderSide: BorderSide(
-              color: AppColors.black50, width: 1),
         ),
-        hoverColor: Colors.red,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius ?? 30),
           borderSide: BorderSide(
-              color: AppColors.black50, width: 1),
+            color: AppColors.black50,
+            width: 1,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius ?? 30),
           borderSide: BorderSide(
-              color: AppColors.black50, width: 1),
+            color: AppColors.black50,
+            width: 1,
+          ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius ?? 30),
@@ -412,7 +414,10 @@ class CustomWidget {
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius ?? 30),
-          borderSide: BorderSide(color: Colors.red, width: 1),
+          borderSide: const BorderSide(
+            color: Colors.red,
+            width: 1,
+          ),
         ),
       ),
     );

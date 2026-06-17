@@ -260,7 +260,54 @@ class ApiProvider {
       return Future.error(e.toString());
     }
   }
+  Future<dynamic> PostRequestProfile({
+    required String apiUrl,
+    required Map<String, dynamic> fields,
+    required Rx<File?> userImage,
+    required String imageKey,
+    required String token,
+  }) async {
+    try {
+      var request = http.MultipartRequest(
+        "POST",
+        Uri.parse(apiUrl),
+      );
 
+      fields.forEach((key, value) {
+        request.fields[key] = value.toString();
+      });
+
+      if (userImage.value != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            imageKey,
+            userImage.value!.path,
+          ),
+        );
+      }
+
+      request.headers.addAll({
+        "Accept": "application/json",
+        "Authorization": "Bearer $token",
+      });
+
+      print("FIELDS => ${request.fields}");
+
+      for (var file in request.files) {
+        print("FILE => ${file.field}");
+      }
+
+      final response = await request.send();
+      final body = await response.stream.bytesToString();
+
+      print("STATUS => ${response.statusCode}");
+      print("BODY => $body");
+
+      return jsonDecode(body);
+    } catch (e) {
+      print("ERROR => $e");
+    }
+  }
   Future<dynamic> putRequestProfile(
       {required apiUrl,
       required Map<String, dynamic> fields,
@@ -402,7 +449,61 @@ class ApiProvider {
       log("catch ${e.toString()}");
     }
   }
+  Future<dynamic> putRequestProfileWithDocuments2({
+    required String apiUrl,
+    required Map<String, dynamic> fields,
+    required Map<String, File?> documents,
+    Map<String, List<File>>? multipleDocuments,
+  }) async {
+    try {
+      var request = http.MultipartRequest(
+        "POST",
+        Uri.parse(apiUrl),
+      );
 
+      fields.forEach((key, value) {
+        request.fields[key] = value.toString();
+      });
+
+      /// Single Files
+      for (final entry in documents.entries) {
+        if (entry.value != null) {
+          request.files.add(
+            await http.MultipartFile.fromPath(
+              entry.key,
+              entry.value!.path,
+            ),
+          );
+        }
+      }
+
+      /// Multiple Files
+      if (multipleDocuments != null) {
+        for (final entry in multipleDocuments.entries) {
+          for (final file in entry.value) {
+            request.files.add(
+              await http.MultipartFile.fromPath(
+                "${entry.key}[]",
+                file.path,
+              ),
+            );
+          }
+        }
+      }
+
+      request.headers.addAll({
+        "Accept": "application/json",
+        "Authorization": "Bearer ${getToken()}",
+      });
+
+      var response = await request.send();
+      var res = await response.stream.bytesToString();
+
+      return jsonDecode(res);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
   void handleSessionExpire() {
     userBox.clear();
     CustomWidget().showCustomToast(

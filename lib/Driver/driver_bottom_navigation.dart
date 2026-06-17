@@ -1,10 +1,10 @@
 import 'dart:io';
 
+import 'package:Jam_Rock_Destinations/Common/setting.dart';
 import 'package:Jam_Rock_Destinations/Customer/home_screen.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+
 
 import '../Utils/app_colors.dart';
 import '../Utils/app_images.dart';
@@ -121,9 +121,7 @@ class _DriverBottomNavigationState extends State<DriverBottomNavigation> {
       case 2:
         return const HomeScreen();
       case 3:
-        return const HomeScreen();
-      case 4:
-        return const HomeScreen();
+        return const SettingsScreen();
       default:
         return const HomeScreen();
     }

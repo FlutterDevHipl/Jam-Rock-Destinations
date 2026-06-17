@@ -1,11 +1,12 @@
 
 
-import 'package:Jam_Rock_Destinations/Common/Setting/setting.dart';
+
 import 'package:Jam_Rock_Destinations/Customer/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 
+import '../Common/setting.dart';
 import '../Utils/app_colors.dart';
 import '../Utils/app_images.dart';
 

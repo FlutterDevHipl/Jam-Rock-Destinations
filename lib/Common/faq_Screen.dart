@@ -1,10 +1,12 @@
-import 'package:Jam_Rock_Destinations/Common/profile_Controller.dart';
+
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
+
+import 'ProfileController.dart';
 
 class FAQScreen extends StatefulWidget {
 

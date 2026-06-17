@@ -612,8 +612,8 @@ log("phone $phone");
         );
 
 
-        print("registration_token step 1 = ${response["data"]["registration_token"]}");
-        print("registration_token step  = ${response["data"]["next_step"]}");
+        print("Very First api for registration token =  ${response["data"]["registration_token"]}");
+        print("Very First api for registration  step = ${response["data"]["next_step"]}");
         Get.to(ProfileSetupStepOneView(token: response["data"]["registration_token"],step: response["data"]["next_step"],));
 
 
@@ -639,41 +639,41 @@ log("phone $phone");
     }
   }
 
-Future<void> login(String userLogin ,String password)
-async {
-    try
-        {
-          isLoading.value=true;
-          final deviceData = await getDeviceInfo();
-
-          var response = await ApiProvider().postRequest1(
-            apiUrl: AppConstants.login,
-            data: {
-              "login_type": "normal", // normal,facebook,google,apple
-              "social_user_id": "",
-              "user_login": "+${countryCode.value}${phoneController.text.trim()}", // email and phone
-              "password": passwordController.text,
-              "platform": Platform.isAndroid ? "android" : "ios",
-              "device_id": deviceData["device_id"],
-              "device_json": jsonEncode(deviceData["device_json"]),
-            },
-          );
-
-          print("response $response");
-
-          if (response['success'] == true) {
-
-          }
-          isLoading.value=false;
-        }
-  catch(e)
-  {
-    isLoading.value=false;
-  }
-    finally{
-      isLoading.value=false;
-    }
-  }
+// Future<void> login(String userLogin ,String password)
+// async {
+//     try
+//         {
+//           isLoading.value=true;
+//           final deviceData = await getDeviceInfo();
+//
+//           var response = await ApiProvider().postRequest1(
+//             apiUrl: AppConstants.login,
+//             data: {
+//               "login_type": "normal", // normal,facebook,google,apple
+//               "social_user_id": "",
+//               "user_login": "+${countryCode.value}${phoneController.text.trim()}", // email and phone
+//               "password": passwordController.text,
+//               "platform": Platform.isAndroid ? "android" : "ios",
+//               "device_id": deviceData["device_id"],
+//               "device_json": jsonEncode(deviceData["device_json"]),
+//             },
+//           );
+//
+//           print("response $response");
+//
+//           if (response['success'] == true) {
+//
+//           }
+//           isLoading.value=false;
+//         }
+//   catch(e)
+//   {
+//     isLoading.value=false;
+//   }
+//     finally{
+//       isLoading.value=false;
+//     }
+//   }
   @override
   void dispose() {
     emailController.dispose();

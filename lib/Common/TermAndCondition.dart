@@ -1,9 +1,10 @@
-import 'package:Jam_Rock_Destinations/Common/profile_Controller.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
+import 'ProfileController.dart';
 
 class TermsAndConditionsScreen extends StatefulWidget {
   const TermsAndConditionsScreen({super.key});

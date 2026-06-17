@@ -4,6 +4,7 @@ import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -263,41 +264,43 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 heightSpace30,
 
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
+                Obx(
+                  () =>  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
 
-                      if (!formKey.currentState!.validate()) {
-                        return;
-                      }
+                        if (!formKey.currentState!.validate()) {
+                          return;
+                        }
 
-                      final identifier = isEmailSelected
-                          ? loginController.emailController.text.trim()
-                          : "+${loginController.countryCode.value}${loginController.phoneController.text.trim()}";
-                      debugPrint(
-                          "Login Type: ${isEmailSelected ? "EMAIL" : "PHONE"}");
+                        final identifier = isEmailSelected
+                            ? loginController.emailController.text.trim()
+                            : "+${loginController.countryCode.value}${loginController.phoneController.text.trim()}";
+                        debugPrint(
+                            "Login Type: ${isEmailSelected ? "EMAIL" : "PHONE"}");
 
-                      debugPrint("Identifier: $identifier");
+                        debugPrint("Identifier: $identifier");
 
-                      debugPrint("Password: ${loginController.passwordController.text}");
-                      loginController.login(identifier, loginController.passwordController.text);
+                        debugPrint("Password: ${loginController.passwordController.text}");
+                        loginController.login(identifier, loginController.passwordController.text);
 
 
 
-                      // Call Login API
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.green500,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        // Call Login API
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.green500,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                    ),
-                    child: CustomWidget().buildTextWidget(
-                      title: loginController.isLoading.value?"Loading..":"Login",
-                      textColor: Colors.white,
-                      fontWeight: FontWeight.w600,
+                      child: CustomWidget().buildTextWidget(
+                        title: loginController.isLoading.value?"Loading...":"Login",
+                        textColor: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
