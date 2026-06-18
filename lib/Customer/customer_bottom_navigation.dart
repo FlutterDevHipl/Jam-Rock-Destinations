@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../Common/setting.dart';
 import '../Utils/app_colors.dart';
 import '../Utils/app_images.dart';
+import 'service/ServiceScreen.dart';
 
 
 class CustomerBottomNavigation extends StatefulWidget {
@@ -119,9 +120,9 @@ class _CustomerBottomNavigationState extends State<CustomerBottomNavigation> {
   Widget buildScreen() {
     switch (currentIndex) {
       case 1:
-        return HomeScreen();
+        return  ServiceScreen();
       case 2:
-        return const HomeScreen();
+        return const ServiceScreen();
       case 3:
         return  SettingsScreen();
       default:

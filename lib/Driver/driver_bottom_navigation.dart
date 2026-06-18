@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:Jam_Rock_Destinations/Customer/home_screen.dart';
+import 'package:Jam_Rock_Destinations/Driver/ride_history/RideHistoryScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -118,7 +119,7 @@ class _DriverBottomNavigationState extends State<DriverBottomNavigation> {
       case 1:
         return HomeScreen();
       case 2:
-        return const HomeScreen();
+        return const RideHistoryScreen();
       case 3:
         return const SettingsScreen();
       default:

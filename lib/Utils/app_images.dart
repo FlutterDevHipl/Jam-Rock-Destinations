@@ -32,6 +32,8 @@ class Images {
   static const String check_circle = "assets/image/check-circle.svg";
   static const String clock = "assets/image/clock.svg";
   static const String starOutline = "assets/image/starOutline.svg";
+  static const String kycDoc = "assets/image/kycDoc.svg";
+  static const String car = "assets/image/car.svg";
   static const String onBoardingOne = "assets/image/onBoardingOne.png";
   static const String onBoardingTwo = "assets/image/onBoardingTwo.png";
   static const String onBoardingThree = "assets/image/onBoardingThree.png";
@@ -42,6 +44,10 @@ class Images {
   static const String tabler_payment_filled = "assets/image/tabler_payment_filled.png";
   static const String emptyImage = "assets/image/emptyImage.png";
    static const String successRight = "assets/images/success_right.png";
+   static const String dottedLine = "assets/images/dottedLine.png";
+   static const String rideHistoryEmpty = "assets/images/ride_history_empty.png";
+   static const String carImage = "assets/images/carImage.png";
+  //  static const String rideHistoryEmpty = "assets/images/ride_history_empty.svg";
 
   static const String googleLogo = "assets/image/googleLogo.svg";
   static const String messageIcon = "assets/image/MessageIcon.svg";
