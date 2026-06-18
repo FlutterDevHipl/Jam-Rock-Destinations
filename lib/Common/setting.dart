@@ -1,7 +1,9 @@
 import 'package:Jam_Rock_Destinations/Common/PrivacyPolicy.dart';
-import 'package:Jam_Rock_Destinations/Common/TermAndCondition.dart';
+import 'package:Jam_Rock_Destinations/Common/TermsAndConditions.dart';
 import 'package:Jam_Rock_Destinations/Common/faq_Screen.dart';
 import 'package:Jam_Rock_Destinations/Common/userProfile.dart';
+import 'package:Jam_Rock_Destinations/Common/wallet.dart';
+import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
 
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,6 +16,7 @@ import '../Utils/app_colors.dart';
 import '../Utils/custom_widget.dart';
 import 'DelectAccount.dart';
 import 'ProfileController.dart';
+import 'membership/Membership.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -30,7 +33,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // TODO: implement initState
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +100,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ),
                                     ],
                                   ),
+                                  Visibility(
+                                      visible:
+                                          userType != "EXPLORER" ? true : false,
+                                      child: Spacer()),
+                                  Visibility(
+                                    visible:
+                                        userType != "EXPLORER" ? true : false,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        SvgPicture.asset(Images.crownIcon),
+                                        const SizedBox(height: 2),
+                                        Container(
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                              color: AppColors.whiteColor),
+                                          child: Row(
+                                            children: [
+                                              SvgPicture.asset(Images.starIcon),
+                                              widthSpace3,
+                                              CustomWidget().buildTextWidget(
+                                                title: "4.3",
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                                textColor: AppColors.black400,
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -107,8 +144,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             image: Images.walletIcon,
                             title: "Wallet",
                             onTap: () {
-                              // Get.to(WalletScreen());
+                              Get.to(WalletScreen());
                             },
+                          ),
+                          Visibility(
+                            visible: userType != "EXPLORER" ? true : false,
+                            child: _settingTile(
+                              image: Images.vmIcon,
+                              title: "Vehicle Management",
+                              onTap: () {},
+                            ),
+                          ),
+                          Visibility(
+                            visible: userType != "EXPLORER" ? true : false,
+                            child: _settingTile(
+                              image: Images.kycIcon,
+                              title: "KYC Documents",
+                              onTap: () {},
+                            ),
+                          ),
+                          Visibility(
+                            visible: userType != "EXPLORER" ? true : false,
+                            child: _settingTile(
+                              image: Images.membershipIcon,
+                              title: "Membership",
+                              onTap: () {
+                                Get.to(MembershipScreen());
+                              },
+                            ),
                           ),
                           _settingTile(
                             image: Images.raiseTicketIcon,
@@ -198,16 +261,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const SizedBox(width: 12),
-          CircleAvatar(
-            radius: 28,
-            backgroundColor: Colors.transparent,
-            child: ClipOval(
-              child: Image.network(
-                profileController.getProfileData["profile_image_url"]
-                    .toString(),
-                width: 40,
-                height: 40,
-                fit: BoxFit.cover,
+          Visibility(
+            visible: userType == "EXPLORER" ? true : false,
+            child: CircleAvatar(
+              radius: 28,
+              backgroundColor: Colors.transparent,
+              child: ClipOval(
+                child: Image.network(
+                  profileController.getProfileData["profile_image_url"]
+                      .toString(),
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),

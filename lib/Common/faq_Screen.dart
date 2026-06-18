@@ -55,10 +55,10 @@ class _FAQScreenState extends State<FAQScreen> {
         ),
       ),
       body: Obx(
-        () =>
-            controller.isLoading.value?
-                CircularProgressIndicator(backgroundColor: AppColors.green500):
-            ListView.separated(
+            () =>
+        controller.isLoading.value?
+        CircularProgressIndicator(backgroundColor: AppColors.green500):
+        ListView.separated(
           padding: const EdgeInsets.symmetric(
             horizontal: 20,
             vertical: 10,
@@ -89,11 +89,11 @@ class _FAQScreenState extends State<FAQScreen> {
                 },
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(
-                      right: 20,
-                      bottom: 15,
-                    ),
-                    child: 
+                      padding: const EdgeInsets.only(
+                        right: 20,
+                        bottom: 15,
+                      ),
+                      child:
                       CustomWidget().buildTextWidget(title:  faq["answer"] ?? "",textColor: AppColors.black300,fontSize: 14,fontWeight: FontWeight.w400)
 
                   ),

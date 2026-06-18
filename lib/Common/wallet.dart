@@ -1,4 +1,5 @@
-import 'package:Jam_Rock_Destinations/Common/controller/profile_Controller.dart';
+import 'package:Jam_Rock_Destinations/Common/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Common/wallet/AddMoney.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:flutter/material.dart';
@@ -147,7 +148,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                             fontSize: 24),
                                         const Spacer(),
                                         OutlinedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Get.to(AddMoneyScreen());
+                                          },
                                           style: OutlinedButton.styleFrom(
                                             foregroundColor: AppColors.green500,
                                             side: const BorderSide(
@@ -187,54 +190,84 @@ class _WalletScreenState extends State<WalletScreen> {
                     const SizedBox(height: 24),
 
                     /// Transactions Heading
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: CustomWidget().buildTextWidget(
-                            title: "Transactions",
-                            textColor: AppColors.black500,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18),
+                    Visibility(
+                      visible: transactions.length == 0 ? false : true,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: CustomWidget().buildTextWidget(
+                              title: "Transactions",
+                              textColor: AppColors.black500,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18),
+                        ),
                       ),
                     ),
 
                     const SizedBox(height: 10),
 
                     Expanded(
-                      child: ListView.separated(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: transactions.length,
-                        separatorBuilder: (_, __) => const Divider(),
-                        itemBuilder: (context, index) {
-                          final item = transactions[index];
+                      child: transactions.length == 0
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  Images.emptyImage,
+                                  width: 200,
+                                  height: 160,
+                                ),
+                                heightSpace10,
+                                CustomWidget().buildTextWidget(
+                                    title:
+                                        "No Transacation History Foundctions",
+                                    textColor: AppColors.black500,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18),
+                                heightSpace10,
+                                CustomWidget().buildTextWidget(
+                                    title:
+                                        "You haven't made any transaction yet.",
+                                    textColor: AppColors.black400,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16),
+                              ],
+                            )
+                          : ListView.separated(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              itemCount: transactions.length,
+                              separatorBuilder: (_, __) => const Divider(),
+                              itemBuilder: (context, index) {
+                                final item = transactions[index];
 
-                          return ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: SvgPicture.asset(item.icon),
-                            title: CustomWidget().buildTextWidget(
-                                title: item.title,
-                                textColor: AppColors.black500,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: CustomWidget().buildTextWidget(
-                                  title: item.date,
-                                  textColor: AppColors.black300,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14),
+                                return ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: SvgPicture.asset(item.icon),
+                                  title: CustomWidget().buildTextWidget(
+                                      title: item.title,
+                                      textColor: AppColors.black500,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16),
+                                  subtitle: Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: CustomWidget().buildTextWidget(
+                                        title: item.date,
+                                        textColor: AppColors.black300,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14),
+                                  ),
+                                  trailing: CustomWidget().buildTextWidget(
+                                      title: item.amount,
+                                      textColor: item.isCredit
+                                          ? AppColors.green500
+                                          : AppColors.redColor400,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16),
+                                );
+                              },
                             ),
-                            trailing: CustomWidget().buildTextWidget(
-                                title: item.amount,
-                                textColor: item.isCredit
-                                    ? AppColors.green500
-                                    : AppColors.redColor400,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16),
-                          );
-                        },
-                      ),
                     ),
                   ],
                 ),

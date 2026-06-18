@@ -16,7 +16,6 @@ import 'AppGradients.dart';
 import 'app_colors.dart';
 import 'app_images.dart';
 
-
 enum ImageType { rectangle, circle, user }
 
 class CustomWidget {
@@ -116,13 +115,12 @@ class CustomWidget {
     double? radius,
     double? fontSize,
     Color textColor = AppColors.whiteColor,
-     Color? color,
+    Color? color,
     // Gradient? gradient,
   }) {
     return Container(
       height: height ?? 48,
       width: minWidth ?? Get.width,
-
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(radius ?? 30),
@@ -352,12 +350,12 @@ class CustomWidget {
       maxLines: maxLines,
       inputFormatters: keyboardType == TextInputType.number
           ? [
-        LengthLimitingTextInputFormatter(maxLength),
-        FilteringTextInputFormatter.digitsOnly,
-      ]
+              LengthLimitingTextInputFormatter(maxLength),
+              FilteringTextInputFormatter.digitsOnly,
+            ]
           : [
-        LengthLimitingTextInputFormatter(maxLength),
-      ],
+              LengthLimitingTextInputFormatter(maxLength),
+            ],
       enabled: enabled,
       readOnly: readOnly ?? false,
       style: GoogleFonts.inter(
@@ -369,7 +367,7 @@ class CustomWidget {
         filled: filled,
         isDense: true,
         contentPadding:
-        const EdgeInsets.symmetric(vertical: 13, horizontal: 20),
+            const EdgeInsets.symmetric(vertical: 13, horizontal: 20),
         errorStyle: GoogleFonts.inter(
           fontSize: 12,
           color: Colors.red,
@@ -469,52 +467,52 @@ class CustomWidget {
                   borderRadius: BorderRadius.circular(radius ?? 30),
                   border: Border.all(color: borderColor, width: 1),
                 ),
-
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap:enableCountryPicker
-                          ?  () {
-                        showCountryPicker(
-                          context: Get.context!,
-                          showPhoneCode: true,
-                          useSafeArea: false,
-                          // 👈 important
-                          countryListTheme: CountryListThemeData(
-                            bottomSheetHeight: Get.height * 0.65,
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(16),
-                            ),
-                            inputDecoration: InputDecoration(
-                              hintText: "Search country",
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 10,
-                              ),
-                              prefixIcon: Icon(Icons.search),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            textStyle: GoogleFonts.lato(
-                              fontSize: 14,
-                              color:
-                              Get.isDarkMode ? Colors.white : Colors.black
-                            ),
-                          ),
-                          onSelect: (Country country) {
-                            selectedCountry.value = country;
-                            if (onCountryChanged != null) {
-                              onCountryChanged(country);
+                      onTap: enableCountryPicker
+                          ? () {
+                              showCountryPicker(
+                                context: Get.context!,
+                                showPhoneCode: true,
+                                useSafeArea: false,
+                                // 👈 important
+                                countryListTheme: CountryListThemeData(
+                                  bottomSheetHeight: Get.height * 0.65,
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(16),
+                                  ),
+                                  inputDecoration: InputDecoration(
+                                    hintText: "Search country",
+                                    isDense: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 10,
+                                    ),
+                                    prefixIcon: Icon(Icons.search),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  textStyle: GoogleFonts.lato(
+                                      fontSize: 14,
+                                      color: Get.isDarkMode
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+                                onSelect: (Country country) {
+                                  selectedCountry.value = country;
+                                  if (onCountryChanged != null) {
+                                    onCountryChanged(country);
+                                  }
+                                  state.setState(() {});
+                                },
+                              );
                             }
-                            state.setState(() {});
-                          },
-                        );
-                      }: null,
+                          : null,
                       child: Row(
                         children: [
-                         SvgPicture.asset(Images.phoneIcon),
+                          SvgPicture.asset(Images.phoneIcon),
                           widthSpace8,
                           Text(
                             '+${selectedCountry.value?.phoneCode}',
@@ -542,7 +540,6 @@ class CustomWidget {
                         enabled: enabled,
                         readOnly: readOnly,
                         onTap: onTap,
-
                         keyboardType: TextInputType.phone,
                         inputFormatters: [
                           if (maxLength != null)
@@ -701,45 +698,45 @@ class CustomWidget {
   }
 
   Widget buildNoDataWidget({
-  required BuildContext context,
-  String? message,
-  required String imagePath,
-  double? height,
-  double? width,
-  double imageHeight = 100,
-  TextStyle? textStyle,
-  Widget? actionWidget,
-}) {
-  return Center(
-    child: SizedBox(
-      // height: height ?? MediaQuery.of(context).size.height * 0.5,
-      width:width?? MediaQuery.of(context).size.height * 0.1,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(imagePath, height: imageHeight),
-            const SizedBox(height: 10),
-            Text(
-              message ?? Translation('No data found').tr(),
-              style: textStyle ??
-                  const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-            ),
-            if (actionWidget != null) ...[
-              const SizedBox(height: 15),
-              actionWidget,
-            ]
-          ],
+    required BuildContext context,
+    String? message,
+    required String imagePath,
+    double? height,
+    double? width,
+    double imageHeight = 100,
+    TextStyle? textStyle,
+    Widget? actionWidget,
+  }) {
+    return Center(
+      child: SizedBox(
+        // height: height ?? MediaQuery.of(context).size.height * 0.5,
+        width: width ?? MediaQuery.of(context).size.height * 0.1,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(imagePath, height: imageHeight),
+              const SizedBox(height: 10),
+              Text(
+                message ?? Translation('No data found').tr(),
+                style: textStyle ??
+                    const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+              ),
+              if (actionWidget != null) ...[
+                const SizedBox(height: 15),
+                actionWidget,
+              ]
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget customNetworkImage({
     required String? imageUrl,
@@ -755,7 +752,6 @@ class CustomWidget {
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
-
         border: Border.all(
           width: 1,
           color: AppColors.borderColor.withOpacity(0.2),
@@ -807,95 +803,72 @@ class CustomWidget {
     required String message,
     required Function() onPressed,
     String? buttonText,
+    bool isError = false,
   }) {
     showDialog(
       context: Get.context!,
       barrierDismissible: false,
       useRootNavigator: false,
       builder: (BuildContext context) {
-        return Stack(
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pop(); // ✅ Dismiss the popup
-              },
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                child:
-                    Container(color: AppColors.midnightNavy.withOpacity(0.2)),
-              ),
+        return Center(
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-            Center(
-              child: Dialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                insetPadding: EdgeInsets.symmetric(horizontal: 24),
-                backgroundColor: AppColors.borderColor.withOpacity(0.2),
-                child: Builder(
-                  builder: (context) {
-                    return IntrinsicHeight(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            width: 1,
-                            color: AppColors.borderColor.withOpacity(0.2),
-                          ),
-                        ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 30),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                              image: AssetImage(Images.popupImage),
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              heightSpace30,
-                              Image.asset(
-                                Images.successRight,
-                                fit: BoxFit.cover,
-                                height: 87,
-                              ),
-                              heightSpace35,
-                              CustomWidget().buildTextWidget(
-                                title: title,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                                textColor: AppColors.whiteColor,
-                                textAlign: TextAlign.center,
-                              ),
-                              heightSpace10,
-                              CustomWidget().buildTextWidget(
-                                title: message,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                textColor: AppColors.whiteColor,
-                                textAlign: TextAlign.center,
-                              ),
-                              heightSpace30,
-                              CustomWidget().buildOutlinedBtn(
-                                text: buttonText ?? "Done",
-                                btBorderColor:
-                                    AppColors.borderColor.withOpacity(0.2),
-                                onPressed: onPressed,
-                              ),
-                            ],
-                          ),
-                        ),
+            insetPadding: EdgeInsets.symmetric(horizontal: 24),
+            backgroundColor: AppColors.whiteColor,
+            child: Builder(
+              builder: (context) {
+                return IntrinsicHeight(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        width: 1,
+                        color: AppColors.borderColor.withOpacity(0.2),
                       ),
-                    );
-                  },
-                ),
-              ),
+                    ),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          heightSpace10,
+                          SvgPicture.asset(isError
+                              ? Images.errorIcon
+                              : Images.successRightIcon),
+                          heightSpace25,
+                          CustomWidget().buildTextWidget(
+                            title: title,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            textColor: AppColors.black500,
+                            textAlign: TextAlign.center,
+                          ),
+                          heightSpace10,
+                          CustomWidget().buildTextWidget(
+                            title: message,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            textColor: AppColors.black400,
+                            textAlign: TextAlign.center,
+                          ),
+                          heightSpace30,
+                          CustomWidget().buildMaterialBtn(
+                              radius: 8,
+                              color: AppColors.green500,
+                              text: buttonText ?? "Done",
+                              onPressed: onPressed)
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
-          ],
+          ),
         );
       },
     );
@@ -939,10 +912,9 @@ class CustomWidget {
                         padding:
                             EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: AppColors.blackColor.withOpacity(0.9),
-                          border: Border.all(color: Colors.grey.shade900)
-                        ),
+                            borderRadius: BorderRadius.circular(20),
+                            color: AppColors.blackColor.withOpacity(0.9),
+                            border: Border.all(color: Colors.grey.shade900)),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
