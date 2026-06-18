@@ -33,6 +33,7 @@ class _TermsAndConditionsScreenState
     return Scaffold(
       appBar: AppBar(
 
+
         backgroundColor: Colors.white,
         centerTitle: true,
         title: CustomWidget().buildTextWidget(title: "Terms & Conditions",textColor: AppColors.black500,fontWeight: FontWeight.w700,fontSize: 20)
