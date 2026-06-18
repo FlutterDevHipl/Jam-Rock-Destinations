@@ -125,7 +125,6 @@ class LoginController extends GetxController
         isLoading.value=false;
       }
       else {
-
         String errorMessage = "Something went wrong";
 
         if (response['message'] != null &&
@@ -155,6 +154,7 @@ class LoginController extends GetxController
 
     catch(e)
     {
+      print("Login catch $e");
       isLoading.value=false;
     }
     finally{

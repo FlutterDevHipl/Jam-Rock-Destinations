@@ -3,16 +3,23 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:Jam_Rock_Destinations/Common/VerificationScreen.dart';
+import 'package:Jam_Rock_Destinations/Common/setting.dart';
+import 'package:Jam_Rock_Destinations/Common/userProfile.dart';
+import 'package:Jam_Rock_Destinations/Driver/driver_bottom_navigation.dart';
 import 'package:Jam_Rock_Destinations/Services/api_provider.dart';
 import 'package:Jam_Rock_Destinations/Utils/api_url.dart';
 import 'package:Jam_Rock_Destinations/Utils/storage.dart';
 import 'package:Jam_Rock_Destinations/WelcomeScreens/select_role.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../Utils/app_colors.dart';
+import '../Utils/app_images.dart';
 import '../Utils/custom_widget.dart';
 
 class ProfileController extends GetxController{
@@ -20,10 +27,37 @@ class ProfileController extends GetxController{
   var isLogout=false.obs;
   final getProfileData={}.obs;
   final termsPrivacy={}.obs;
+  RxBool hasChanges = false.obs;
   TextEditingController name=TextEditingController();
+  TextEditingController otpController=TextEditingController();
   var faq=[].obs;
-
+  bool isDarkMode = Get.isDarkMode;
+  final Rx<Country?> selectedCountry = Rx<Country?>(
+    Country(
+      phoneCode: "1",
+      countryCode: "IN",
+      e164Sc: 0,
+      geographic: true,
+      level: 1,
+      name: "Jamaica",
+      example: "876 XXX XXXX",
+      displayName: "Jamaica",
+      displayNameNoCountryCode: "Jamaica",
+      e164Key: "",
+    ),
+  );
+  final countryCode = ''.obs;
   final selectedImage = Rxn<File>();
+
+
+  @override
+  void dispose() {
+
+    name.dispose();
+    otpController.dispose();
+    super.dispose();
+  }
+
   showImagePickerOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -81,15 +115,161 @@ class ProfileController extends GetxController{
 
    if(response['success'] == true)
    {
+     getUserProfile();
      print(response);
-     CustomWidget().showCustomToast(message: "Profile Updated Successfully");
+     CustomWidget().showCustomToast(message: response["message"],backgroundColor: AppColors.green500);
      isLoading.value=false;
+     hasChanges.value=false;
+     selectedImage.value=null;
    }
  }
  catch(e)
     {
       print(e);
       isLoading.value=false;
+    }
+  }
+  void showPasswordResetSuccessDialog(BuildContext context,String value) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 2,
+            sigmaY: 2,
+          ),
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 24,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(Images.tickIcon),
+
+                  const SizedBox(height: 16),
+
+                  CustomWidget().buildTextWidget(
+                    title: value,
+                    textAlign: TextAlign.center,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    textColor: AppColors.appColor,
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                       Get.offAll(DriverBottomNavigation(index: 3,));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.green500,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
+                      child: CustomWidget().buildTextWidget(
+                        title: "Okay",
+                        textColor: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+  Future<void> sendVerificationOTp(
+      String value,
+      String type,
+      BuildContext context,
+      ) async {
+    try {
+      isLoading.value = true;
+
+      var response = await ApiProvider().postRequest1(
+        apiUrl:
+        type=="email"?
+        AppConstants.sendEmailOTP:AppConstants.sendPhoneOTP,
+        data: {
+          type: value,
+        },
+      );
+      if (response['success'] == true) {
+        CustomWidget().showCustomToast(
+          message: "OTP has been sent",
+          backgroundColor: AppColors.green500,
+        );
+       Get.to(VerificationScreen(signupType: type,emailorphone: value,));
+      } else {
+        CustomWidget().showCustomToast(
+          message: response['message'] ?? "Failed to send OTP",
+          backgroundColor: Colors.red,
+        );
+      }
+    } catch (e) {
+      debugPrint("$e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  Future<void> verifyOTp(
+      String value,
+      String type,
+      String otp,
+      BuildContext context,
+      ) async {
+    try {
+      isLoading.value = true;
+
+      var response = await ApiProvider().postRequest1(
+        apiUrl:  type=="email"?AppConstants.verifyEmailOTP:AppConstants.verifyPhoneOTP,
+        data: {
+          type: value,
+          "otp": otp,
+        },
+        token: getToken()
+      );
+
+      print("response $response");
+
+      if (response['success'] == true) {
+        type=="email"?
+        showPasswordResetSuccessDialog(context, "Email Updated Successfully!")
+            :
+        showPasswordResetSuccessDialog(context, "Phone Number Updated Successfully!");
+      } else {
+        CustomWidget().showCustomToast(
+          message: response['message'] ?? "Invalid OTP",
+          backgroundColor: Colors.red,
+        );
+        isLoading.value = false;
+      }
+    } catch (e) {
+      debugPrint("$e");
+    } finally {
+      isLoading.value = false;
     }
   }
   Future <void> getUserProfile()

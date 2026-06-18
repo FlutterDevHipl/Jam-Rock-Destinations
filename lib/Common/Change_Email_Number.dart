@@ -1,15 +1,40 @@
+import 'package:Jam_Rock_Destinations/Common/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 
-class ContactUpdateScreen extends StatelessWidget {
+import '../Utils/app_const.dart';
+
+class ContactUpdateScreen extends StatefulWidget {
   final bool isEmail;
-  final TextEditingController controller;
+  final String value;
 
   const ContactUpdateScreen({
     super.key,
     required this.isEmail,
-    required this.controller,
+    required this.value,
   });
 
+  @override
+  State<ContactUpdateScreen> createState() => _ContactUpdateScreenState();
+}
+
+class _ContactUpdateScreenState extends State<ContactUpdateScreen> {
+  late TextEditingController controller;
+  ProfileController profileController=Get.put(ProfileController());
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController(text: widget.value);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+  final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,124 +58,152 @@ class ContactUpdateScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 40),
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              const SizedBox(height: 40),
 
-            Text(
-              isEmail
-                  ? "Change Your Email"
-                  : "Change Your Number",
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF2E3138),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            Text(
-              isEmail
-                  ? "We'll verify your new email\nbefore updating."
-                  : "We'll verify your new Number\nbefore updating.",
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Color(0xFF6B7280),
-              ),
-            ),
-
-            const SizedBox(height: 40),
-
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                isEmail ? "Email" : "Phone Number",
+              Text(
+                widget.isEmail
+                    ? "Change Your Email"
+                    : "Change Your Number",
                 style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF2E3138),
                 ),
               ),
-            ),
 
-            const SizedBox(height: 8),
+              const SizedBox(height: 12),
 
-            TextFormField(
-              controller: controller,
-              keyboardType: isEmail
-                  ? TextInputType.emailAddress
-                  : TextInputType.phone,
-              decoration: InputDecoration(
-                hintText: isEmail
-                    ? "Enter Email"
-                    : "Enter Phone Number",
+              Text(
+                widget.isEmail
+                    ? "We'll verify your new email\nbefore updating."
+                    : "We'll verify your new Number\nbefore updating.",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFF6B7280),
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  widget.isEmail ? "Email" : "Phone Number",
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+              widget.isEmail?
+              CustomWidget().buildTextFormField(darkMode: false,controller: controller, keyboardType:
+
+                   TextInputType.emailAddress,
+
+              hintText:
+                   "Enter Email"
+                 ,
                 prefixIcon: Icon(
-                  isEmail
-                      ? Icons.email_outlined
-                      : Icons.phone_outlined,
+                 Icons.email_outlined,
                   color: Colors.grey,
                 ),
+
+
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return "Please enter your email";
+                    }
+
+                    final emailRegex = RegExp(
+                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                    );
+
+                    if (!emailRegex.hasMatch(value.trim())) {
+                      return "Please enter a valid email address";
+                    }
+
+                    return null;
+                  },
                 filled: true,
-                fillColor: const Color(0xFFF7F7F7),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFE0E0E0),
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFE0E0E0),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(
-                    color: Colors.green,
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 32),
-
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2F8F46),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: () {
-                  if (isEmail) {
-                    // Verify Email API
-                  } else {
-                    // Verify Phone API
+                radius: 8
+              ):
+              CustomWidget().buildPhoneField(
+                darkMode: profileController.isDarkMode?true:false,
+                selectedCountry: profileController.selectedCountry,
+                controller: controller,
+                radius: 8,
+                hintText: "Enter phone number",
+                maxLength: 10,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Please enter phone number";
                   }
+
+                  if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
+                    return "Phone number must be 10 digits";
+                  }
+
+                  return null;
                 },
-                child: Text(
-                  isEmail
-                      ? "Verify Email"
-                      : "Verify Number",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
+                color:  const Color(0xffF5F5F5),
+                enableCountryPicker:userType != "EXPLORER"?false:true,
+                onCountryChanged: (country) {
+                  profileController.countryCode.value=country.phoneCode;
+                  print(
+                    "Selected Country: ${country.name} (+${country.phoneCode})",
+                  );
+                },
+              ),
+              const SizedBox(height: 32),
+
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2F8F46),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: () {
+                    if (!formKey.currentState!.validate()) {
+                      return;
+                    }
+                    final value = controller.text.trim();
+
+                    if (widget.isEmail) {
+                      // profileController.ContactUpdate("email", value, context);
+                      profileController.sendVerificationOTp(value, "email", context);
+                      print("Email: $value");
+
+                    } else {
+
+                      profileController.sendVerificationOTp("+${profileController.countryCode.value+value}","phone", context);
+                      print("Phone: $value");
+                    }
+                  },
+                  child: Text(
+                    widget.isEmail
+                        ? "Verify Email"
+                        : "Verify Number",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

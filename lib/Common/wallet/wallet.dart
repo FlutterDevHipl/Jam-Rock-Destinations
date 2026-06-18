@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 
-import '../../Utils/app_images.dart';
+import '../../../Utils/app_images.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});

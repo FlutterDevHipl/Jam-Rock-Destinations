@@ -2,7 +2,7 @@ import 'package:Jam_Rock_Destinations/Common/PrivacyPolicy.dart';
 import 'package:Jam_Rock_Destinations/Common/TermsAndConditions.dart';
 import 'package:Jam_Rock_Destinations/Common/faq_Screen.dart';
 import 'package:Jam_Rock_Destinations/Common/userProfile.dart';
-import 'package:Jam_Rock_Destinations/Common/wallet.dart';
+import 'package:Jam_Rock_Destinations/Common/wallet/wallet.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
 
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
@@ -30,6 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     profileController.getUserProfile();
+
     // TODO: implement initState
     super.initState();
   }
@@ -53,6 +54,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         children: [
                           GestureDetector(
                             onTap: () {
+                              profileController.hasChanges.value=false;
+                              profileController.selectedImage.value=null;
                               Get.to(ProfileScreen());
                             },
                             child: Container(

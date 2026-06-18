@@ -134,14 +134,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 /// Full Name
                 _title("Full Name"),
                 heightSpace8,
-                CustomWidget().buildTextFormField(darkMode: false,
-                    controller: controller.name,
-                initialValue:controller.getProfileData["name"],
-                onChanged: (value) {
-                  controller.update();
-                },
+                Obx(() =>   CustomWidget().buildTextFormField(darkMode: false,
+                  controller: controller.name,
+                  initialValue:controller.getProfileData["name"],
+                  onChanged: (value) {
+                  if(value!=controller.getProfileData["name"])
+                    {
+                      controller.hasChanges.value=true;
+                      print("Has changes ${controller.hasChanges.value}");
+                    }
 
-                radius: 8),
+                    print("value => $value");
+                    print("controller => ${controller.name.text}");
+                    print("Api ${controller.getProfileData["name"]}");
+                  },
+                    radius: 8
+                ),
+
+
+               ),
                 // _customField(
                 //   child: Row(
                 //     children: [
@@ -181,7 +192,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       updateButton(() {
-                        // Get.to(ContactUpdateScreen(isEmail: true, controller: ));
+                        Get.to(ContactUpdateScreen(isEmail: true, value: controller
+                            .getProfileData["email"]));
                       },),
                     ],
                   ),
@@ -206,33 +218,65 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       updateButton(() {
-
+                        Get.to(ContactUpdateScreen(isEmail: false, value: controller.getProfileData["phone"]));
                       },),
                     ],
                   ),
                 ),
 
                 const Spacer(),
-
-                Obx(() {
-                  bool hasChanges =
-                      controller.name.text !=
-                          (controller.getProfileData["name"] ?? "").toString() ||
-                          controller.selectedImage.value != null;
-
-                  return ElevatedButton(
-                    onPressed: hasChanges ? controller.editProfile : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                      hasChanges ? AppColors.green500 : Colors.grey,
-                    textStyle: TextStyle(
-                      color: hasChanges?Colors.white:Colors.grey
-                    )
-                    ),
-
-                    child: const Text("Save"),
-                  );
-                }),
+// CustomWidget().buildMaterialBtn(
+//   color: controller.hasChanges.value ? controller.selectedImage.value!=null? AppColors.green500 : Colors.grey,
+//   radius: 8,
+//   height: 50,minWidth: double.maxFinite,
+//   textColor: Colors.white,
+//   text: "Save", onPressed: () {
+//
+//   if(controller.hasChanges.value || controller.selectedImage.value!=null )
+//   {
+//     controller.editProfile();
+//   }
+// },),
+                CustomWidget().buildMaterialBtn(
+                  color: (controller.hasChanges.value ||
+                      controller.selectedImage.value != null)
+                      ? AppColors.green500
+                      : Colors.grey,
+                  radius: 8,
+                  height: 50,
+                  minWidth: double.maxFinite,
+                  textColor: Colors.white,
+                  text: "Save",
+                  onPressed: () {
+                    print(controller.selectedImage.value);
+                    if (controller.hasChanges.value ||
+                        controller.selectedImage.value != null) {
+                      controller.editProfile();
+                    }
+                  },
+                ),
+                // Obx(() {
+                //
+                //
+                //   return SizedBox(
+                //     width: double.maxFinite,
+                //     child: ElevatedButton(
+                //
+                //       onPressed: () {
+                //         if(controller.hasChanges.value)
+                //           {
+                //             controller.editProfile();
+                //           }
+                //       },
+                //       style: ElevatedButton.styleFrom(
+                //         backgroundColor:
+                //         controller.hasChanges.value ? AppColors.green500 : Colors.grey,
+                //       ),
+                //
+                //       child: CustomWidget().buildTextWidget(title: "Save",textColor: controller.hasChanges.value ?Colors.white:Colors.grey,),
+                //     ),
+                //   );
+                // }),
 
                  SizedBox(height: 20),
               ],
