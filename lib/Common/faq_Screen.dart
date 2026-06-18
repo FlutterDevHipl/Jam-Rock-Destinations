@@ -26,6 +26,7 @@ class _FAQScreenState extends State<FAQScreen> {
       controller.getFAQ();
     });
 
+
   }
   int expandedIndex = 0;
 

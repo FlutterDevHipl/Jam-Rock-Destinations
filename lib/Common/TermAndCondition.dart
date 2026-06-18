@@ -14,9 +14,11 @@ class TermsAndConditionsScreen extends StatefulWidget {
       _TermsAndConditionsScreenState();
 }
 
+
 class _TermsAndConditionsScreenState
     extends State<TermsAndConditionsScreen> {
    final ProfileController  controller = Get.put(ProfileController());
+
 
   @override
   void initState() {
@@ -30,6 +32,7 @@ class _TermsAndConditionsScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         backgroundColor: Colors.white,
         centerTitle: true,
         title: CustomWidget().buildTextWidget(title: "Terms & Conditions",textColor: AppColors.black500,fontWeight: FontWeight.w700,fontSize: 20)
