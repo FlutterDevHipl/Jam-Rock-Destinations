@@ -274,24 +274,30 @@ class ProfileController extends GetxController{
   }
   Future <void> getUserProfile()
   async{
-    try{
-      isLoading.value=true;
-      print("Token ${getToken()}");
-      final response= await ApiProvider().getRequest(apiUrl: AppConstants.getProfile,token: getToken());
+    // try{
+    //
+    // }
+    // catch (e){
+    //   isLoading.value=false;
+    // }
+    // finally{
+    //   isLoading.value=false;
+    // }
+    isLoading.value=true;
+    print("Token ${getToken()}");
+    final response= await ApiProvider().getRequest(apiUrl: AppConstants.getProfile,token: getToken());
 
-      if(response['success'] == true)
-      {
-        getProfileData.value=response["data"]["user"];
-        print(response);
-        print("getProfileData = ${getProfileData.values}");
-        isLoading.value=false;
-      }
-    }
-    catch (e){
+    if(response['success'] == true)
+    {
+      getProfileData.value=response["data"]["user"];
+      print(response);
+      print("getProfileData = ${getProfileData.values}");
       isLoading.value=false;
     }
-    finally{
-      isLoading.value=false;
+    else
+    {
+      print("else getProfileData = ${response}");
+
     }
   }
 

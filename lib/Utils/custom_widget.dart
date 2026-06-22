@@ -798,12 +798,88 @@ class CustomWidget {
     );
   }
 
+  // void showSuccessPopup({
+  //   required String title,
+  //   required String message,
+  //   required Function() onPressed,
+  //   String? buttonText,
+  //   bool isError = false,
+  // }) {
+  //   showDialog(
+  //     context: Get.context!,
+  //     barrierDismissible: false,
+  //     useRootNavigator: false,
+  //     builder: (BuildContext context) {
+  //       return Center(
+  //         child: Dialog(
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(20),
+  //           ),
+  //           insetPadding: EdgeInsets.symmetric(horizontal: 24),
+  //           backgroundColor: AppColors.whiteColor,
+  //           child: Builder(
+  //             builder: (context) {
+  //               return IntrinsicHeight(
+  //                 child: Container(
+  //                   decoration: BoxDecoration(
+  //                     borderRadius: BorderRadius.circular(20),
+  //                     border: Border.all(
+  //                       width: 1,
+  //                       color: AppColors.borderColor.withOpacity(0.2),
+  //                     ),
+  //                   ),
+  //                   child: Container(
+  //                     width: MediaQuery.of(context).size.width,
+  //                     padding:
+  //                         EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+  //                     child: Column(
+  //                       mainAxisSize: MainAxisSize.min,
+  //                       children: [
+  //                         heightSpace10,
+  //                         SvgPicture.asset(isError
+  //                             ? Images.errorIcon
+  //                             : Images.successRightIcon),
+  //                         heightSpace25,
+  //                         CustomWidget().buildTextWidget(
+  //                           title: title,
+  //                           fontSize: 18,
+  //                           fontWeight: FontWeight.w700,
+  //                           textColor: AppColors.black500,
+  //                           textAlign: TextAlign.center,
+  //                         ),
+  //                         heightSpace10,
+  //                         CustomWidget().buildTextWidget(
+  //                           title: message,
+  //                           fontSize: 16,
+  //                           fontWeight: FontWeight.w400,
+  //                           textColor: AppColors.black400,
+  //                           textAlign: TextAlign.center,
+  //                         ),
+  //                         heightSpace30,
+  //                         CustomWidget().buildMaterialBtn(
+  //                             radius: 8,
+  //                             color: AppColors.green500,
+  //                             text: buttonText ?? "Done",
+  //                             onPressed: onPressed)
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //               );
+  //             },
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
   void showSuccessPopup({
     required String title,
     required String message,
     required Function() onPressed,
     String? buttonText,
     bool isError = false,
+    String? imagePath, // custom image
   }) {
     showDialog(
       context: Get.context!,
@@ -815,58 +891,74 @@ class CustomWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            insetPadding: EdgeInsets.symmetric(horizontal: 24),
+            insetPadding: const EdgeInsets.symmetric(horizontal: 24),
             backgroundColor: AppColors.whiteColor,
-            child: Builder(
-              builder: (context) {
-                return IntrinsicHeight(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        width: 1,
-                        color: AppColors.borderColor.withOpacity(0.2),
-                      ),
-                    ),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 24, vertical: 30),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          heightSpace10,
-                          SvgPicture.asset(isError
-                              ? Images.errorIcon
-                              : Images.successRightIcon),
-                          heightSpace25,
-                          CustomWidget().buildTextWidget(
-                            title: title,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            textColor: AppColors.black500,
-                            textAlign: TextAlign.center,
-                          ),
-                          heightSpace10,
-                          CustomWidget().buildTextWidget(
-                            title: message,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            textColor: AppColors.black400,
-                            textAlign: TextAlign.center,
-                          ),
-                          heightSpace30,
-                          CustomWidget().buildMaterialBtn(
-                              radius: 8,
-                              color: AppColors.green500,
-                              text: buttonText ?? "Done",
-                              onPressed: onPressed)
-                        ],
-                      ),
-                    ),
+            child: IntrinsicHeight(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    width: 1,
+                    color: AppColors.borderColor.withOpacity(0.2),
                   ),
-                );
-              },
+                ),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 30,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      heightSpace10,
+
+                      // Custom Image
+                      if (imagePath != null)
+                        Image.asset(
+                          imagePath,
+                          height: 80,
+                          width: 80,
+                        )
+                      else
+                        SvgPicture.asset(
+                          isError
+                              ? Images.errorIcon
+                              : Images.successRightIcon,
+                        ),
+
+                      heightSpace25,
+
+                      CustomWidget().buildTextWidget(
+                        title: title,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        textColor: AppColors.black500,
+                        textAlign: TextAlign.center,
+                      ),
+
+                      heightSpace10,
+
+                      CustomWidget().buildTextWidget(
+                        title: message,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        textColor: AppColors.black400,
+                        textAlign: TextAlign.center,
+                      ),
+
+                      heightSpace30,
+
+                      CustomWidget().buildMaterialBtn(
+                        radius: 8,
+                        color: AppColors.green500,
+                        text: buttonText ?? "Done",
+                        onPressed: onPressed,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         );

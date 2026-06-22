@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:Jam_Rock_Destinations/WelcomeScreens/select_role.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -194,7 +195,7 @@ class ApiProvider {
     if (response.statusCode == 200) {
       return res;
     } else if (response.statusCode == 401) {
-      handleSessionExpire();
+      // handleSessionExpire();
       return res;
     } else if (response.statusCode == 400) {
       return res;
@@ -509,6 +510,7 @@ class ApiProvider {
     CustomWidget().showCustomToast(
       message: "Session expired, please login again.",
     );
+    Get.offAll(SelectRoleScreen());
   }
 
   void showErrorFromResponse(Map<String, dynamic> response) {

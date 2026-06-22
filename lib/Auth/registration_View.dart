@@ -4,6 +4,7 @@ import 'package:Jam_Rock_Destinations/Auth/Controller/registration_Controller.da
 import 'package:Jam_Rock_Destinations/Auth/Login_View.dart';
 import 'package:Jam_Rock_Destinations/Auth/profileSetup1.dart';
 import 'package:Jam_Rock_Destinations/Auth/verify_OTP.dart';
+import 'package:Jam_Rock_Destinations/Common/TermsAndConditions.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
 import 'package:country_picker/country_picker.dart';
@@ -17,6 +18,7 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../Common/PrivacyPolicy.dart';
 import '../Utils/app_images.dart';
 import '../Utils/custom_widget.dart';
 class RegistrationView extends StatefulWidget {
@@ -461,6 +463,16 @@ class _RegistrationViewState extends State<RegistrationView> {
                                 CustomWidget().showCustomToast(message: "Confirm password does not match the entered password.",backgroundColor: Colors.red);
                                 return;
                               }
+                            if(!registrationController.isEmailVerified.value)
+                              {
+                                CustomWidget().showCustomToast(message: "Please Verify your email",backgroundColor: Colors.red);
+                                return;
+                              }
+                             if(!registrationController.isPhoneVerified.value)
+                              {
+                                CustomWidget().showCustomToast(message: "Please Verify your phone number",backgroundColor: Colors.red);
+                                return;
+                              }
                             if(userType=="EXPLORER")
                               {
                                 registrationController.registerUser();
@@ -499,26 +511,32 @@ class _RegistrationViewState extends State<RegistrationView> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              GestureDetector(onTap: () {
+                                Get.to(TermsAndConditionsScreen());
+                              },child: CustomWidget().buildTextWidget(
+                                  title: "Terms of Service",
+                                  textColor:AppColors.green,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16
+                              ),),
 
-                              CustomWidget().buildTextWidget(
-                                title: "Terms of Service",
-                                textColor:AppColors.green,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16
-                              ),
                               widthSpace5,
+
                               CustomWidget().buildTextWidget(
                                 title: "and",
                                 textColor: AppColors.black400,
                                 fontWeight: FontWeight.w700,
                               ),
                               widthSpace5,
-                              CustomWidget().buildTextWidget(
-                                title: "Privacy Policy.",
-                                textColor: AppColors.green,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16
-                              )
+                              GestureDetector(onTap: () {
+                                Get.to(PrivacyPolicy());
+                              },child: CustomWidget().buildTextWidget(
+                                  title:"Privacy Policy.",
+                                  textColor:AppColors.green,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16
+                              ),),
+
 
 
                             ],

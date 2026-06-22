@@ -41,7 +41,7 @@ class _TermsAndConditionsScreenState
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(color: AppColors.green500,),
           );
         }
         if (controller.termsUrl.value.isEmpty) {

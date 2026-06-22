@@ -3,6 +3,8 @@ import 'package:Jam_Rock_Destinations/Common/TermsAndConditions.dart';
 import 'package:Jam_Rock_Destinations/Common/faq_Screen.dart';
 import 'package:Jam_Rock_Destinations/Common/userProfile.dart';
 import 'package:Jam_Rock_Destinations/Common/wallet/wallet.dart';
+import 'package:Jam_Rock_Destinations/Driver/KYC_Screen.dart';
+import 'package:Jam_Rock_Destinations/Driver/Vehicle_Management.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
 
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
@@ -30,7 +32,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     profileController.getUserProfile();
-
+    print(userType);
     // TODO: implement initState
     super.initState();
   }
@@ -66,6 +68,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                               child: Row(
                                 children: [
+                                  profileController
+                                      .getProfileData["profile_image_url"]==null?
+                                CircleAvatar(
+                                radius: 28,
+                                backgroundColor: Colors.transparent,
+                                child: SvgPicture.asset(Images.personLogo),):
                                   CircleAvatar(
                                     radius: 28,
                                     backgroundColor: Colors.transparent,
@@ -155,7 +163,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: _settingTile(
                               image: Images.vmIcon,
                               title: "Vehicle Management",
-                              onTap: () {},
+                              onTap: () {
+                                Get.to(VehicleDetailsView());
+                              },
                             ),
                           ),
                           Visibility(
@@ -163,7 +173,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: _settingTile(
                               image: Images.kycIcon,
                               title: "KYC Documents",
-                              onTap: () {},
+                              onTap: () {
+                                Get.to(KycScreen());
+                              },
                             ),
                           ),
                           Visibility(
@@ -269,7 +281,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: CircleAvatar(
               radius: 28,
               backgroundColor: Colors.transparent,
-              child: ClipOval(
+              child:   profileController
+                  .getProfileData["profile_image_url"]==null?
+    CircleAvatar(
+    radius: 28,
+    backgroundColor: Colors.transparent,
+    child: SvgPicture.asset(Images.personLogo)):ClipOval(
                 child: Image.network(
                   profileController.getProfileData["profile_image_url"]
                       .toString(),
@@ -454,29 +471,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    Expanded(
-                      child: InkWell(
-                        onTap: () async {
-                          profileController.Logout(context);
-                        },
-                        child: Container(
-                          // padding: EdgeInsetsGeometry.symmetric(horizontal: 10,vertical: 10),
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF87171),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Center(
-                            child: profileController.isLogout.value
-                                ? CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
-                                : CustomWidget().buildTextWidget(
-                                    title: "Logout",
-                                    fontSize: 16,
-                                    textColor: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                    Obx(
+                      () =>  Expanded(
+                        child: InkWell(
+                          onTap: () async {
+                            profileController.Logout(context);
+                          },
+                          child: Container(
+                            // padding: EdgeInsetsGeometry.symmetric(horizontal: 10,vertical: 10),
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF87171),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Center(
+                              child: CustomWidget().buildTextWidget(
+                                title: profileController.isLoading.value?"Loading...":"Logout",
+                                fontSize: 16,
+                                textColor: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
                         ),
                       ),

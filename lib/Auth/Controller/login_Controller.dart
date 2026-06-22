@@ -9,10 +9,12 @@ import 'package:Jam_Rock_Destinations/Customer/customer_bottom_navigation.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../Customer/home_screen.dart';
 import '../../Services/api_provider.dart';
@@ -41,7 +43,34 @@ class LoginController extends GetxController
   bool isDarkMode = Get.isDarkMode;
   final countryCode = ''.obs;
   final isEmailSelected = true.obs;
-
+  // Future<UserCredential?> signInWithGoogle() async {
+  //   try {
+  //     final GoogleSignIn googleSignIn = GoogleSignIn();
+  //
+  //     await googleSignIn.signOut(); // Optional
+  //
+  //     final GoogleSignInAccount? googleUser =
+  //     await googleSignIn.signIn();
+  //
+  //     if (googleUser == null) {
+  //       return null; // User cancelled
+  //     }
+  //
+  //     final GoogleSignInAuthentication googleAuth =
+  //     await googleUser.authentication;
+  //
+  //     final credential = GoogleAuthProvider.credential(
+  //       accessToken: googleAuth.accessToken,
+  //       idToken: googleAuth.idToken,
+  //     );
+  //
+  //     return await FirebaseAuth.instance
+  //         .signInWithCredential(credential);
+  //   } catch (e) {
+  //     print("Google Sign-In Error: $e");
+  //     return null;
+  //   }
+  // }
   final Rx<Country?> selectedCountry = Rx<Country?>(
     Country(
       phoneCode: "1",
@@ -115,6 +144,8 @@ class LoginController extends GetxController
       if (response['success'] == true) {
         log("response after success login $response");
         await userBox.put("token", response['data']['access_token'].toString());
+        await userBox.put("user_id", response['data']["user"]["id"].toString());
+        await userBox.put("user_type", response['data']["user"]["user_type"].toString());
         CustomWidget().showCustomToast(
           message: response['message'] ?? "Registration successful",
           backgroundColor: AppColors.green500,

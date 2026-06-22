@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:Jam_Rock_Destinations/Customer/customer_bottom_navigation.dart';
 import 'package:Jam_Rock_Destinations/WelcomeScreens/select_role.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../Utils/AppGradients.dart';
 import '../Utils/app_colors.dart';
+import '../Utils/app_const.dart';
 import '../Utils/app_images.dart';
 import '../Utils/custom_widget.dart';
 import '../Utils/storage.dart';
@@ -26,16 +28,15 @@ class _SplashscreenState extends State<Splashscreen> {
   @override
   void initState() {
     super.initState();
-
+print("User id ${getUserId()}");
+    print("usertype = $userType");
     Future.delayed(const Duration(seconds: 3), () {
-      // if (getUserId() == null || getUserId().isEmpty) {
-      //   Get.offAll(() => SelectRoleScreen());
-      // } else {
-      //   // Get.offAll(() => DashboardScreen(
-      //   //       currentIndex: 0,
-      //   //     ));
-      // }
-      Get.offAll(() => SelectRoleScreen());
+      if (getUserId() == null || getUserId().isEmpty) {
+        Get.offAll(() => SelectRoleScreen());
+      } else {
+        Get.offAll(CustomerBottomNavigation());
+      }
+      // Get.offAll(() => SelectRoleScreen());
     });
   }
 

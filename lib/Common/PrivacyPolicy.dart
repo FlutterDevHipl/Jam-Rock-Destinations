@@ -38,7 +38,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(color: AppColors.green500,),
           );
         }
         if (controller.privacyUrl.value.isEmpty) {

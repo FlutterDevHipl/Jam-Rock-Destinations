@@ -202,7 +202,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             minimumSize: const Size(65, 30),
                             side: BorderSide(
                               color: AppColors.amberColor700,
-                              width: 1.5
+                              width: 1
                             ),
                             shape: const StadiumBorder(),
                             backgroundColor: AppColors.yellow50

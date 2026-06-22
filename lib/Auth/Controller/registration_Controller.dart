@@ -543,8 +543,10 @@ log("phone $phone");
           message: response['message'] ?? "Registration successful",
           backgroundColor: AppColors.green500,
         );
-
-        await userBox.put("user_id", "true");
+        print("User id ${response['data']["user"]["id"].toString()}");
+        await userBox.put("user_id", response['data']["user"]["id"].toString());
+        await userBox.put("token", response['data']["access_token"].toString());
+        await userBox.put("user_type", response['data']["user"]["user_type"].toString());
         if( userType=="EXPLORER")
           {
             Get.offAll(CustomerBottomNavigation(index: 0,)) ;

@@ -211,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: CustomWidget().buildTextWidget(
-                          title: controller.getProfileData["phone"],
+                          title: controller.getProfileData["phone"].toString(),
                           fontSize: 16,
                           textColor: AppColors.black500,
                           fontWeight: FontWeight.w400,

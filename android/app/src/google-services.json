@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "870545618442",
+    "project_id": "jam-rock",
+    "storage_bucket": "jam-rock.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:870545618442:android:4f158afa41a0682d6ad1f3",
+        "android_client_info": {
+          "package_name": "com.Jam.Rock.Destinations"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANCA4c91LyrCKcH66myupH2RmGQhOK2tI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

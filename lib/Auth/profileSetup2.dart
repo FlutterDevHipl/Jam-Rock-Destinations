@@ -37,6 +37,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
   void initState() {
     controller.getVehicleData("vehicle_type");
     controller.getVehicleData("vehicle_brand");
+
     // TODO: implement initState
     super.initState();
   }

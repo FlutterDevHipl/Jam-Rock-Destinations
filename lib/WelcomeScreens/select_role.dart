@@ -74,6 +74,7 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
+
                     onPressed: () {
                       final userTypes =
                           selectedIndex == 0 ? 'EXPLORER' : 'DRIVER';
@@ -92,7 +93,7 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                     ),
                     child: CustomWidget().buildTextWidget(
                         title: "Continue",
-                        fontSize: 18,
+                        fontSize: 16,
                         textColor: Colors.white)),
               ),
               const SizedBox(height: 20),
@@ -124,12 +125,12 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
         children: [
           Container(
             padding: const EdgeInsets.all(16),
-            // height: 220,
+            height: Get.height*0.26,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: isSelected ? AppColors.green500 : Colors.grey.shade300,
+                color: isSelected ? AppColors.green500 : AppColors.black50,
               ),
             ),
             child: Column(
@@ -150,12 +151,12 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                             ? AppColors.green500
                             : AppColors.black400,
                         fontWeight: FontWeight.w700,
-                        fontSize: 18)),
+                        fontSize: 16)),
                 const SizedBox(height: 8),
                 CustomWidget().buildTextWidget(
                     title: subtitle,
                     textAlign: TextAlign.center,
-                    textColor: Colors.grey.shade600,
+                    textColor: AppColors.black400,
                     fontSize: 13),
                 heightSpace5
               ],
@@ -171,7 +172,7 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                       : Colors.grey.shade100,
                   border: Border.all(
                     color:
-                        isSelected ? AppColors.green500 : Colors.grey.shade300,
+                        isSelected ? AppColors.green500 : Colors.transparent,
                   ),
                 ),
                 child: Padding(

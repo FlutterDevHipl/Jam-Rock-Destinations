@@ -135,10 +135,10 @@ Future<void> getVehicleData(String type) async {
       vehicleTypes.assignAll(allItems);
     } else {
       final uniqueBrands = allItems.toSet().toList();
-
       vehicleBrands.assignAll(uniqueBrands);
       // vehicleBrands.assignAll(allItems);
     }
+
 print("vehicleBrands = $vehicleBrands");
     print("Total Loaded: ${allItems.length}");
   } catch (e) {

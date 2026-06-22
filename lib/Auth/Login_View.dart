@@ -334,32 +334,37 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     widthSpace15,
                     Expanded(
-            child: Container(
-              height: 55,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.14),
-                    blurRadius: 27.8,
-                    offset: const Offset(0, 0),
-                    spreadRadius: 0,
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+            child: GestureDetector(
+              onTap: () {
 
-                   SvgPicture.asset(Images.googleLogo,),
-                  widthSpace8,
-                  CustomWidget().buildTextWidget(
-                    title: "Google",
-                    fontSize: 14,
-                    textColor: Colors.black,
-                  ),
-                ],
+              },
+              child: Container(
+                height: 55,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.14),
+                      blurRadius: 27.8,
+                      offset: const Offset(0, 0),
+                      spreadRadius: 0,
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                     SvgPicture.asset(Images.googleLogo,),
+                    widthSpace8,
+                    CustomWidget().buildTextWidget(
+                      title: "Google",
+                      fontSize: 14,
+                      textColor: Colors.black,
+                    ),
+                  ],
+                ),
               ),
             ),
                     )

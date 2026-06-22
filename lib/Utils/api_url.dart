@@ -27,6 +27,12 @@ class AppConstants {
   static const String editProfile = "${BASE_URL}/profile";
 
 
+  //*************************** KYC ************************************** */
+  static const String getKYCDoc = "${BASE_URL}/driver/get-kyc-documents";
+  static const String uploadKYCDoc = "${BASE_URL}/driver/update-kyc-documents";
+  static const String getVehicleDetails = "${BASE_URL}/driver/get-vehicle-details";
+  static const String updateVehicleDetails = "${BASE_URL}/driver/update-vehicle-details";
+
 
 }
 
