@@ -1,12 +1,14 @@
-import 'package:Jam_Rock_Destinations/Customer/booking/BookingScreen.dart';
+
+
+
 import 'package:Jam_Rock_Destinations/Customer/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../Common/setting.dart';
 import '../Utils/app_colors.dart';
 import '../Utils/app_images.dart';
-import 'home/CustomerHomeScreen.dart';
 import 'service/ServiceScreen.dart';
+
 
 class CustomerBottomNavigation extends StatefulWidget {
   final int index;
@@ -19,8 +21,7 @@ class CustomerBottomNavigation extends StatefulWidget {
   });
 
   @override
-  State<CustomerBottomNavigation> createState() =>
-      _CustomerBottomNavigationState();
+  State<CustomerBottomNavigation> createState() => _CustomerBottomNavigationState();
 }
 
 class _CustomerBottomNavigationState extends State<CustomerBottomNavigation> {
@@ -32,6 +33,8 @@ class _CustomerBottomNavigationState extends State<CustomerBottomNavigation> {
     super.initState();
     currentIndex = widget.index;
     eventsFromIndex = widget.eventsFromIndex;
+
+
 
     // FirebaseMessaging.instance. ̰ ̰getInitialMessage().then((message) {
     //   print('RemoteMessage: $message');
@@ -46,6 +49,7 @@ class _CustomerBottomNavigationState extends State<CustomerBottomNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: buildScreen(),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColors.black50,
@@ -57,7 +61,7 @@ class _CustomerBottomNavigationState extends State<CustomerBottomNavigation> {
 
         onTap: (index) {
           setState(() {
-            if (index == 1) {
+             if (index == 1) {
               eventsFromIndex = 0;
             }
             currentIndex = index;
@@ -66,7 +70,7 @@ class _CustomerBottomNavigationState extends State<CustomerBottomNavigation> {
         items: [
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
-              Images.homeIcon,
+               Images.homeIcon,
               color: AppColors.black200,
             ),
             activeIcon: SvgPicture.asset(
@@ -74,33 +78,32 @@ class _CustomerBottomNavigationState extends State<CustomerBottomNavigation> {
               color: AppColors.green500,
             ),
             label: "Home",
+
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
-              Images.serviceIcon,
+             Images.serviceIcon,
               color: AppColors.black200,
             ),
-            activeIcon: SvgPicture.asset(
-              Images.serviceIcon,
-              color: AppColors.green500,
+            activeIcon:  SvgPicture.asset(
+                Images.serviceIcon,color: AppColors.green500,
             ),
             label: "Service",
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
-              Images.riderHistory,
+               Images.riderHistory,
               color: AppColors.black200,
             ),
             activeIcon: SvgPicture.asset(
-              Images.riderHistory,
+                Images.riderHistory,
               color: AppColors.green500,
             ),
-            // label: "Ride History",
-            label: "Booking",
+            label: "Ride History",
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
-              Images.settingIcon,
+             Images.settingIcon,
               color: AppColors.black200,
             ),
             activeIcon: SvgPicture.asset(
@@ -117,13 +120,13 @@ class _CustomerBottomNavigationState extends State<CustomerBottomNavigation> {
   Widget buildScreen() {
     switch (currentIndex) {
       case 1:
-        return const ServiceScreen();
+        return  ServiceScreen();
       case 2:
-        return const BookingScreen();
+        return const ServiceScreen();
       case 3:
-        return SettingsScreen();
+        return  SettingsScreen();
       default:
-        return const CustomerHomeScreen();
+        return const HomeScreen();
     }
   }
 }

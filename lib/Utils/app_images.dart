@@ -22,8 +22,7 @@ class Images {
   static const String deleteIcon = "assets/image/deleteIcon.svg";
   static const String deleteAccIcon = "assets/image/deleteAccIcon.svg";
   static const String personOutlineIcon = "assets/image/personOutlineIcon.svg";
-  static const String contactOutlineIcon =
-      "assets/image/contactOutlineIcon.svg";
+  static const String contactOutlineIcon = "assets/image/contactOutlineIcon.svg";
   static const String wallet = "assets/image/wallet.svg";
   static const String emailOutlineIcon = "assets/image/emailOutlineIcon.svg";
   static const String successRightIcon = "assets/image/successRightIcon.svg";
@@ -33,35 +32,22 @@ class Images {
   static const String check_circle = "assets/image/check-circle.svg";
   static const String clock = "assets/image/clock.svg";
   static const String starOutline = "assets/image/starOutline.svg";
-  static const String helpIcon = "assets/image/helpIcon.svg";
   static const String car = "assets/image/car.svg";
   static const String onBoardingOne = "assets/image/onBoardingOne.png";
   static const String onBoardingTwo = "assets/image/onBoardingTwo.png";
   static const String onBoardingThree = "assets/image/onBoardingThree.png";
   static const String walletImage = "assets/image/walletImage.png";
   static const String walletBg = "assets/image/walletBg.png";
-  static const String tabler_gift_filled =
-      "assets/image/tabler_gift-filled.png";
-  static const String tabler_ride_filled =
-      "assets/image/tabler_ride_filled.png";
-  static const String tabler_payment_filled =
-      "assets/image/tabler_payment_filled.png";
+  static const String tabler_gift_filled = "assets/image/tabler_gift-filled.png";
+  static const String tabler_ride_filled = "assets/image/tabler_ride_filled.png";
+  static const String tabler_payment_filled = "assets/image/tabler_payment_filled.png";
   static const String emptyImage = "assets/image/emptyImage.png";
-  static const String successRight = "assets/images/success_right.png";
-  static const String dottedLine = "assets/images/dottedLine.png";
-  static const String rideHistoryEmpty = "assets/images/ride_history_empty.png";
-  static const String emptyDes = "assets/images/emptyDes.png";
-  static const String carImage = "assets/images/carImage.png";
+   static const String successRight = "assets/images/success_right.png";
+   static const String dottedLine = "assets/images/dottedLine.png";
+   static const String rideHistoryEmpty = "assets/images/ride_history_empty.png";
+   static const String carImage = "assets/images/carImage.png";
+  //  static const String rideHistoryEmpty = "assets/images/ride_history_empty.svg";
 
-  static const String bookingHistoryEmpty =
-      "assets/images/ride_history_empty.svg";
-
-  static const String empty = "assets/image/empty.svg";
-  static const String emptyNotification = "assets/image/emptyNotification.svg";
-  static const String bookingConfirmedIcon = "assets/image/bookingConfirmedIcon.svg";
-  static const String noInternet = "assets/image/noInternet.svg";
-  static const String no_internet = "assets/image/no_internet.png";
-  // static const String emptyNotification = "assets/images/image 47.png";
   static const String googleLogo = "assets/image/googleLogo.svg";
   static const String kycDoc = "assets/image/kycDoc.svg";
   static const String messageIcon = "assets/image/MessageIcon.svg";
@@ -73,7 +59,6 @@ class Images {
   static const String fileIcon = "assets/image/fileIcon.svg";
   static const String uploadIcon = "assets/image/uploadIcon.svg";
   static const String carIcon = "assets/image/carIcon.svg";
-  static const String carpreview = "assets/image/carpreview.svg";
   static const String carEmailIcon = "assets/image/carEmailIcon.svg";
   static const String twoPerson = "assets/image/twoPerson.svg";
   static const String logout = "assets/image/logout.svg";
@@ -81,11 +66,11 @@ class Images {
   static const String driverOnboarding2 = "assets/image/driverOnboarding2.png";
   static const String driverOnboarding3 = "assets/image/driverOnboarding3.png";
   static const String profileReview = "assets/image/profileReview.png";
-  static const String referImage = "assets/image/referImage.png";
+
+
 
   static const String drawerIcons = "assets/images/drawerIcons.svg";
   static const String crossIcon = "assets/images/crossIcon.svg";
-  static const String cancelIcon = "assets/images/cancelIcon.svg";
 
   static const String logoName = "assets/images/logoName.svg";
   static const String loginImage = "assets/images/login_background.png";
@@ -98,7 +83,6 @@ class Images {
   static const String franceFlagIcon = "assets/images/franceFlagIcon.svg";
   static const String Homeicon = "assets/images/homeicon.svg";
   static const String Searchicon = "assets/images/Searchicon.svg";
-  static const String search = "assets/images/search.svg";
   static const String LibraryIcon = "assets/images/Library.svg";
   static const String Radioicon = "assets/images/Radioicon.svg";
   static const String Settingicon = "assets/images/Settingicon.svg";
@@ -111,7 +95,7 @@ class Images {
   static const String notificationIcon = "assets/images/notification_icon.svg";
   static const String languageIcon = "assets/images/language_icon.svg";
   static const String subscriptionIcon = "assets/images/subscription_icon.svg";
-  // static const String helpIcon = "assets/images/help_icon.svg";
+  static const String helpIcon = "assets/images/help_icon.svg";
   static const String passwordIcon = "assets/images/password_icon.svg";
   static const String aboutIcon = "assets/images/about_icon.svg";
   static const String rectangleIcon = "assets/images/rectangle_icon.svg";
@@ -142,6 +126,7 @@ class Images {
   static const String waveImage = "assets/images/wave_image.png";
   static const String moovImage = "assets/images/moov_image.png";
 
+ 
   // static const String popupImage = "assets/images/popup_image.png";
 
   static const String calendarIcon = "assets/images/calendar_icon.svg";
@@ -172,6 +157,6 @@ class Images {
       "assets/images/seconds_backward.svg";
   static const String secondsForwardIcon = "assets/images/seconds_forward.svg";
 
-  static const String userAddIcon = "assets/images/user_add.svg";
-  static const String solfanaLoader = "assets/images/Solfana-Loader.gif";
+   static const String userAddIcon = "assets/images/user_add.svg";
+   static const String solfanaLoader = "assets/images/Solfana-Loader.gif";
 }

@@ -40,7 +40,6 @@ class AppColors {
 
   static const greyColor400 = Color(0xFF94A3B8);
   static const blackColor = Color(0xFF000000);
-  static const fourthColor = Color(0xFF4A5565);
 
 
   static const shadowColor = Color(0xFFFFFCE9);
