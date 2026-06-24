@@ -1,4 +1,4 @@
-import 'package:Jam_Rock_Destinations/Common/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Common/Controller/ProfileController.dart';
 import 'package:Jam_Rock_Destinations/Customer/controller/ServiceController.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_const.dart';

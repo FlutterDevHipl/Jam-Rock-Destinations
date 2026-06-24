@@ -1,4 +1,10 @@
 class Images {
+  static const String bookingConfirmedIcon = "assets/image/bookingConfirmedIcon.svg";
+  static const String emptyNotification = "assets/image/emptyNotification.svg";
+  static const String referImage = "assets/image/referImage.png";
+  static const String cancelIcon = "assets/images/cancelIcon.svg";
+  static const String carpreview = "assets/image/carpreview.svg";
+  static const String empty = "assets/image/empty.svg";
   static const String logoIcon = "assets/image/splash_logo.png";
   static const String explorerIcon = "assets/image/ExplorerLogo.png";
   static const String driverLogo = "assets/image/DriverLogo.png";
@@ -43,7 +49,7 @@ class Images {
   static const String tabler_payment_filled = "assets/image/tabler_payment_filled.png";
   static const String emptyImage = "assets/image/emptyImage.png";
    static const String successRight = "assets/images/success_right.png";
-   static const String dottedLine = "assets/images/dottedLine.png";
+   // static const String dottedLine = "assets/images/dottedLine.png";
    static const String rideHistoryEmpty = "assets/images/ride_history_empty.png";
    static const String carImage = "assets/images/carImage.png";
   //  static const String rideHistoryEmpty = "assets/images/ride_history_empty.svg";
@@ -66,19 +72,33 @@ class Images {
   static const String driverOnboarding2 = "assets/image/driverOnboarding2.png";
   static const String driverOnboarding3 = "assets/image/driverOnboarding3.png";
   static const String profileReview = "assets/image/profileReview.png";
-
-
-
+  static const String service_icon = "assets/image/service_icon.svg";
+  static const String onlineToggle = "assets/image/onlineToggle.svg";
+  static const String offlineToggle = "assets/image/offlineToggle.svg";
+  static const String offline = "assets/image/offline.svg";
+  static const String slideIcon = "assets/image/slideIcon.svg";
+  static const String cross_square = "assets/image/cross_square.svg";
+  static const String online = "assets/image/online.svg";
+  static const String wallet_Icon = "assets/image/wallet_Icon.svg";
   static const String drawerIcons = "assets/images/drawerIcons.svg";
   static const String crossIcon = "assets/images/crossIcon.svg";
-
+  static const String noInternet = "assets/image/noInternet.png";
+  static const String empty_earning = "assets/images/emptyEarning.png";
   static const String logoName = "assets/images/logoName.svg";
   static const String loginImage = "assets/images/login_background.png";
-
+  static const String calender = "assets/images/calender.svg";
+  static const String emptyEarning = "assets/image/emptyEarning.svg";
   static const String selectedRadioButton =
       "assets/images/selectedRadioButton.svg";
   static const String unselectedRadioButton =
       "assets/images/unselectedRadioButton.svg";
+  static const String serviceicon = "assets/image/service_icon.png";
+  static const String carTaxi = "assets/image/carTaxi.png";
+  static const String taxi = "assets/image/taxi.png";
+  static const String scheduleTaxi = "assets/image/scheduleTaxi.png";
+  static const String taxiRide = "assets/image/taxiRide.png";
+  static const String dottedLine = "assets/image/dottedLine.svg";
+  static const String dotted_Line = "assets/images/dottedLine.png";
   static const String usFlagIcon = "assets/images/usFlagIcon.svg";
   static const String franceFlagIcon = "assets/images/franceFlagIcon.svg";
   static const String Homeicon = "assets/images/homeicon.svg";

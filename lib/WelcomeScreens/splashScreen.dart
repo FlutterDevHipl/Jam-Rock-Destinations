@@ -29,11 +29,14 @@ class _SplashscreenState extends State<Splashscreen> {
   void initState() {
     super.initState();
 print("User id ${getUserId()}");
+
     print("usertype = $userType");
     Future.delayed(const Duration(seconds: 3), () {
       if (getUserId() == null || getUserId().isEmpty) {
         Get.offAll(() => SelectRoleScreen());
       } else {
+        String role = userBox.get("user_type");
+        userType=role;
         Get.offAll(CustomerBottomNavigation());
       }
       // Get.offAll(() => SelectRoleScreen());

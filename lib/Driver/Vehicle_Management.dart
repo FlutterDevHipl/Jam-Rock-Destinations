@@ -18,7 +18,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Auth/Controller/Driver_Registration.dart';
 import '../Utils/app_colors.dart';
 import '../Utils/custom_widget.dart';
-import 'UpdateDocumentController.dart';
+import 'controller/UpdateDocumentController.dart';
 
 
 class VehicleDetailsView extends StatefulWidget {
@@ -66,106 +66,145 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: SizedBox(
-            height: 50,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green500,
-              ),
-        
-              onPressed: () {
-                bool isValid = true;
-                controller.vehicleTypeError.value = "";
-                controller.vehicleBrandError.value = "";
-                controller.vehicleCapacityError.value = "";
-
-                if (controller.selectedVehicleType.value=="" || controller.selectedVehicleType.value==null) {
-                  controller.vehicleTypeError.value =
-                  "Please Select Vehicle Type";
-                  isValid = false;
-                }
-                if (controller.selectedVehicleBrand.value=="" ||controller.selectedVehicleBrand.value==null) {
-                  controller.vehicleBrandError.value =
-                  "Please Select Vehicle Brand";
-                  isValid = false;
-                }
-
-                if (controller.selectedVehicleCapacity.value==""||controller.selectedVehicleCapacity.value==null) {
-                  controller.vehicleCapacityError.value =
-                  "Please Select Vehicle Capacity";
-                  isValid = false;
-                }
-
-                if (!formKey.currentState!.validate()) {
-                  isValid = false;
-                }
-
-                if (controller.vehicleDocumentFront.value == null && controller.vehicleDocumentFrontUrl.isEmpty) {
-                  CustomWidget().showCustomToast(
-                    message: "Please Upload Vehicle Document",
-                  );
-                  isValid = false;
-                }
-
-                if (controller.interiorImage1.value == null &&  controller.interiorImage1Url.value.isEmpty ||
-                    controller.interiorImage2.value == null && controller.interiorImage2Url.value.isEmpty) {
-
-                  CustomWidget().showCustomToast(
-                    message: "Please Upload Vehicle Interior Images",
-                  );
-                  isValid = false;
-                }
-                if (
-                controller.exteriorImage1.value == null && controller.exteriorImage1Url.value.isEmpty ||
-                    controller.exteriorImage2.value == null && controller.exteriorImage2Url.value.isEmpty ||
-                    controller.exteriorImage3.value == null && controller.exteriorImage3Url.value.isEmpty||
-                    controller.exteriorImage4.value == null &&  controller.exteriorImage4Url.value.isEmpty
-                ) {
-                  CustomWidget().showCustomToast(
-                    message: "Please Upload Vehicle Exterior Images",
-                  );
-                  isValid = false;
-                }
-                if (!isValid) return;
-                controller.updateVehicle();
-
-                // final hasImageData =
-                //     controller.exteriorImage1.value == null ||
-                //         controller.exteriorImage2.value == null ||
-                //         controller.exteriorImage3.value == null ||
-                //         controller.exteriorImage4.value == null ||
-                //         controller.interiorImage1.value == null||
-                //         controller.interiorImage2.value == null;
-
-                    // governmentFrontImage.value != null ||
-                    //     documentController.licenseFrontImage.value != null ||
-                    //     documentController.crbFrontImage.value != null;
+          child:
+               CustomWidget().buildMaterialBtn(text:"Submit",
+                color:
+                // (controller.exteriorImage1.value == null &&
+                //     controller.exteriorImage1Url.value.isEmpty||controller.exteriorImage1Url.value=="") ||
                 //
-                // hasData
-                //     ? documentController.updateKycDocuments()
-                //     : print("No data uploaded");
-
-
-                // controller.driverRegistration2(widget.token, widget.step);
+                //     (controller.exteriorImage2.value == null &&
+                //         controller.exteriorImage2Url.value=="") ||
                 //
-              },
-              child: CustomWidget().buildTextWidget(
-                title: "Submit",
-                textColor: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+                //     (controller.exteriorImage3.value == null &&
+                //         controller.exteriorImage3Url.value=="") ||
+                //
+                //     (controller.exteriorImage4.value == null &&
+                //         controller.exteriorImage4Url.value=="") ||
+                //
+                //     (controller.vehicleDocumentFront.value == null &&
+                //         controller.vehicleDocumentFrontUrl.value=="") ||
+                //
+                //     (controller.vehicleDocumentBack.value == null &&
+                //         controller.vehicleDocumentBackUrl.value=="")
+                //     || controller.hasChanges.value==false?
+                // Colors.grey:
+                AppColors.green500,
+                radius: 8,
+                onPressed: () {
+                  bool isValid = true;
+                  controller.vehicleTypeError.value = "";
+                  controller.vehicleBrandError.value = "";
+                  controller.vehicleCapacityError.value = "";
+
+                  if (controller.selectedVehicleType.value=="" || controller.selectedVehicleType.value.isEmpty) {
+                    controller.vehicleTypeError.value =
+                    "Please Select Vehicle Type";
+                    isValid = false;
+                  }
+                  if (controller.selectedVehicleBrand.value=="" ||controller.selectedVehicleBrand.value.isEmpty) {
+                    controller.vehicleBrandError.value =
+                    "Please Select Vehicle Brand";
+                    isValid = false;
+                  }
+
+                  if (controller.selectedVehicleCapacity.value==""||controller.selectedVehicleCapacity.value==null) {
+                    controller.vehicleCapacityError.value =
+                    "Please Select Vehicle Capacity";
+                    isValid = false;
+                  }
+
+                  if (!formKey.currentState!.validate()) {
+                    isValid = false;
+                  }
+
+                  if (controller.vehicleDocumentFront.value == null && controller.vehicleDocumentFrontUrl.isEmpty) {
+                    CustomWidget().showCustomToast(
+                      message: "Please Upload Vehicle Document",
+                    );
+                    isValid = false;
+                  }
+
+                  if (controller.interiorImage1.value == null &&  controller.interiorImage1Url.value.isEmpty ||
+                      controller.interiorImage2.value == null && controller.interiorImage2Url.value.isEmpty) {
+
+                    CustomWidget().showCustomToast(
+                      message: "Please Upload Vehicle Interior Images",
+                    );
+                    isValid = false;
+                  }
+                  if (
+                  controller.exteriorImage1.value == null && controller.exteriorImage1Url.value.isEmpty ||
+                      controller.exteriorImage2.value == null && controller.exteriorImage2Url.value.isEmpty ||
+                      controller.exteriorImage3.value == null && controller.exteriorImage3Url.value.isEmpty||
+                      controller.exteriorImage4.value == null &&  controller.exteriorImage4Url.value.isEmpty
+                  ) {
+                    CustomWidget().showCustomToast(
+                      message: "Please Upload Vehicle Exterior Images",
+                    );
+                    isValid = false;
+                  }
+                  if (!isValid) return;
+                  controller.updateVehicle();
+
+
+                  // final hasImageData =
+                  //     (controller.exteriorImage1.value == null &&
+                  //         controller.exteriorImage1Url.value.isEmpty||controller.exteriorImage1Url.value=="") ||
+                  //
+                  //         (controller.exteriorImage2.value == null &&
+                  //             controller.exteriorImage2Url.value=="") ||
+                  //
+                  //         (controller.exteriorImage3.value == null &&
+                  //             controller.exteriorImage3Url.value=="") ||
+                  //
+                  //         (controller.exteriorImage4.value == null &&
+                  //             controller.exteriorImage4Url.value=="") ||
+                  //
+                  //         (controller.vehicleDocumentFront.value == null &&
+                  //             controller.vehicleDocumentFrontUrl.value=="") ||
+                  //
+                  //         (controller.vehicleDocumentBack.value == null &&
+                  //             controller.vehicleDocumentBackUrl.value=="");
+                  // print("hasImageData = $hasImageData");
+                  // print("hasChanges = ${controller.hasChanges.value}");
+                  // if(hasImageData||controller.hasChanges.value==true)
+                  // {
+                  //
+                  // }
+
+
+
+                  // governmentFrontImage.value != null ||
+                  //     documentController.licenseFrontImage.value != null ||
+                  //     documentController.crbFrontImage.value != null;
+                  //
+                  // hasData
+                  //     ? documentController.updateKycDocuments()
+                  //     : print("No data uploaded");
+
+
+                  // controller.driverRegistration2(widget.token, widget.step);
+                  //
+                },
+              ),)
+
+
         ),
-      ),
+
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Obx(
           () =>
               controller.isLoading.value?
-                  CircularProgressIndicator():
+              SizedBox(
+                height: MediaQuery.of(context).size.height*0.8,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.green500,
+                  ),
+                ),
+              ):
               Form(
             key: formKey,
             child:
@@ -181,6 +220,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                 Obx(
                       () => buildDropdown(
                     hint: "Select Vehicle Type",
+                    prefixImage: Images.carIcon,
                     items: controller.vehicleTypes
                         .map((e) => e["name"].toString())
                         .toList(),
@@ -192,7 +232,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                       final selected = controller.vehicleTypes.firstWhere(
                             (e) => e["name"] == value,
                       );
-
+                      controller.hasChanges.value=true;
                       controller.selectedVehicleType.value = selected["name"];
                       controller.selectedVehicleTypeId.value = selected["id"];
 
@@ -226,6 +266,9 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
 
                     return null;
                   },
+                  onChanged: (s) {
+                    controller.hasChanges.value=true;
+                  },
                 ),
 
                 const SizedBox(height: 16),
@@ -249,7 +292,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                       final selected = controller.vehicleBrands.firstWhere(
                             (e) => e["name"] == value,
                       );
-
+                      controller.hasChanges.value=true;
                       controller.selectedVehicleBrand.value = selected["name"];
                       controller.selectedVehicleBrandId.value = selected["id"];
 
@@ -275,6 +318,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                   darkMode: false,
                   hintText: "Enter Model",
                   radius: 8,
+
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return "Please enter model number";
@@ -285,6 +329,9 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                     }
 
                     return null;
+                  },
+                  onChanged: (s) {
+                    controller.hasChanges.value=true;
                   },
                 ),
 
@@ -305,6 +352,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                     onChanged: (value) {
                       controller.selectedVehicleCapacity.value = value ?? "";
                       print( controller.selectedVehicleCapacity.value);
+                      controller.hasChanges.value=true;
                       controller.vehicleCapacityError.value = "";
                     },
                   ),
@@ -618,7 +666,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
             border: Border.all(
               color: (errorText != null && errorText.isNotEmpty)
                   ? Colors.red
-                  : Colors.transparent,
+                  : AppColors.black50,
             ),
           ),
           child: Row(
@@ -629,7 +677,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                   width: 25,
                   height: 25,
                 ),
-                const SizedBox(width: 10),
+                // const SizedBox(width: 10),
               ],
               Expanded(
                 child:
@@ -742,7 +790,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
               border: Border.all(
                 color: (errorText != null && errorText.isNotEmpty)
                     ? Colors.red
-                    : Colors.transparent,
+                    : AppColors.black50,
               )
           ),
           child: Row(
@@ -753,14 +801,13 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                   width: 25,
                   height: 25,
                 ),
-                const SizedBox(width: 10),
+                // const SizedBox(width: 10),
               ],
               Expanded(
                 child:
                 DropdownButtonHideUnderline(
                   child:
                   DropdownButton2<String>(
-
                     value: selectedValue,
                     isExpanded: true,
                     hint: Text(
@@ -935,6 +982,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
+                color: Colors.white
               ),
               child: image != null
                   ? Image.file(
@@ -949,8 +997,11 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                   : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  title==""?
+                      Center(child:SvgPicture.asset(Images.uploadIcon)):
                   SvgPicture.asset(Images.uploadIcon),
-                  const SizedBox(height: 6),
+                   SizedBox(height: title==""?0:6),
+                  title==""?SizedBox():
                   CustomWidget().buildTextWidget(
                     title: title,
                     fontSize: 12,

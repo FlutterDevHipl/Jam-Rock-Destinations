@@ -1,6 +1,7 @@
 import 'package:Jam_Rock_Destinations/Auth/Controller/login_Controller.dart';
 import 'package:Jam_Rock_Destinations/Auth/createPassword.dart';
 import 'package:Jam_Rock_Destinations/Auth/saveProfile.dart';
+import 'package:Jam_Rock_Destinations/Common/Controller/ProfileController.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:flutter/material.dart';
@@ -8,30 +9,21 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 
-import '../Utils/app_colors.dart';
+import '../../Utils/app_colors.dart';
 
-class MailVerificationScreen extends StatefulWidget {
-  final isForgotScreen;
+class VerificationScreen extends StatefulWidget {
   final signupType;
   final emailorphone;
-   MailVerificationScreen({super.key, this.isForgotScreen, this.signupType, this.emailorphone});
+  final countryCode;
+  VerificationScreen({super.key, this.signupType, this.emailorphone, this.countryCode});
   @override
-  State<MailVerificationScreen> createState() => _MailVerificationScreenState();
+  State<VerificationScreen> createState() => _VerificationScreenState();
 }
-class _MailVerificationScreenState extends State<MailVerificationScreen> {
-  final LoginController loginController=Get.find<LoginController>();
+class _VerificationScreenState extends State<VerificationScreen> {
+  final ProfileController profileController=Get.find<ProfileController>();
   final otpError = ''.obs;
-  String maskPhoneNumber(String phone) {
-    if (phone.length < 6) return phone;
-
-    String countryCode = phone.substring(0, 2); // +1
-    String last2 = phone.substring(phone.length - 2);
-
-    return '$countryCode X XXX XX$last2';
-  }
-
   bool validateOtp() {
-    if (loginController.otpController.text.length != 4) {
+    if (profileController.otpController.text.length != 4) {
       otpError.value = "Please enter a valid 4-digit OTP";
       return false;
     }
@@ -39,18 +31,41 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
     otpError.value = '';
     return true;
   }
-  @override
-  void initState() {
-    loginController.otpController.clear();
+  String maskPhoneNumber(String phone, String countryCode) {
+    phone = phone.replaceAll('+', '');
 
-    // TODO: implement initState
-    super.initState();
+    if (phone.startsWith(countryCode)) {
+      phone = phone.substring(countryCode.length);
+    }
+
+    String start2 = phone.substring(0, 2);
+    String last2 = phone.substring(phone.length - 2);
+
+    return '${start2}X XXX XX$last2';
   }
   @override
   Widget build(BuildContext context) {
     final isNumber = num.tryParse(widget.emailorphone.toString()) != null;
+    print("countryCode${widget.countryCode}");
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          "Contact Update",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -67,7 +82,7 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
               heightSpace25,
 
               /// Title
-              CustomWidget().buildTextWidget(title: "Mail Verification",
+              CustomWidget().buildTextWidget(title:widget.signupType=="email"? "Mail Verification":"Phone Number Verification",
                   textColor: Colors.black,fontWeight: FontWeight.w700,fontSize: 24),
 
               heightSpace5,
@@ -86,9 +101,9 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
                   const SizedBox(height: 2),
 
                   CustomWidget().buildTextWidget(
-                    title:
-                    isNumber?maskPhoneNumber( widget.emailorphone):
-                    widget.emailorphone,
+                    title: isNumber
+                        ? '+${widget.countryCode} ${maskPhoneNumber(widget.emailorphone, widget.countryCode)}'
+                        : widget.emailorphone,
                     textColor: AppColors.yellow700,
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
@@ -102,7 +117,7 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
               /// OTP Fields
               Pinput(
                 length: 4,
-                controller: loginController.otpController,
+                controller: profileController.otpController,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                 ],
@@ -131,9 +146,9 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
                     ? Text(
                   otpError.value,
                   style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500
+                      color: Colors.red,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500
                   ),
                 )
                     : const SizedBox.shrink(),
@@ -152,7 +167,8 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      loginController.forgotStep1(widget.emailorphone);
+                      profileController.sendVerificationOTp(widget.emailorphone, widget.signupType, context,profileController.selectedCountry.value);
+                      // loginController.forgotStep1(widget.emailorphone);
                     },
                     child: CustomWidget().buildTextWidget(
                       title: "Resend Code",
@@ -172,41 +188,29 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-
                     onPressed: () {
-                      if (loginController.otpController.text.length != 4) {
+                      if (profileController.otpController.text.length != 4) {
                         otpError.value = "Please enter a valid 4-digit OTP";
                         return;
                       }
-                     if(loginController.isEmailSelected.value)
-                       {
-                         loginController.verifyEmailOTp(widget.emailorphone, loginController.otpController.text, context);
-                       }
-                     else
-                       {
-                         CustomWidget().showCustomToast(message: "OTP verification from phone");
-                       }
+                      if(widget.signupType=="email")
+                        {
+                          profileController.verifyOTp(widget.emailorphone, widget.signupType, profileController.otpController.text, context);
+                        }
+                      else{
+                        profileController.verifyOTp(widget.emailorphone, widget.signupType, profileController.otpController.text, context);
+                      }
 
-
-                      // if(widget.isForgotScreen)
-                      //   {
-                      //     Get.to(CreateNewPasswordScreen());
-                      //   }
-                      // else
-                      //   {
-                      //     Get.to(ProfileSetupScreen());
-                      //     //To be navigate to home screen
-                      //   }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.green500,
+                      backgroundColor: const Color(0xff2F8F43),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                     child: CustomWidget().buildTextWidget(
-                      title: loginController.isLoading.value ? "Loading..." : "Submit",
+                      title: profileController.isLoading.value ? "Loading..." : "Submit",
                       textColor: Colors.white,
                       fontWeight: FontWeight.w500,
                       fontSize: 16,
@@ -223,7 +227,7 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
                   Get.back();
                 },
                 child: CustomWidget().buildTextWidget(
-                  title: "Change Email Address?",
+                  title: widget.signupType=="email"?"Change Email Address?":"Change Phone Number?",
                   textColor: AppColors.green,
                   fontWeight: FontWeight.w500,
                   fontSize: 16,

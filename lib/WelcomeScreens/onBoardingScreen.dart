@@ -71,7 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             final item = userType=="EXPLORER"? onboardingData[index]:driverOnboardingData[index];
 
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 10),
+              padding: const EdgeInsets.only(top: 24,left: 16,right: 16),
               child: Stack(
                 children: [
 
@@ -91,7 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       CustomWidget().buildTextWidget(
                         title:  item["title"]!,
                         textAlign: TextAlign.center,
-                        textColor: Colors.black,
+                        textColor: AppColors.black500,
                         fontWeight: FontWeight.w700,
                         fontSize: 24,
                       ),
@@ -166,7 +166,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     : "Next",
                                     textColor: Colors.white,
                                     fontSize: 16,
-                                    fontWeight: FontWeight.w600
+                                    fontWeight: FontWeight.w500
                                 ),
                                 widthSpace5,
                                 currentIndex ==
@@ -183,6 +183,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   /// Top Section
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Image.asset(
                         Images.logoIcon,
@@ -190,6 +191,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
 
                       if (currentIndex != onboardingData.length - 1)
+
                         OutlinedButton(
                           onPressed: () {
                             pageController.animateToPage(
@@ -200,20 +202,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           },
                           style: OutlinedButton.styleFrom(
                             minimumSize: const Size(65, 30),
-                            side: BorderSide(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              side: BorderSide(
                               color: AppColors.amberColor700,
                               width: 1
                             ),
                             shape: const StadiumBorder(),
                             backgroundColor: AppColors.yellow50
                           ),
-                          child: Text(
-                            "Skip",
-                            style: TextStyle(
-                              color: AppColors.amberColor700,
-                              fontSize: 12,
-                            ),
-                          ),
+                          child: CustomWidget().buildTextWidget(title: "Skip",textColor: AppColors.amberColor700,
+                          fontSize: 14),
+
                         )
                     ],
                   ),

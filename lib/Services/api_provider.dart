@@ -195,7 +195,7 @@ class ApiProvider {
     if (response.statusCode == 200) {
       return res;
     } else if (response.statusCode == 401) {
-      // handleSessionExpire();
+      handleSessionExpire();
       return res;
     } else if (response.statusCode == 400) {
       return res;

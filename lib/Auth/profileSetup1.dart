@@ -23,8 +23,19 @@ class ProfileSetupStepOneView extends  StatefulWidget{
   State<ProfileSetupStepOneView> createState() => _ProfileSetupStepOneViewState();
 }
 final VehicleDetailsController vehicleDetailsController =Get.put(VehicleDetailsController());
-class _ProfileSetupStepOneViewState extends State<ProfileSetupStepOneView> {
 
+class _ProfileSetupStepOneViewState extends State<ProfileSetupStepOneView> {
+@override
+  void initState() {
+  vehicleDetailsController.governmentFrontImage.value=null;
+  vehicleDetailsController.licenseFrontImage.value=null;
+  vehicleDetailsController.crbFrontImage.value=null;
+  vehicleDetailsController.governmentBackImage.value=null;
+  vehicleDetailsController.licenseBackImage.value=null;
+  vehicleDetailsController.crbBackImage.value=null;
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,71 +49,91 @@ class _ProfileSetupStepOneViewState extends State<ProfileSetupStepOneView> {
         ),
         title: CustomWidget().buildTextWidget(
           title: "Profile Setup",
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
           textColor: AppColors.blackColor,
         ),
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 20, top: 10, bottom: 10),
+          // Container(
+          //   margin: const EdgeInsets.only(right: 20, top: 10, bottom: 10),
+          //   padding: const EdgeInsets.symmetric(
+          //     horizontal: 10,
+          //     vertical: 5,
+          //   ),
+          //   decoration: BoxDecoration(
+          //     color: const Color(0xffE7F4EA),
+          //     borderRadius: BorderRadius.circular(30),
+          //   ),
+          //   child: Center(
+          //     child: CustomWidget().buildTextWidget(
+          //       title: "1/2",
+          //       fontSize: 14,
+          //       fontWeight: FontWeight.w600,
+          //       textColor: AppColors.green500,
+          //     ),
+          //   ),
+          // ),
+          Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 10,
               vertical: 5,
             ),
-            decoration: BoxDecoration(
-              color: const Color(0xffE7F4EA),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Center(
+            child: CircleAvatar(
+              backgroundColor:const Color(0xffE7F4EA),
+              child: Center(
               child: CustomWidget().buildTextWidget(
                 title: "1/2",
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 textColor: AppColors.green500,
               ),
-            ),
-          ),
+            ),),
+          )
         ],
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(20),
-        child: SizedBox(
-          height: 52,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.green500,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+        padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 8),
+        child: SafeArea(
+          child: Obx(
+            () =>  SizedBox(
+              height: 52,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.green500,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () {
+                  if (vehicleDetailsController.governmentFrontImage.value == null) {
+                    CustomWidget().showCustomToast(
+                      message: "Please Upload Government ID",
+                    );
+                    return;
+                  }
+                  else if (vehicleDetailsController.licenseFrontImage.value == null) {
+                    CustomWidget().showCustomToast(
+                      message: "Please Upload Driving License",
+                    );
+                    return;
+                  }
+                  else if (vehicleDetailsController.crbFrontImage.value == null) {
+                    CustomWidget().showCustomToast(
+                      message: "Please Upload CRB Document",
+                    );
+                    return;
+                  }
+                  vehicleDetailsController.driverRegistration(widget.token,widget.step);
+
+
+                },
+                child: CustomWidget().buildTextWidget(
+                  title:vehicleDetailsController.isLoading.value?"Loading...": "Save & Next",
+                  textColor: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            onPressed: () {
-              if (vehicleDetailsController.governmentFrontImage.value == null) {
-                CustomWidget().showCustomToast(
-                  message: "Please Upload Government ID",
-                );
-                return;
-              }
-              else if (vehicleDetailsController.licenseFrontImage.value == null) {
-                CustomWidget().showCustomToast(
-                  message: "Please Upload Driving License",
-                );
-                return;
-              }
-              else if (vehicleDetailsController.crbFrontImage.value == null) {
-                CustomWidget().showCustomToast(
-                  message: "Please Upload CRB Document",
-                );
-                return;
-              }
-              vehicleDetailsController.driverRegistration(widget.token,widget.step);
-
-
-            },
-            child: CustomWidget().buildTextWidget(
-              title: "Save & Next",
-              textColor: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
             ),
           ),
         ),
@@ -115,23 +146,24 @@ class _ProfileSetupStepOneViewState extends State<ProfileSetupStepOneView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            heightSpace20,
             CustomWidget().buildTextWidget(
               title: "Upload Documents",
-              fontSize: 24,
+              fontSize: 18,
               fontWeight: FontWeight.w700,
               textColor: AppColors.blackColor,
             ),
 
             const SizedBox(height: 4),
-
-            CustomWidget().buildTextWidget(
-              title: "We need these to verify your identity.",
-              fontSize: 14,
+            Padding(padding: EdgeInsetsGeometry.only(right: 20),child: CustomWidget().buildTextWidget(
+              title: "Before you start, make sure you have the following ready for upload on the next step.",
+              fontSize: 15,
               fontWeight: FontWeight.w400,
               textColor: AppColors.black400,
-            ),
+            )),
 
-            const SizedBox(height: 30),
+
+            const SizedBox(height: 35),
 
             _documentSection(
               title: "Government ID",
@@ -185,6 +217,7 @@ class _ProfileSetupStepOneViewState extends State<ProfileSetupStepOneView> {
     required String title,
     required Rx<File?> frontImage,
     required Rx<File?> backImage,
+
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,7 +245,11 @@ class _ProfileSetupStepOneViewState extends State<ProfileSetupStepOneView> {
                       () => _uploadBox(
                     title: "Front",
                         image: frontImage.value,
-                    onTap: () => vehicleDetailsController.pickImage(frontImage),
+                    onTap: () => vehicleDetailsController.pickImage(frontImage,),
+                        onRemove: () {
+                          frontImage.value = null;
+
+                        },
                   ),
                 ),
               ),
@@ -225,6 +262,9 @@ class _ProfileSetupStepOneViewState extends State<ProfileSetupStepOneView> {
                     title: "Back (Optional)",
                     image: backImage.value,
                     onTap: () => vehicleDetailsController.pickImage(backImage),
+                        onRemove: () {
+                          backImage.value = null;
+                        },
                   ),
                 ),
               ),
@@ -234,67 +274,146 @@ class _ProfileSetupStepOneViewState extends State<ProfileSetupStepOneView> {
       ],
     );
   }
-
   Widget _uploadBox({
     required String title,
     required VoidCallback onTap,
+    required VoidCallback onRemove,
     File? image,
+    String? imageUrl,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: DottedBorder(
-        color: AppColors.green500,
-        dashPattern: const [5, 3],
-        borderType: BorderType.RRect,
-        radius: const Radius.circular(8),
-        child: Container(
-          height: 80,
-          width: double.infinity,
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: image != null
-              ? Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.file(
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        DottedBorder(
+          color: AppColors.green500,
+          dashPattern: const [5, 3],
+          borderType: BorderType.RRect,
+          radius: const Radius.circular(8),
+          child: GestureDetector(
+            onTap: onTap,
+            child: Container(
+              height: 80,
+              width: double.infinity,
+
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: image != null
+                  ? Image.file(
                 image,
                 fit: BoxFit.cover,
-              ),
-
-              Positioned(
-                top: 4,
-                right: 4,
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
+              )
+                  : (imageUrl != null && imageUrl.isNotEmpty)
+                  ? Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+              )
+                  : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(Images.uploadIcon),
+                  const SizedBox(height: 6),
+                  CustomWidget().buildTextWidget(
+                    title: title,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    textColor: AppColors.black400,
                   ),
-                  child: const Icon(
-                    Icons.edit,
-                    size: 14,
-                  ),
-                ),
+                ],
               ),
-            ],
-          )
-              : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-             SvgPicture.asset(Images.uploadIcon),
-              const SizedBox(height: 6),
-              CustomWidget().buildTextWidget(
-                title: title,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                textColor: AppColors.black400,
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+
+        // Edit icon overlapping border
+        if (image != null || (imageUrl != null && imageUrl.isNotEmpty))
+          Positioned(
+            top: -6,
+            right: -6,
+            child: GestureDetector(
+              onTap: onRemove,
+              child: Container(
+                padding: const EdgeInsets.all(0),
+                decoration: BoxDecoration(
+                  color: AppColors.green500,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.green500,
+                  ),
+                ),
+                child: const Icon(
+                  CupertinoIcons.multiply,
+                  size: 12,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
+  // Widget _uploadBox({
+  //   required String title,
+  //   required VoidCallback onTap,
+  //   File? image,
+  // }) {
+  //   return GestureDetector(
+  //     onTap: onTap,
+  //     child: DottedBorder(
+  //       color: AppColors.green500,
+  //       dashPattern: const [5, 3],
+  //       borderType: BorderType.RRect,
+  //       radius: const Radius.circular(8),
+  //       child: Container(
+  //         height: 80,
+  //         width: double.infinity,
+  //         clipBehavior: Clip.antiAlias,
+  //         decoration: BoxDecoration(
+  //           borderRadius: BorderRadius.circular(8),
+  //         ),
+  //         child: image != null
+  //             ? Stack(
+  //           fit: StackFit.expand,
+  //           children: [
+  //             Image.file(
+  //               image,
+  //               fit: BoxFit.cover,
+  //             ),
+  //
+  //             Positioned(
+  //               top: 4,
+  //               right: 4,
+  //               child: Container(
+  //                 padding: const EdgeInsets.all(2),
+  //                 decoration: const BoxDecoration(
+  //                   color: Colors.white,
+  //                   shape: BoxShape.circle,
+  //                 ),
+  //                 child: const Icon(
+  //                   Icons.edit,
+  //                   size: 14,
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         )
+  //             : Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //            SvgPicture.asset(Images.uploadIcon),
+  //             const SizedBox(height: 6),
+  //             CustomWidget().buildTextWidget(
+  //               title: title,
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.w400,
+  //               textColor: AppColors.black400,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

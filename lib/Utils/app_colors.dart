@@ -22,8 +22,9 @@ class AppColors {
   static const green100 = Color(0xFFBFDBC5);
   static const green50 = Color(0xFFEAF3EC);
   static const offWhite = Color(0XFFF5F5F5);
+  static const green300 = Color(0xFF74B181);
 
-
+  static const fourthColor = Color(0xFF4A5565);
 
   static const redColor400 = Color(0xFFF87171);
   static const redColor600 = Color(0xFFDE3535);

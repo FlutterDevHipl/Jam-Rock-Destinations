@@ -5,7 +5,7 @@ import 'package:Jam_Rock_Destinations/Driver/ride_history/RideHistoryScreen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../Common/setting.dart';
+import '../Common/setting/setting.dart';
 import '../Utils/app_colors.dart';
 import '../Utils/app_images.dart';
 

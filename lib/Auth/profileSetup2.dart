@@ -43,6 +43,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
   }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
 
@@ -58,116 +59,126 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
           textColor: AppColors.blackColor,
         ),
         actions: [
-          Container(
-            margin: const EdgeInsets.only(
-              right: 16,
-              top: 10,
-              bottom: 10,
-            ),
+          // Container(
+          //   margin: const EdgeInsets.only(
+          //     right: 16,
+          //     top: 10,
+          //     bottom: 10,
+          //   ),
+          //   padding: const EdgeInsets.symmetric(
+          //     horizontal: 10,
+          //     vertical: 5,
+          //   ),
+          //   decoration: BoxDecoration(
+          //     color: AppColors.green100,
+          //     shape: BoxShape.circle,
+          //   ),
+          //   child: Center(
+          //     child: CustomWidget().buildTextWidget(
+          //       title: "2/2",
+          //       fontSize: 12,
+          //       fontWeight: FontWeight.w600,
+          //       textColor: AppColors.green500,
+          //     ),
+          //   ),
+          // ),
+          Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 10,
               vertical: 5,
             ),
-            decoration: BoxDecoration(
-              color: AppColors.green100,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: CustomWidget().buildTextWidget(
-                title: "2/2",
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                textColor: AppColors.green500,
-              ),
-            ),
-          ),
+            child: CircleAvatar(
+              backgroundColor:const Color(0xffE7F4EA),
+              child: Center(
+                child: CustomWidget().buildTextWidget(
+                  title: "1/2",
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  textColor: AppColors.green500,
+                ),
+              ),),
+          )
         ],
       ),
 
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(20),
-        child: SizedBox(
-          height: 50,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.green500,
-            ),
-            // onPressed: () {
-            //
-            //   if (formKey.currentState!.validate()) {
-            //     if(controller.vehicleDocumentFront.value==null)
-            //     {
-            //       CustomWidget().showCustomToast(message: "Please Upload Vehicle Document");
-            //       return;
-            //     }
-            //     Get.to(ProfileReviewView());
-            //     // Valid
-            //     print("Proceed");
-            //   }
-            //
-            // },
-            onPressed: () {
-              bool isValid = true;
-              controller.vehicleTypeError.value = "";
-              controller.vehicleBrandError.value = "";
-              controller.vehicleCapacityError.value = "";
+          padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 8),
+        child:
+            SafeArea(child:  CustomWidget().buildMaterialBtn(text:"Submit",
+              color: AppColors.green500,
+              radius: 8,
+              onPressed: () {
+                bool isValid = true;
+                controller.vehicleTypeError.value = "";
+                controller.vehicleBrandError.value = "";
+                controller.vehicleCapacityError.value = "";
 
-              if (controller.selectedVehicleType.value=="" ||controller.selectedVehicleType.value==null) {
-                controller.vehicleTypeError.value =
-                "Please Select Vehicle Type";
-                isValid = false;
-              }
-              if (controller.selectedVehicleBrand.value=="" ||controller.selectedVehicleBrand.value==null) {
-                controller.vehicleBrandError.value =
-                "Please Select Vehicle Brand";
-                isValid = false;
-              }
+                if (controller.selectedVehicleType.value=="" ||controller.selectedVehicleType.value==null) {
+                  controller.vehicleTypeError.value =
+                  "Please Select Vehicle Type";
+                  isValid = false;
+                }
+                if (controller.selectedVehicleBrand.value=="" ||controller.selectedVehicleBrand.value==null) {
+                  controller.vehicleBrandError.value =
+                  "Please Select Vehicle Brand";
+                  isValid = false;
+                }
 
-              if (controller.selectedVehicleCapacity.value==""||controller.selectedVehicleCapacity.value==null) {
-                controller.vehicleCapacityError.value =
-                "Please Select Vehicle Capacity";
-                isValid = false;
-              }
+                if (controller.selectedVehicleCapacity.value==""||controller.selectedVehicleCapacity.value==null) {
+                  controller.vehicleCapacityError.value =
+                  "Please Select Vehicle Capacity";
+                  isValid = false;
+                }
 
-              if (!formKey.currentState!.validate()) {
-                isValid = false;
-              }
+                if (!formKey.currentState!.validate()) {
+                  isValid = false;
+                }
 
-              if (controller.vehicleDocumentFront.value == null) {
-                CustomWidget().showCustomToast(
-                  message: "Please Upload Vehicle Document",
-                );
-                isValid = false;
-              }
-              if (controller.interiorImage1.value == null || controller.interiorImage2.value == null) {
-                CustomWidget().showCustomToast(
-                  message: "Please Upload Vehicle Interior Images",
-                );
-                isValid = false;
-              }
-              if (
-              controller.exteriorImage1.value == null ||
-                  controller.exteriorImage2.value == null ||
-                  controller.exteriorImage3.value == null ||
-                  controller.exteriorImage4.value == null
-              ) {
-                CustomWidget().showCustomToast(
-                  message: "Please Upload Vehicle Exterior Images",
-                );
-                isValid = false;
-              }
-              if (!isValid) return;
-              controller.driverRegistration2(widget.token, widget.step);
-              //
-            },
-            child: CustomWidget().buildTextWidget(
-              title: "Submit",
-              textColor: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
+                if (controller.vehicleDocumentFront.value == null) {
+                  CustomWidget().showCustomToast(
+                    message: "Please Upload Vehicle Document",
+                  );
+                  isValid = false;
+                }
+                if (controller.interiorImage1.value == null || controller.interiorImage2.value == null) {
+                  CustomWidget().showCustomToast(
+                    message: "Please Upload Vehicle Interior Images",
+                  );
+                  isValid = false;
+                }
+                if (
+                controller.exteriorImage1.value == null ||
+                    controller.exteriorImage2.value == null ||
+                    controller.exteriorImage3.value == null ||
+                    controller.exteriorImage4.value == null
+                ) {
+                  CustomWidget().showCustomToast(
+                    message: "Please Upload Vehicle Exterior Images",
+                  );
+                  isValid = false;
+                }
+                if (!isValid) return;
+                controller.driverRegistration2(widget.token, widget.step);
+              },))
+
+        // SizedBox(
+        //   height: 50,
+        //   child: ElevatedButton(
+        //     style: ElevatedButton.styleFrom(
+        //       backgroundColor: AppColors.green500,
+        //     ),
+        //     onPressed: () {
+        //
+        //       //
+        //     },
+        //     child: CustomWidget().buildTextWidget(
+        //       title: "Submit",
+        //       textColor: Colors.white,
+        //       fontSize: 16,
+        //       fontWeight: FontWeight.w600,
+        //     ),
+        //   ),
+        // ),
       ),
 
       body: SingleChildScrollView(
@@ -194,7 +205,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                 textColor: AppColors.black400,
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 35),
 
               /// Vehicle Type
               _label("Vehicle Type"),
@@ -368,6 +379,9 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                               image: controller.interiorImage1.value,
                               onTap: () =>
                                   controller.pickImage(controller.interiorImage1), title: '',
+                                  onRemove: () {
+                                    controller.interiorImage1.value = null;
+                                  },
                             ),
                           ),
                         ),
@@ -378,6 +392,9 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                               image: controller.interiorImage2.value,
                               onTap: () =>
                                   controller.pickImage(controller.interiorImage2), title: '',
+                                  onRemove: () {
+                                    controller.interiorImage2.value = null;
+                                  },
                             ),
                           ),
                         ),
@@ -402,21 +419,33 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                           image: controller.exteriorImage1.value,
                           onTap: () =>
                               controller.pickImage(controller.exteriorImage1), title: '',
+                          onRemove: () {
+                            controller.exteriorImage1.value = null;
+                          },
                         )),
                         Obx(() => _uploadBox(
                           image: controller.exteriorImage2.value,
                           onTap: () =>
                               controller.pickImage(controller.exteriorImage2), title: '',
+                          onRemove: () {
+                            controller.exteriorImage2.value = null;
+                          },
                         )),
                         Obx(() => _uploadBox(
                           image: controller.exteriorImage3.value,
                           onTap: () =>
                               controller.pickImage(controller.exteriorImage3), title: '',
+                          onRemove: () {
+                            controller.exteriorImage3.value = null;
+                          },
                         )),
                         Obx(() => _uploadBox(
                           image: controller.exteriorImage4.value,
                           onTap: () =>
                               controller.pickImage(controller.exteriorImage4), title: '',
+                          onRemove: () {
+                            controller.exteriorImage4.value = null;
+                          },
                         )),
                       ],
                     ),
@@ -558,7 +587,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
             border: Border.all(
               color: (errorText != null && errorText.isNotEmpty)
                   ? Colors.red
-                  : Colors.transparent,
+                  : AppColors.black50,
             ),
           ),
           child: Row(
@@ -569,7 +598,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                   width: 25,
                   height: 25,
                 ),
-                const SizedBox(width: 10),
+                // const SizedBox(width: 10),
               ],
               Expanded(
                 child:
@@ -682,7 +711,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
               border: Border.all(
                 color: (errorText != null && errorText.isNotEmpty)
                     ? Colors.red
-                    : Colors.transparent,
+                    : AppColors.black50,
               )
           ),
           child: Row(
@@ -693,14 +722,13 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                   width: 25,
                   height: 25,
                 ),
-                const SizedBox(width: 10),
+                // const SizedBox(width: 10),
               ],
               Expanded(
                 child:
                 DropdownButtonHideUnderline(
                   child:
                   DropdownButton2<String>(
-
                     value: selectedValue,
                     isExpanded: true,
                     hint: Text(
@@ -727,7 +755,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
 
                     onChanged: onChanged,
 
-                    buttonStyleData: const ButtonStyleData(
+                    buttonStyleData:  ButtonStyleData(
                       height: 48,
                       padding: EdgeInsets.zero,
                     ),
@@ -783,75 +811,156 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
   Widget _uploadBox({
     required String title,
     required VoidCallback onTap,
+    required VoidCallback onRemove,
     File? image,
+    String? imageUrl,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: DottedBorder(
-        color: AppColors.green500,
-        dashPattern: const [5, 3],
-        borderType: BorderType.RRect,
-        radius: const Radius.circular(8),
-        child: Container(
-            height: 80,
-            width: double.infinity,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        DottedBorder(
+          color: AppColors.green500,
+          dashPattern: const [5, 3],
+          borderType: BorderType.RRect,
+          radius: const Radius.circular(8),
+          child: GestureDetector(
+            onTap: onTap,
+            child: Container(
+              height: 80,
+              width: double.infinity,
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.white
+              ),
+              child: image != null
+                  ? Image.file(
+                image,
+                fit: BoxFit.cover,
+              )
+                  : (imageUrl != null && imageUrl.isNotEmpty)
+                  ? Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+              )
+                  : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(Images.uploadIcon),
+                  title==""?SizedBox():
+                  const SizedBox(height: 6),
+                  title==""?SizedBox():
+                  CustomWidget().buildTextWidget(
+                    title: title,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    textColor: AppColors.black400,
+                  ),
+                ],
+              ),
             ),
-            child: image != null
-                ? Stack(
-              fit: StackFit.expand,
-              children: [
-                Image.file(
-                  image,
-                  fit: BoxFit.cover,
-                ),
+          ),
+        ),
 
-                Positioned(
-                  top: 4,
-                  right: 4,
-                  child: Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.edit,
-                      size: 14,
-                    ),
+        // Edit icon overlapping border
+        if (image != null || (imageUrl != null && imageUrl.isNotEmpty))
+          Positioned(
+            top: -6,
+            right: -6,
+            child: GestureDetector(
+              onTap: onRemove,
+              child: Container(
+                padding: const EdgeInsets.all(0),
+                decoration: BoxDecoration(
+                  color: AppColors.green500,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.green500,
                   ),
                 ),
-              ],
-            )
-                :
-            title!=""?
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(Images.uploadIcon,height: 30,width: 30),
-                SizedBox(height: 6),
-                CustomWidget().buildTextWidget(
-                  title: title,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  textColor: AppColors.black400,
+                child: const Icon(
+                  CupertinoIcons.multiply,
+                  size: 12,
+                  color: Colors.white,
                 ),
-              ],
-            ):
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(Images.uploadIcon,height: 30,width: 30),
-              ],
-            )
-
-        ),
-      ),
+              ),
+            ),
+          ),
+      ],
     );
-
   }
+  // Widget _uploadBox({
+  //   required String title,
+  //   required VoidCallback onTap,
+  //   File? image,
+  // }) {
+  //   return GestureDetector(
+  //     onTap: onTap,
+  //     child: DottedBorder(
+  //       color: AppColors.green500,
+  //       dashPattern: const [5, 3],
+  //       borderType: BorderType.RRect,
+  //       radius: const Radius.circular(8),
+  //       child: Container(
+  //           height: 80,
+  //           width: double.infinity,
+  //           clipBehavior: Clip.antiAlias,
+  //           decoration: BoxDecoration(
+  //             borderRadius: BorderRadius.circular(8),
+  //           ),
+  //           child: image != null
+  //               ? Stack(
+  //             fit: StackFit.expand,
+  //             children: [
+  //               Image.file(
+  //                 image,
+  //                 fit: BoxFit.cover,
+  //               ),
+  //
+  //               Positioned(
+  //                 top: 4,
+  //                 right: 4,
+  //                 child: Container(
+  //                   padding: const EdgeInsets.all(2),
+  //                   decoration: const BoxDecoration(
+  //                     color: Colors.white,
+  //                     shape: BoxShape.circle,
+  //                   ),
+  //                   child: const Icon(
+  //                     Icons.edit,
+  //                     size: 14,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           )
+  //               :
+  //           title!=""?
+  //           Column(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               SvgPicture.asset(Images.uploadIcon,height: 30,width: 30),
+  //               SizedBox(height: 6),
+  //               CustomWidget().buildTextWidget(
+  //                 title: title,
+  //                 fontSize: 12,
+  //                 fontWeight: FontWeight.w400,
+  //                 textColor: AppColors.black400,
+  //               ),
+  //             ],
+  //           ):
+  //           Column(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               SvgPicture.asset(Images.uploadIcon,height: 30,width: 30),
+  //             ],
+  //           )
+  //
+  //       ),
+  //     ),
+  //   );
+  //
+  // }
   Widget _documentSection({
     required String title,
     required Rx<File?> frontImage,
@@ -885,6 +994,9 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                     title: "Front",
                     image: frontImage.value,
                     onTap: () => controller.pickImage(frontImage),
+                        onRemove: () {
+                          frontImage.value = null;
+                        },
                   ),
                 ),
               ),
@@ -897,6 +1009,10 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                     title: "Back (Optional)",
                     image: backImage.value,
                     onTap: () => controller.pickImage(backImage),
+                        onRemove: () {
+                          backImage.value = null;
+                        },
+
                   ),
                 ),
               ),

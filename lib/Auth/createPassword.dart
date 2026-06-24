@@ -23,7 +23,12 @@ class CreateNewPasswordScreen extends StatefulWidget {
 
 class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
   final LoginController loginController=Get.find<LoginController>();
-
+  @override
+  void initState() {
+    loginController.passwordController.clear();
+    loginController.confirmPasswordController.clear();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,28 +162,30 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                 const SizedBox(height: 30),
 
                 /// Submit Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 54,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      loginController.resetPassword(widget.email, loginController.passwordController.text,
-                          loginController.confirmPasswordController.text,context);
+                Obx(
+                  () =>  SizedBox(
+                    width: double.infinity,
+                    height: 54,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        loginController.resetPassword(widget.email, loginController.passwordController.text,
+                            loginController.confirmPasswordController.text,context);
 
-                      // Reset Password API
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.green,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        // Reset Password API
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.green,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                    ),
-                    child: CustomWidget().buildTextWidget(
-                      title: "Submit",
-                      textColor: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      child: CustomWidget().buildTextWidget(
+                        title: loginController.isLoading.value?"Loading...":"Submit",
+                        textColor: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),

@@ -153,53 +153,36 @@ class CustomWidget {
     double? fontSize,
     double? height,
     double? width,
-    Color textColor = AppColors.whiteColor,
-    Color pressedTextColor = AppColors.purpleColor700,
-    Color hoverColor = AppColors.purpleColor700,
+    Color textColor = AppColors.amberColor700,
     Color btBorderColor = AppColors.borderColor,
+    Color bgColor = AppColors.yellow50,
+    FontWeight fontWeight = FontWeight.w600,
   }) {
-    bool _isPressed = false;
     return StatefulBuilder(
       builder: (context, setState) {
-        return Listener(
-          onPointerDown: (_) => setState(() => _isPressed = true),
-          onPointerUp: (_) => setState(() => _isPressed = false),
-          child: SizedBox(
-            height: height ?? 48,
-            width: width ?? Get.width,
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(
-                  color: btBorderColor,
-                  width: 1.5,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(radius ?? 30),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14,
-                  horizontal: 24,
-                ),
-              ).copyWith(
-                overlayColor:
-                    MaterialStateProperty.resolveWith<Color?>((states) {
-                  if (states.contains(MaterialState.hovered)) {
-                    return hoverColor;
-                  }
-                  if (states.contains(MaterialState.pressed)) {
-                    return hoverColor;
-                  }
-                  return null;
-                }),
+        return SizedBox(
+          height: height ?? 48,
+          width: width ?? Get.width,
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(
+                color: btBorderColor,
+                width: 1,
               ),
-              onPressed: onPressed,
-              child: CustomWidget().buildTextWidget(
-                title: text,
-                fontSize: fontSize ?? 16,
-                textColor: _isPressed ? pressedTextColor : textColor,
-                fontWeight: FontWeight.w500,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(radius ?? 30),
+              ),
+              backgroundColor: bgColor,
+              padding: const EdgeInsets.symmetric(
+                vertical: 14,
+                horizontal: 24,
               ),
             ),
+            onPressed: onPressed,
+            child:
+              Text(text, style: GoogleFonts.inter(
+                  fontSize: fontSize ?? 16, color: textColor, fontWeight: fontWeight),)
+
           ),
         );
       },
@@ -377,10 +360,11 @@ class CustomWidget {
         hintText: hintText,
         hintStyle: GoogleFonts.inter(
           fontSize: 15,
-          color: Colors.grey,
+          color: AppColors.black200,
           fontWeight: FontWeight.w400,
         ),
         suffixIcon: suffixIcon,
+        suffixIconColor: AppColors.black300,
         prefixIcon: prefixIcon,
         prefixIconConstraints: const BoxConstraints(
           minWidth: 40,
@@ -462,6 +446,7 @@ class CustomWidget {
               child: Container(
                 height: 48,
                 padding: EdgeInsets.symmetric(horizontal: 15),
+
                 decoration: BoxDecoration(
                   color: color,
                   borderRadius: BorderRadius.circular(radius ?? 30),
@@ -522,16 +507,18 @@ class CustomWidget {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
+                          SizedBox(width: 2,),
+                          Icon(Icons.keyboard_arrow_down_sharp,color: AppColors.green500,size: 16,)
                         ],
                       ),
                     ),
-
-                    Container(
-                      width: 1,
-                      margin:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      color: AppColors.borderColor.withOpacity(0.2),
-                    ),
+                    widthSpace8,
+                    // Container(
+                    //   width: 1,
+                    //   margin:
+                    //       EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    //   color: AppColors.borderColor.withOpacity(0.2),
+                    // ),
 
                     /// PHONE FIELD
                     Expanded(
@@ -559,9 +546,10 @@ class CustomWidget {
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: 10,
                           ),
+
                           hintStyle: GoogleFonts.inter(
-                            fontSize: 16,
-                            color: Colors.grey.shade400,
+                            fontSize: 15,
+                            color: AppColors.black200,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -1128,17 +1116,46 @@ class CustomWidget {
   }
 
   Widget customNetWorkWidget() {
-    return Container(
-      alignment: Alignment.center,
-      height: Get.height * 0.6,
-      child: CustomWidget().buildTextWidget(
-          title: Translation(
-                  "Please check your internet connection or try again later.")
-              .tr(),
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          textColor: AppColors.purpleColor700,
-          textAlign: TextAlign.center),
+    return
+      Center(
+      child: Column(
+
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "",
+                  width: 200,
+                  height: 200,
+                ),
+                CustomWidget().buildTextWidget(
+                    title: "No Internet Connection",
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    textColor: AppColors.black500,
+                    textAlign: TextAlign.center),
+                CustomWidget().buildTextWidget(
+                    title: "Check your connection and try again.",
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    textColor: AppColors.black400,
+                    textAlign: TextAlign.center),
+              ],
+            ),
+          ),
+          Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: buildMaterialBtn(
+                radius: 8,
+                text: "Retry",
+                color: AppColors.green500,
+                onPressed: () {},
+              ))
+        ],
+      ),
     );
   }
 

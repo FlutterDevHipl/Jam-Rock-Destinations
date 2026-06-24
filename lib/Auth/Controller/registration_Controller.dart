@@ -10,6 +10,7 @@ import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:Jam_Rock_Destinations/Driver/driver_bottom_navigation.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -57,15 +58,25 @@ class RegistrationController extends GetxController{
       },
     );
   }
-  Future<void> pickImage(ImageSource camera) async {
+  // Future<void> pickImage(ImageSource camera) async {
+  //   final XFile? image = await ImagePicker().pickImage(
+  //     source: ImageSource.gallery,
+  //     imageQuality: 80,
+  //   );
+  //
+  //   if (image != null) {
+  //
+  //       selectedImage.value = File(image.path);
+  //   }
+  // }
+  Future<void> pickImage(ImageSource source) async {
     final XFile? image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
+      source: source,
       imageQuality: 80,
     );
 
     if (image != null) {
-
-        selectedImage.value = File(image.path);
+      selectedImage.value = File(image.path);
     }
   }
   bool isDarkMode = Get.isDarkMode;
@@ -91,6 +102,17 @@ class RegistrationController extends GetxController{
     otpError.value = '';
     return true;
   }
+  Future<void> getFirebaseToken() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // Request permission for iOS
+    await messaging.requestPermission();
+
+    // Get FCM token
+    String? token = await messaging.getToken();
+
+    print("✅ FCM Token: $token");
+  }
   final Rx<Country?> selectedCountry = Rx<Country?>(
     Country(
       phoneCode: "1",
@@ -105,10 +127,20 @@ class RegistrationController extends GetxController{
       e164Key: "",
     ),
   );
+  String maskPhoneNumber(String phone) {
+    if (phone.length < 6) return phone;
+
+    String countryCode = phone.substring(0, 2); // +1
+    String last2 = phone.substring(phone.length - 2);
+
+    return '$countryCode X XXX XX$last2';
+  }
+  RxBool isOtpDialogOpen = false.obs;
   void showVerificationDialog({
     required BuildContext context,
     required bool isPhoneVerification,
     required String value,
+
     VoidCallback? onSubmit,
     VoidCallback? onResend,
     VoidCallback? onChange,
@@ -141,8 +173,10 @@ class RegistrationController extends GetxController{
                 Align(
                   alignment: Alignment.topRight,
                   child: InkWell(
-                    onTap: () => Get.back(),
-                    child: const Icon(
+                    onTap:() {
+                      isOtpDialogOpen.value = false;
+                      Get.back();
+                    },child:  const Icon(
                       Icons.close,
                       color: Colors.black54,
                       size: 22,
@@ -175,7 +209,16 @@ class RegistrationController extends GetxController{
                 ),
 
                 const SizedBox(height: 2),
-
+                isPhoneVerification?
+                CustomWidget().buildTextWidget(
+                  title: "+${countryCode.value.isEmpty?"1":countryCode.value} ${
+                      maskPhoneNumber(value)
+                      }",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  textColor: const Color(0xffC5A227),
+                  textAlign: TextAlign.center,
+                ):
                 CustomWidget().buildTextWidget(
                   title: value,
                   fontSize: 16,
@@ -298,6 +341,7 @@ class RegistrationController extends GetxController{
                 /// Change Email/Phone
                 GestureDetector(
                   onTap: () {
+                    isOtpDialogOpen.value = false;
                     Get.back();
                   },
                   child: CustomWidget().buildTextWidget(
@@ -332,19 +376,23 @@ class RegistrationController extends GetxController{
       );
 
       if (response['success'] == true) {
+
         CustomWidget().showCustomToast(
           message: "OTP has been sent",
           backgroundColor: AppColors.green500,
         );
 
         otpController.clear();
+        if (!isOtpDialogOpen.value) {
+          isOtpDialogOpen.value = true;
 
-        showVerificationDialog(
-          context: context,
-          isPhoneVerification: false,
-          value: email,
+          showVerificationDialog(
+            context: context,
+            isPhoneVerification: false,
+            value: email,
+          );
+        }
 
-        );
       } else {
         CustomWidget().showCustomToast(
           message: response['message'] ?? "Failed to send OTP",
@@ -360,6 +408,7 @@ class RegistrationController extends GetxController{
   Future<void> sendPhoneOTp(
       String phone,
       BuildContext context,
+
       ) async {
     try {
       isLoading.value = true;
@@ -379,12 +428,22 @@ log("phone $phone");
 
         otpController.clear();
 
-        showVerificationDialog(
-          context: context,
-          isPhoneVerification: true,
-          value: phone,
+        // showVerificationDialog(
+        //   context: context,
+        //   isPhoneVerification: true,
+        //   value: phone,
+        //
+        //
+        // );
+        if (!isOtpDialogOpen.value) {
+          isOtpDialogOpen.value = true;
 
-        );
+          showVerificationDialog(
+            context: context,
+            isPhoneVerification: true,
+            value: phone,
+          );
+        }
       } else {
         CustomWidget().showCustomToast(
           message: response['message'] ?? "Failed to send OTP",
@@ -423,6 +482,7 @@ log("phone $phone");
           message: "Email verified successfully",
           backgroundColor: AppColors.green500,
         );
+        isOtpDialogOpen.value = false;
         isLoading.value = false;
       } else {
         CustomWidget().showCustomToast(
@@ -463,6 +523,7 @@ log("phone $phone");
           message: "Phone verified successfully",
           backgroundColor: AppColors.green500,
         );
+        isOtpDialogOpen.value = false;
         isLoading.value = false;
       } else {
         CustomWidget().showCustomToast(
@@ -510,23 +571,46 @@ log("phone $phone");
 
     return {};
   }
-  Future<void> registerUser() async {
+  Future<void> registerGoogleUser(
+      {required String socialUserId,
+      required String displayName,
+      required String email,
+      required String photoURL,
+      }) async {
     try {
       isLoading.value = true;
 
       final deviceData = await getDeviceInfo();
-
+      String? token;
+      try {
+        // token = "fcm_token_here";
+        token = await FirebaseMessaging.instance.getToken();
+      } catch (e) {
+        log("❌ Firebase Token Error: $e");
+        token = "";
+      }
+      final googleData={
+        "name": displayName,
+        "email": email,
+        "photo_url":photoURL,
+      };
+      print("googleData ${googleData}");
       final requestData = {
-        "register_type": "normal",
+        "register_type": "google",
         "user_type": userType == "EXPLORER" ? "customer" : "driver",
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
         "phone": "+${countryCode.value}${phoneController.text.trim()}",
-        "password": passwordController.text,
-        "password_confirmation": confirmPassController.text,
         "platform": Platform.isAndroid ? "android" : "ios",
         "device_id": deviceData["device_id"],
         "device_json": jsonEncode(deviceData["device_json"]),
+        "device_token": token,
+        "social_user_id":socialUserId,  // Social login case
+        "social_json": jsonEncode({
+          "name": displayName,
+          "email": email,
+          "photo_url": photoURL,
+        }),
       };
 
       var response = await ApiProvider().putRequestProfile(
@@ -547,14 +631,167 @@ log("phone $phone");
         await userBox.put("user_id", response['data']["user"]["id"].toString());
         await userBox.put("token", response['data']["access_token"].toString());
         await userBox.put("user_type", response['data']["user"]["user_type"].toString());
-        if( userType=="EXPLORER")
-          {
+
+        Get.offAll(CustomerBottomNavigation(index: 0,)) ;
+
+
+
+      } else {
+        String errorMessage = "Registration failed";
+
+        if (response['errors'] != null &&
+            response['errors'] is Map &&
+            response['errors'].isNotEmpty) {
+          final firstKey = response['errors'].keys.first;
+          errorMessage = response['errors'][firstKey].first.toString();
+        }
+
+        CustomWidget().showCustomToast(
+          message: errorMessage,
+          backgroundColor: Colors.red,
+        );
+      }
+    } catch (e) {
+      print("Register Error: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  Future<void> registerUser(
+
+      ) async {
+    try {
+      isLoading.value = true;
+
+      final deviceData = await getDeviceInfo();
+      String? token;
+      try {
+        // token = "fcm_token_here";
+        token = await FirebaseMessaging.instance.getToken();
+      } catch (e) {
+        log("❌ Firebase Token Error: $e");
+        token = "";
+      }
+      final requestData = {
+        "register_type": "normal",
+        "user_type": userType == "EXPLORER" ? "customer" : "driver",
+        "name": nameController.text.trim(),
+        "email": emailController.text.trim(),
+        "phone": "+${countryCode.value}${phoneController.text.trim()}",
+        "password": passwordController.text,
+        "password_confirmation": confirmPassController.text,
+        "platform": Platform.isAndroid ? "android" : "ios",
+        "device_id": deviceData["device_id"],
+        "device_json": jsonEncode(deviceData["device_json"]),
+        "device_token": token
+      };
+
+      var response = await ApiProvider().putRequestProfile(
+        apiUrl: AppConstants.register,
+        fields: requestData,
+        imageKey: "profile_image",
+        userImage: selectedImage,
+      );
+
+      print("Register Response: $response");
+
+      if (response['success'] == true) {
+        CustomWidget().showCustomToast(
+          message: response['message'] ?? "Registration successful",
+          backgroundColor: AppColors.green500,
+        );
+        print("User id ${response['data']["user"]["id"].toString()}");
+        await userBox.put("user_id", response['data']["user"]["id"].toString());
+        await userBox.put("token", response['data']["access_token"].toString());
+        await userBox.put("user_type", response['data']["user"]["user_type"].toString());
+
             Get.offAll(CustomerBottomNavigation(index: 0,)) ;
-          }
-        else
-          {
-            ProfileSetupScreen();
-          }
+
+      } else {
+        String errorMessage = "Registration failed";
+
+        if (response['errors'] != null &&
+            response['errors'] is Map &&
+            response['errors'].isNotEmpty) {
+          final firstKey = response['errors'].keys.first;
+          errorMessage = response['errors'][firstKey].first.toString();
+        }
+
+        CustomWidget().showCustomToast(
+          message: errorMessage,
+          backgroundColor: Colors.red,
+        );
+      }
+    } catch (e) {
+      print("Register Error: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  Future<void> googleDriverRegistration(
+      {required String socialUserId,
+        required String displayName,
+        required String email,
+        required String photoURL,
+      }
+      ) async {
+    try {
+      isLoading.value = true;
+
+      final deviceData = await getDeviceInfo();
+      String? fcmToken;
+      try {
+        // token = "fcm_token_here";
+        fcmToken = await FirebaseMessaging.instance.getToken();
+      } catch (e) {
+        log("❌ Firebase Token Error: $e");
+        fcmToken = "";
+      }
+      final googleData={
+        "name": displayName,
+        "email": email,
+        "photo_url":photoURL,
+      };
+      final requestData = {
+        "register_step": 1,
+        // "device_token": "fcm_token_here",
+        "register_type": "google",
+        "user_type": "driver",
+        "name": nameController.text.trim(),
+        "email": emailController.text.trim(),
+        "phone": "+${countryCode.value}${phoneController.text.trim()}",
+        "platform": Platform.isAndroid ? "android" : "ios",
+        "device_id": deviceData["device_id"],
+        "device_json": jsonEncode(deviceData["device_json"]),
+        "device_token": fcmToken,
+        "social_user_id":socialUserId,  // Social login case
+        "social_json": jsonEncode({
+          "name": displayName,
+          "email": email,
+          "photo_url": photoURL,
+        }),   // Social login case
+      };
+
+      var response = await ApiProvider().putRequestProfile(
+        apiUrl: AppConstants.register,
+        fields: requestData,
+        imageKey: "profile_image",
+        userImage: selectedImage,
+      );
+
+      print("Register Response: $response");
+
+      if (response['success'] == true) {
+        CustomWidget().showCustomToast(
+          message: response['message'] ?? "Registration successful",
+          backgroundColor: AppColors.green500,
+        );
+
+
+        print("Very First api for registration token =  ${response["data"]["registration_token"]}");
+        print("Very First api for registration  step = ${response["data"]["next_step"]}");
+        Get.to(ProfileSetupStepOneView(token: response["data"]["registration_token"],step: response["data"]["next_step"],));
+
 
       } else {
         String errorMessage = "Registration failed";
@@ -582,7 +819,14 @@ log("phone $phone");
       isLoading.value = true;
 
       final deviceData = await getDeviceInfo();
-
+      String? fcmToken;
+      try {
+        // token = "fcm_token_here";
+        fcmToken = await FirebaseMessaging.instance.getToken();
+      } catch (e) {
+        log("❌ Firebase Token Error: $e");
+        fcmToken = "";
+      }
       final requestData = {
         "register_step": 1,
         // "device_token": "fcm_token_here",
@@ -596,6 +840,7 @@ log("phone $phone");
         "platform": Platform.isAndroid ? "android" : "ios",
         "device_id": deviceData["device_id"],
         "device_json": jsonEncode(deviceData["device_json"]),
+        "device_token": fcmToken
       };
 
       var response = await ApiProvider().putRequestProfile(

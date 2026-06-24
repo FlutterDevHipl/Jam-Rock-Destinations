@@ -4,7 +4,7 @@ import 'package:Jam_Rock_Destinations/Auth/Controller/registration_Controller.da
 import 'package:Jam_Rock_Destinations/Auth/Login_View.dart';
 import 'package:Jam_Rock_Destinations/Auth/profileSetup1.dart';
 import 'package:Jam_Rock_Destinations/Auth/verify_OTP.dart';
-import 'package:Jam_Rock_Destinations/Common/TermsAndConditions.dart';
+import 'package:Jam_Rock_Destinations/Common/setting/TermsAndConditions.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
 import 'package:country_picker/country_picker.dart';
@@ -18,11 +18,17 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../Common/PrivacyPolicy.dart';
+import '../Common/setting/PrivacyPolicy.dart';
 import '../Utils/app_images.dart';
 import '../Utils/custom_widget.dart';
 class RegistrationView extends StatefulWidget {
-  const RegistrationView({super.key});
+  final fullname;
+  final email;
+  final socialUserId;
+
+  final isSocialLogin;
+  final image;
+  const RegistrationView({super.key, this.fullname, this.email, this.isSocialLogin, this.image, this.socialUserId});
 
   @override
   State<RegistrationView> createState() => _RegistrationViewState();
@@ -33,6 +39,13 @@ class _RegistrationViewState extends State<RegistrationView> {
 
   @override
   Widget build(BuildContext context) {
+    print("widget.image ${widget.image}");
+    registrationController.getFirebaseToken();
+    if(widget.isSocialLogin==true){
+      registrationController.nameController.text=widget.fullname.toString();
+      registrationController.emailController.text=widget.email.toString();
+    }
+
     return   Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -75,7 +88,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                         fontWeight: FontWeight.w400,
                         textAlign: TextAlign.center,
                       ),
-                      heightSpace30,
+                      heightSpace35,
                       Stack(
                         clipBehavior: Clip.none,
                         children: [
@@ -95,7 +108,15 @@ class _RegistrationViewState extends State<RegistrationView> {
                               color: Color(0xffF2F2F2),
                             )
                                 : null,
-                          ):
+                          )
+                              :
+                widget.isSocialLogin && widget.image != null
+                ? CircleAvatar(
+                radius: 55,
+                backgroundColor: AppColors.green100,
+                backgroundImage: NetworkImage(widget.image!),
+              )
+                    :
                           SvgPicture.asset(Images.profileIcon),
                           Positioned(
                             bottom: -13,
@@ -175,7 +196,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                           return null;
                         },
                       ),
-                      heightSpace24,
+                      heightSpace15,
                       /// Email
                       Align(
                         alignment: Alignment.centerLeft,
@@ -188,7 +209,11 @@ class _RegistrationViewState extends State<RegistrationView> {
                       ),
 
                       heightSpace8,
-
+                      widget.isSocialLogin?
+                      CustomWidget().buildTextFormField(darkMode: false,radius: 8,
+                      controller:  registrationController.emailController,
+                      readOnly: true,
+                      ):
                       CustomWidget().buildTextFormField(darkMode: true, radius: 8,
                         readOnly: registrationController.isEmailVerified.value,
                         controller:
@@ -272,7 +297,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                         },
                       ),
 
-                  heightSpace24,
+                      heightSpace15,
                       Align(
                         alignment: Alignment.centerLeft,
                         child: CustomWidget().buildTextWidget(
@@ -282,10 +307,17 @@ class _RegistrationViewState extends State<RegistrationView> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                      heightSpace8,
+                      // widget.isSocialLogin && registrationController.phoneController.text.isNotEmpty?
+                      // CustomWidget().buildTextFormField(darkMode: false,radius: 8,
+                      //   controller:  registrationController.phoneController,
+                      //   readOnly: true,
+                      // ):
                       CustomWidget().buildPhoneField(
                         darkMode: registrationController.isDarkMode?true:false,
                         readOnly: registrationController.isPhoneVerified.value,
                         radius: 8,
+                        enableCountryPicker:userType != "EXPLORER"?false:true,
                         color:  const Color(0xffF5F5F5),
 
                         suffixIcon:
@@ -342,151 +374,192 @@ class _RegistrationViewState extends State<RegistrationView> {
                           );
                         },
                       ),
-                      heightSpace24,
+                      heightSpace15,
 
-                      /// Password
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: CustomWidget().buildTextWidget(
-                          title: "Password",
-                          fontSize: 14,
-                          textColor:AppColors.black300,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      heightSpace8,
-                      CustomWidget().buildTextFormField(darkMode: true, radius: 8,
-                        controller: registrationController.passwordController,
-                        obscureText: !registrationController.isPasswordVisible,
-                        keyboardType: TextInputType.name,
-                        hintText: "Enter Your Password",
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: SvgPicture.asset(
-                              Images.lockIcon
+                      widget.isSocialLogin?
+                          SizedBox():
+                      Column(children: [
+                        /// Password
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: CustomWidget().buildTextWidget(
+                            title: "Password",
+                            fontSize: 14,
+                            textColor:AppColors.black300,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              registrationController.isPasswordVisible = !registrationController.isPasswordVisible;
-                            });
+                        heightSpace8,
+                        CustomWidget().buildTextFormField(darkMode: true, radius: 8,
+                          controller: registrationController.passwordController,
+                          obscureText: !registrationController.isPasswordVisible,
+                          keyboardType: TextInputType.name,
+                          hintText: "Enter Your Password",
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: SvgPicture.asset(
+                                Images.lockIcon
+                            ),
+                          ),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                registrationController.isPasswordVisible = !registrationController.isPasswordVisible;
+                              });
+                            },
+                            icon: Icon(
+                              registrationController.isPasswordVisible
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                              size: 19,
+                              color: Colors.black38,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter password";
+                            }
+
+                            if (value.length < 7) {
+                              return "Password must be at least 7 characters";
+                            }
+
+                            if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                              return "Password must contain one uppercase letter";
+                            }
+
+                            if (!RegExp(r'[0-9]').hasMatch(value)) {
+                              return "Password must contain one number";
+                            }
+
+                            if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+                              return "Password must contain one special character";
+                            }
+
+                            return null;
                           },
-                          icon: Icon(
-                            registrationController.isPasswordVisible
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            size: 19,
-                            color: Colors.black38,
+
+                        ),
+                        heightSpace15,
+
+                        /// Password
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: CustomWidget().buildTextWidget(
+                            title: "Confirm Password",
+                            fontSize: 14,
+                            textColor:AppColors.black300,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please enter password";
-                          }
-
-                          if (value.length < 7) {
-                            return "Password must be at least 7 characters";
-                          }
-
-                          if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                            return "Password must contain one uppercase letter";
-                          }
-
-                          if (!RegExp(r'[0-9]').hasMatch(value)) {
-                            return "Password must contain one number";
-                          }
-
-                          if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-                            return "Password must contain one special character";
-                          }
-
-                          return null;
-                        },
-
-                      ),
-                      heightSpace24,
-
-                      /// Password
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: CustomWidget().buildTextWidget(
-                          title: "Confirm Password",
-                          fontSize: 14,
-                          textColor:AppColors.black300,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      heightSpace8,
-                      CustomWidget().buildTextFormField(darkMode: true, radius: 8,
-                        controller: registrationController.confirmPassController,
-                        obscureText: !registrationController.isConfirmPassVisible.value,
-                        keyboardType: TextInputType.name,
-                        hintText: "Enter Your Confirm Password",
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: SvgPicture.asset(
-                              Images.lockIcon
+                        heightSpace8,
+                        CustomWidget().buildTextFormField(darkMode: true, radius: 8,
+                          controller: registrationController.confirmPassController,
+                          obscureText: !registrationController.isConfirmPassVisible.value,
+                          keyboardType: TextInputType.name,
+                          hintText: "Enter Your Confirm Password",
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: SvgPicture.asset(
+                                Images.lockIcon
+                            ),
                           ),
-                        ),
-                        suffixIcon: IconButton(
-                          onPressed: () {
+                          suffixIcon: IconButton(
+                            onPressed: () {
 
                               registrationController.isConfirmPassVisible.value = !registrationController.isConfirmPassVisible.value;
 
-                          },
-                          icon: Icon(
-                            registrationController.isConfirmPassVisible.value
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            size: 19,
-                            color: Colors.black38,
+                            },
+                            icon: Icon(
+                              registrationController.isConfirmPassVisible.value
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                              size: 19,
+                              color: Colors.black38,
+                            ),
                           ),
                         ),
-                      ),
-                      heightSpace24,
+                        heightSpace24,
+                      ],),
+
+
 
                       SizedBox(
                         width: double.infinity,
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () {
-                            if (registrationController.selectedImage == null && userType!="EXPLORER") {
-                             CustomWidget().showCustomToast(message: "Please upload profile picture",backgroundColor: Colors.red);
-                              return;
-                            }
-                            if (!registrationController.formKey.currentState!.validate()) {
-                              return;
-                            }
-                            if(registrationController.confirmPassController.text!=registrationController.passwordController.text)
+                            if(widget.isSocialLogin)
                               {
-                                CustomWidget().showCustomToast(message: "Confirm password does not match the entered password.",backgroundColor: Colors.red);
-                                return;
-                              }
-                            if(!registrationController.isEmailVerified.value)
-                              {
-                                CustomWidget().showCustomToast(message: "Please Verify your email",backgroundColor: Colors.red);
-                                return;
-                              }
-                             if(!registrationController.isPhoneVerified.value)
-                              {
-                                CustomWidget().showCustomToast(message: "Please Verify your phone number",backgroundColor: Colors.red);
-                                return;
-                              }
-                            if(userType=="EXPLORER")
-                              {
-                                registrationController.registerUser();
-                                // CustomWidget().showCustomToast(message: "Login Screen Redirections");
+                                if(userType=="EXPLORER")
+                                {
+                                  if(!registrationController.isPhoneVerified.value) {
+                                    CustomWidget().showCustomToast(
+                                        message: "Please Verify your phone number",
+                                        backgroundColor: Colors.red);
+                                  }
+                                  else if(registrationController.selectedImage.value==null&& userType!="EXPLORER"&& widget.image==null)
+                                    {
+                                      CustomWidget().showCustomToast(message: "Please upload profile picture",backgroundColor: Colors.red);
+                                      return;
+                                    }
+                                    else {
+                                    registrationController.registerGoogleUser(socialUserId: widget.socialUserId,
+                                      displayName: widget.fullname,
+                                      email: widget.email,
+                                      photoURL: widget.image,
+                                    );
+                                  }
+
+                                }
+                                else
+                                {
+                                  registrationController.googleDriverRegistration(socialUserId: widget.socialUserId,
+                                      displayName: widget.fullname,
+                                      email: widget.email,
+                                      photoURL: widget.image);
+                                }
                               }
                             else
-                            {
-                           registrationController.driverRegistration();
-                            }
+                              {
+                                if (registrationController.selectedImage.value == null && userType!="EXPLORER") {
+                                  CustomWidget().showCustomToast(message: "Please upload profile picture",backgroundColor: Colors.red);
+                                  return;
+                                }
+                                if (!registrationController.formKey.currentState!.validate()) {
+                                  return;
+                                }
+                                if(registrationController.confirmPassController.text!=registrationController.passwordController.text)
+                                {
+                                  CustomWidget().showCustomToast(message: "Confirm password does not match the entered password.",backgroundColor: Colors.red);
+                                  return;
+                                }
+                                if(!registrationController.isEmailVerified.value)
+                                {
+                                  CustomWidget().showCustomToast(message: "Please Verify your email",backgroundColor: Colors.red);
+                                  return;
+                                }
+                                if(!registrationController.isPhoneVerified.value)
+                                {
+                                  CustomWidget().showCustomToast(message: "Please Verify your phone number",backgroundColor: Colors.red);
+                                  return;
+                                }
+                                if(userType=="EXPLORER")
+                                {
+                                  registrationController.registerUser();
+                                  // CustomWidget().showCustomToast(message: "Login Screen Redirections");
+                                }
+                                else
+                                {
+                                  registrationController.driverRegistration();
+                                }
+                              }
+
 
                             // Call Login API
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xff2F8F3A),
+                            backgroundColor: AppColors.green500,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -567,7 +640,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                           CustomWidget().buildTextWidget(
                               title: "Already have an account? ",
                               textColor: AppColors.black400,
-                              fontWeight: FontWeight.w400,
+                              fontWeight: FontWeight.w500,
                               fontSize: 16
                           ),
                           GestureDetector(onTap: () {
@@ -575,9 +648,9 @@ class _RegistrationViewState extends State<RegistrationView> {
                           },
                             child: CustomWidget().buildTextWidget(
                             title: "Login",
-                            textColor: const Color(0xff2F8F3A),
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16
+                            textColor: AppColors.green500,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16
                           ),)
 
                         ],
@@ -587,7 +660,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                   if (registrationController.isLoading.value)
                     Positioned.fill(
                       child: const Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator(color: AppColors.green500,),
                       ),
                     ),
                 ],

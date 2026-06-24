@@ -14,7 +14,7 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../Utils/custom_widget.dart';
-import 'UpdateDocumentController.dart';
+import 'controller/UpdateDocumentController.dart';
 
 class KycScreen extends  StatefulWidget{
 
@@ -64,6 +64,9 @@ class _KycScreenState extends State<KycScreen> {
                 color:  documentController.governmentFrontImage.value != null ||
                     documentController.licenseFrontImage.value != null ||
                     documentController.crbFrontImage.value != null
+                || documentController.governmentBackUrl.value.isEmpty
+                ||documentController.licenseBackUrl.value.isEmpty
+                ||documentController.crbBackUrl.value.isEmpty
                     ? AppColors.green500
                     : Colors.grey,
                 radius: 8,
@@ -96,8 +99,12 @@ class _KycScreenState extends State<KycScreen> {
                   final hasData =
                       documentController.governmentFrontImage.value != null ||
                           documentController.licenseFrontImage.value != null ||
-                          documentController.crbFrontImage.value != null;
-        
+                          documentController.crbFrontImage.value != null
+                          || documentController.governmentBackUrl.value.isEmpty
+                          ||documentController.licenseBackUrl.value.isEmpty
+                          ||documentController.crbBackUrl.value.isEmpty
+                  ;
+
                   hasData
                       ? documentController.updateKycDocuments()
                       : print("No data uploaded");
@@ -200,14 +207,14 @@ class _KycScreenState extends State<KycScreen> {
                   children: [
                     CustomWidget().buildTextWidget(
                       title: "Upload clear & valid documents",
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: FontWeight.w400,
                       textColor: AppColors.black400,
                     ),
                     CustomWidget().buildTextWidget(
                       title: "(JPG, PNG or PDF · Max 5MB)",
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                       textColor: AppColors.green500,
                     ),
                   ],
@@ -232,9 +239,9 @@ class _KycScreenState extends State<KycScreen> {
       children: [
         CustomWidget().buildTextWidget(
           title: title,
-          fontSize: 15,
+          fontSize: 14,
           fontWeight: FontWeight.w600,
-          textColor: AppColors.black400,
+          textColor: AppColors.black300,
         ),
 
         const SizedBox(height: 10),
@@ -310,6 +317,7 @@ class _KycScreenState extends State<KycScreen> {
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
+                color: Colors.white
               ),
               child: image != null
                   ? Image.file(

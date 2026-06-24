@@ -53,14 +53,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     fontSize: 24,
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
 
                   /// Subtitle
                   CustomWidget().buildTextWidget(
                     title: "We'll help you get back into your account.",
                     textColor: AppColors.black400,
                     fontWeight: FontWeight.w400,
-                    fontSize: 14,
+                    fontSize: 16,
                   ),
 
                   const SizedBox(height: 28),
@@ -94,7 +94,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ],
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 30),
 
                   /// Label
                   Align(
@@ -102,7 +102,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     child: CustomWidget().buildTextWidget(
                       title: loginController.isEmailSelected.value ? "Email" : "Phone Number",
                       fontSize: 14,
-                      textColor: AppColors.black300,
+                      textColor: AppColors.black500,
                       fontWeight: FontWeight.w600,
                     ),
 
@@ -117,7 +117,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     prefixIcon: Icon(
                       Icons.mail_outline,
                       size: 20,
-                      color: AppColors.black300,
+                      color: AppColors.black500,
                     ),
                     hintText: "john@example.com",
                     radius: 8,
@@ -196,7 +196,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             ? "Verify Email"
                             : "Verify Phone Number",
                         textColor: Colors.white,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         fontSize: 16,
                       ),
                     ),
@@ -213,7 +213,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       title: "Back to Login",
                       textColor: AppColors.green,
                       fontWeight: FontWeight.w500,
-                      fontSize: 15,
+                      fontSize: 16,
                     ),
                   ),
                 ],

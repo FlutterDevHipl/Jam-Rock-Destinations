@@ -35,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    loginController.getFirebaseToken();
     return
       Scaffold(
       backgroundColor: Colors.white,
@@ -48,24 +49,24 @@ class _LoginScreenState extends State<LoginScreen> {
             key: formKey,
             child: Column(
               children: [
-                heightSpace20,
+                heightSpace30,
                 /// Logo
                 Image.asset(
                   Images.logoIcon,
                   height: Get.height * .10,
                 ),
 
-                heightSpace20,
+                heightSpace25,
 
                 CustomWidget().buildTextWidget(
                   title: "Login to your Account",
                   fontSize: 24,
-                  textColor: Colors.black,
+                  textColor: AppColors.black500,
                   fontWeight: FontWeight.w700,
                   textAlign: TextAlign.center,
                 ),
 
-                heightSpace8,
+                heightSpace5,
 
                 CustomWidget().buildTextWidget(
                   title: "Your next destination awaits",
@@ -257,7 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       title: "Forgot your password?",
                       fontSize: 16,
                       textColor:AppColors.green500,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
@@ -336,7 +337,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Expanded(
             child: GestureDetector(
               onTap: () {
-
+                loginController.signInWithGoogle();
               },
               child: Container(
                 height: 55,
@@ -384,12 +385,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.to(RegistrationView());
+                        Get.to(RegistrationView(socialUserId: "",isSocialLogin: false,
+                        image: "",fullname: "",email: "",));
                       },
                       child:    CustomWidget().buildTextWidget(
                       title: "Register Now",
+
                       textColor: AppColors.green500,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                     ),)
 
                   ],

@@ -5,11 +5,13 @@ import 'dart:ui';
 
 import 'package:Jam_Rock_Destinations/Auth/Login_View.dart';
 import 'package:Jam_Rock_Destinations/Auth/createPassword.dart';
+import 'package:Jam_Rock_Destinations/Auth/registration_View.dart';
 import 'package:Jam_Rock_Destinations/Customer/customer_bottom_navigation.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -43,34 +45,221 @@ class LoginController extends GetxController
   bool isDarkMode = Get.isDarkMode;
   final countryCode = ''.obs;
   final isEmailSelected = true.obs;
-  // Future<UserCredential?> signInWithGoogle() async {
-  //   try {
-  //     final GoogleSignIn googleSignIn = GoogleSignIn();
-  //
-  //     await googleSignIn.signOut(); // Optional
-  //
-  //     final GoogleSignInAccount? googleUser =
-  //     await googleSignIn.signIn();
-  //
-  //     if (googleUser == null) {
-  //       return null; // User cancelled
-  //     }
-  //
-  //     final GoogleSignInAuthentication googleAuth =
-  //     await googleUser.authentication;
-  //
-  //     final credential = GoogleAuthProvider.credential(
-  //       accessToken: googleAuth.accessToken,
-  //       idToken: googleAuth.idToken,
-  //     );
-  //
-  //     return await FirebaseAuth.instance
-  //         .signInWithCredential(credential);
-  //   } catch (e) {
-  //     print("Google Sign-In Error: $e");
-  //     return null;
-  //   }
-  // }
+
+  Future<void> getFirebaseToken() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // Request permission for iOS
+    await messaging.requestPermission();
+
+    // Get FCM token
+    String? token = await messaging.getToken();
+
+    print("✅ FCM Token: $token");
+  }
+  Future<void> socialLogin({
+    required String socialUserId,
+    required String displayName,
+    required String email,
+    required String photoURL,
+  })
+  async {
+    try
+    {
+      isLoading.value=true;
+      String? token;
+      try {
+        // token = "fcm_token_here";
+        token = await FirebaseMessaging.instance.getToken();
+      } catch (e) {
+        log("❌ Firebase Token Error: $e");
+        token = "";
+      }
+      final deviceData = await getDeviceInfo();
+      final googleData={
+        "name": displayName,
+        "email": email,
+        "photo_url":photoURL,
+      };
+      final requestData = {
+        "login_type": "google", // normal,facebook,google,apple
+        "social_user_id": socialUserId,
+        "user_login":email, // email and phone
+        "user_type": userType == "EXPLORER" ? "customer" : "driver",
+        "platform": Platform.isAndroid ? "android" : "ios",
+        "device_id": deviceData["device_id"],
+        "device_json": jsonEncode(deviceData["device_json"]),
+        "device_token":token,
+        "social_json" : jsonEncode(googleData["social_json"]),
+      };
+      print(requestData["social_json"].runtimeType);
+      print("requestData $requestData");
+      var response = await ApiProvider().postRequest1(
+          apiUrl: AppConstants.login,
+          data: requestData
+      );
+      print("requested data from login api $requestData");
+      print("response $response");
+
+      if (response['success'] == true)
+      {
+        log("response after success login $response");
+        await userBox.put("token", response['data']['access_token'].toString());
+        await userBox.put("user_id", response['data']["user"]["id"].toString());
+        await userBox.put("user_type", response['data']["user"]["user_type"].toString());
+        CustomWidget().showCustomToast(
+          message: response['message'] ?? "Registration successful",
+          backgroundColor: AppColors.green500,
+        );
+        userType=="EXPLORER"?
+        Get.offAll(CustomerBottomNavigation(index: 0,)):
+        Get.offAll(DriverBottomNavigation(index: 0,));
+        isLoading.value=false;
+      }
+      else {
+        String errorMessage = "Something went wrong";
+        print("Response !! $response");
+        if(response["error_type"]=="social_user_not_found")
+          {
+            Get.to(RegistrationView(email: email,fullname: displayName,isSocialLogin: true,image: photoURL,
+            socialUserId: socialUserId,));
+          }
+        else
+          {
+            final errorMessage = response['message'];
+            CustomWidget().showCustomToast(
+              message: errorMessage,
+              backgroundColor: Colors.red,
+            );
+          }
+        // if (response['message'] != null &&
+        //     response['message'].toString().isNotEmpty) {
+        //   errorMessage = response['message'].toString();
+        // } else if (response['errors'] != null &&
+        //     response['errors'] is Map &&
+        //     response['errors'].isNotEmpty) {
+        //
+        //   final firstKey = response['errors'].keys.first;
+        //   final errorValue = response['errors'][firstKey];
+        //
+        //   if (errorValue is List && errorValue.isNotEmpty) {
+        //     errorMessage = errorValue.first.toString();
+        //   } else {
+        //     errorMessage = errorValue.toString();
+        //   }
+        // }
+
+
+        isLoading.value=false;
+      }
+    }
+
+    catch(e)
+    {
+      print("socialLogin catch $e");
+      isLoading.value=false;
+    }
+    finally{
+      isLoading.value=false;
+    }
+  }
+
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      await GoogleSignIn.instance.initialize();
+
+      final GoogleSignInAccount googleUser =
+      await GoogleSignIn.instance.authenticate();
+
+      final googleAuth = googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await FirebaseAuth.instance
+          .signInWithCredential(credential);
+
+      final user = userCredential.user;
+
+      print("All Details: ${user}");
+      print("UID: ${user?.uid}");
+      print("Name: ${user?.displayName}");
+      print("Email: ${user?.email}");
+      print("Photo: ${user?.photoURL}");
+
+      final idToken = await user?.getIdToken();
+      print("Firebase Token: $idToken");
+      if (user != null) {
+        print("User Details -- $user");
+
+        // Only update controllers if widget is still mounted
+
+          // try {
+          //   emailController.text = user.email ?? '';
+          //   // fullNameController.text = user.displayName ?? '';
+          //   // socialUserIdController.text = user.uid;
+          // } catch (e) {
+          //   print("Controller error: $e");
+          // }
+          //
+
+        try {
+          // await SharedPreferencesUtil.setValue("isGoogleLogin", true);
+          // selectLoginTypeGoogle(true);
+          // selectLoginTypeApple.value=false;
+          await socialLogin(socialUserId: user.uid,
+              displayName: user.displayName.toString(),
+              email: user.email.toString(),
+              photoURL: user.photoURL.toString());
+
+        } catch (e) {
+          print("Registration error: ${e.toString()}");
+          // CustomWidget().handleApiError(e);
+        } finally {
+          isLoading.value = false;
+        }
+        // await googleSignIn.signOut();
+      } else {
+        print("Firebase user is null.");
+      }
+
+      return userCredential;
+    } catch (e) {
+      print("Google Sign-In Error: $e");
+      return null;
+    }
+  }
+  Future<void> loginWithGoogle() async {
+    UserCredential? userCredential = await signInWithGoogle();
+
+    if (userCredential == null) {
+      print("Login cancelled");
+      return;
+    }
+
+    User? user = userCredential.user;
+
+    print("UID: ${user?.uid}");
+    print("Name: ${user?.displayName}");
+    print("Email: ${user?.email}");
+    print("Photo: ${user?.photoURL}");
+
+    final idToken = await user?.getIdToken();
+
+    print("Firebase ID Token: $idToken");
+
+    // Send to backend
+    Map<String, dynamic> payload = {
+      "name": user?.displayName,
+      "email": user?.email,
+      "firebase_uid": user?.uid,
+      "id_token": idToken,
+      "profile_image": user?.photoURL,
+    };
+
+    print(payload);
+  }
   final Rx<Country?> selectedCountry = Rx<Country?>(
     Country(
       phoneCode: "1",
@@ -123,6 +312,14 @@ class LoginController extends GetxController
     try
     {
       isLoading.value=true;
+      String? token;
+      try {
+        // token = "fcm_token_here";
+        token = await FirebaseMessaging.instance.getToken();
+      } catch (e) {
+        log("❌ Firebase Token Error: $e");
+        token = "";
+      }
       final deviceData = await getDeviceInfo();
       final requestData = {
         "login_type": "normal", // normal,facebook,google,apple
@@ -133,6 +330,7 @@ class LoginController extends GetxController
         "platform": Platform.isAndroid ? "android" : "ios",
         "device_id": deviceData["device_id"],
         "device_json": jsonEncode(deviceData["device_json"]),
+        "device_token":token
       };
       var response = await ApiProvider().postRequest1(
         apiUrl: AppConstants.login,
@@ -146,6 +344,7 @@ class LoginController extends GetxController
         await userBox.put("token", response['data']['access_token'].toString());
         await userBox.put("user_id", response['data']["user"]["id"].toString());
         await userBox.put("user_type", response['data']["user"]["user_type"].toString());
+
         CustomWidget().showCustomToast(
           message: response['message'] ?? "Registration successful",
           backgroundColor: AppColors.green500,
@@ -185,7 +384,7 @@ class LoginController extends GetxController
 
     catch(e)
     {
-      print("Login catch $e");
+      print(" catch!! $e");
       isLoading.value=false;
     }
     finally{

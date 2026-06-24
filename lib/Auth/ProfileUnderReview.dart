@@ -19,14 +19,14 @@ class ProfileReviewView extends StatefulWidget {
 
 class _ProfileReviewViewState extends State<ProfileReviewView> {
   final VehicleDetailsController controller = Get.put(VehicleDetailsController());
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.driverRegistration3(widget.token);
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     controller.driverRegistration3(widget.token);
+  //   });
+  // }
   @override
   Widget build(BuildContext context) {
 
@@ -40,17 +40,17 @@ class _ProfileReviewViewState extends State<ProfileReviewView> {
           ),
           child: Column(
             children: [
-              const SizedBox(height: 40),
+              // const SizedBox(height: 40),
 
               /// Title
               CustomWidget().buildTextWidget(
                 title: "Profile Review",
-                fontSize: 28,
+                fontSize: 20,
                 fontWeight: FontWeight.w700,
                 textColor: AppColors.blackColor,
                 textAlign: TextAlign.center,
               ),
-
+              heightSpace25,
               const Spacer(),
 
               /// Image
@@ -65,7 +65,7 @@ class _ProfileReviewViewState extends State<ProfileReviewView> {
               /// Heading
               CustomWidget().buildTextWidget(
                 title: "Profile Under Review",
-                fontSize: 30,
+                fontSize: 24,
                 fontWeight: FontWeight.w700,
                 textColor: AppColors.blackColor,
                 textAlign: TextAlign.center,
@@ -77,7 +77,7 @@ class _ProfileReviewViewState extends State<ProfileReviewView> {
               CustomWidget().buildTextWidget(
                 title:
                 "Your documents have been submitted\nsuccessfully.",
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w400,
                 textColor: AppColors.black400,
                 textAlign: TextAlign.center,
@@ -88,13 +88,13 @@ class _ProfileReviewViewState extends State<ProfileReviewView> {
               /// Description
               CustomWidget().buildTextWidget(
                 title:
-                "This usually takes 24–48 hours. We'll notify\nyou via email once verified.",
+                "This usually takes 24–48 hours. We'll notify you via email once verified.",
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
                 textColor: AppColors.black400,
                 textAlign: TextAlign.center,
               ),
-
+              heightSpace10,
               const Spacer(),
 
               /// Button

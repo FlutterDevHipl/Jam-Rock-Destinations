@@ -1,6 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:Jam_Rock_Destinations/Driver/driver_bottom_navigation.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -58,17 +60,53 @@ final isLoading=false.obs;
 
   final ImagePicker picker = ImagePicker();
 
-  Future<void> pickImage(Rx<File?> imageFile) async {
-    final XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80,
-    );
 
-    if (image != null) {
-      imageFile.value = File(image.path);
-    }
-  }
-
+Future<void> pickImage(Rx<File?> imageFile) async {
+  Get.bottomSheet(
+    Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Camera'),
+              onTap: () async {
+                Get.back();
+                final XFile? image = await picker.pickImage(
+                  source: ImageSource.camera,
+                  imageQuality: 80,
+                );
+        
+                if (image != null) {
+                  imageFile.value = File(image.path);
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Gallery'),
+              onTap: () async {
+                Get.back();
+                final XFile? image = await picker.pickImage(
+                  source: ImageSource.gallery,
+                  imageQuality: 80,
+                );
+        
+                if (image != null) {
+                  imageFile.value = File(image.path);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
 
 
 
@@ -204,13 +242,20 @@ print(requestData2);
         Get.to(VehicleDetailsView(token: response["data"]["registration_token"],step: response["data"]["next_step"],));
 
       } else {
-        String errorMessage = "Registration failed";
+        String errorMessage =
+            response['message']?.toString() ?? "Registration failed";
 
         if (response['errors'] != null &&
             response['errors'] is Map &&
             response['errors'].isNotEmpty) {
-          final firstKey = response['errors'].keys.first;
-          errorMessage = response['errors'][firstKey].first.toString();
+
+          final firstValue = response['errors'].values.first;
+
+          if (firstValue is List && firstValue.isNotEmpty) {
+            errorMessage = firstValue.first.toString();
+          } else if (firstValue is String) {
+            errorMessage = firstValue;
+          }
         }
 
         CustomWidget().showCustomToast(
@@ -283,9 +328,12 @@ Future<void> driverRegistration2(String token, int step) async {
         message: response["message"],
         backgroundColor: AppColors.green500,
       );
+
       print("registration_token step 2 = ${response["data"]["registration_token"]}");
       print("registration_token step  = ${response["data"]["next_step"]}");
-      Get.to(ProfileReviewView(token: response["data"]["registration_token"]));
+      print("Step 3");
+      driverRegistration3(response["data"]["registration_token"]);
+      Get.offAll(ProfileReviewView(token: response["data"]["registration_token"]));
       // Get.to(
       //   VehicleDetailsView(
       //     token: response["data"]["registration_token"],
@@ -293,7 +341,30 @@ Future<void> driverRegistration2(String token, int step) async {
       //   ),
       // );
     } else {
-      ApiProvider().showErrorFromResponse(response);
+      print("Response !! $response");
+
+      String errorMessage =
+          response['message']?.toString() ?? "Registration failed";
+
+      if (response['errors'] != null &&
+          response['errors'] is Map &&
+          response['errors'].isNotEmpty) {
+
+        final firstValue = response['errors'].values.first;
+
+        if (firstValue is List && firstValue.isNotEmpty) {
+          errorMessage = firstValue.first.toString();
+        } else if (firstValue is String) {
+          errorMessage = firstValue;
+        } else {
+          errorMessage = firstValue.toString();
+        }
+      }
+
+      CustomWidget().showCustomToast(
+        message: errorMessage,
+        backgroundColor: Colors.red,
+      );
     }
   } catch (e) {
     print("Error => $e");
@@ -309,7 +380,7 @@ Future<void> driverRegistration3(String token) async {
         "register_step": "4",
         "register_type": "normal",
         "user_type": "driver",
-        "registration_token": token
+        "registration_token": token,
     };
 
     final response = await ApiProvider().postRequest1(
@@ -322,7 +393,9 @@ Future<void> driverRegistration3(String token) async {
       CustomWidget().showCustomToast(
         message: response["message"],
         backgroundColor: AppColors.green500,
+
       );
+      print("Step 4");
       print("Registration success ${response["data"]}");
 
     } else {

@@ -12,7 +12,20 @@
           "package_name": "com.Jam.Rock.Destinations"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "870545618442-akcdpqkii11dj8tl4b3159hb86o94s75.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Jam.Rock.Destinations",
+            "certificate_hash": "7bd93ffc9dcc16c4ac09bb397ec1d8b37a876dd8"
+          }
+        },
+        {
+          "client_id": "870545618442-5j074nl405p60gehu9cgd8au1emj1nsj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyANCA4c91LyrCKcH66myupH2RmGQhOK2tI"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "870545618442-5j074nl405p60gehu9cgd8au1emj1nsj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

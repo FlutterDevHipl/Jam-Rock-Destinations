@@ -70,32 +70,45 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                 ],
               ),
               const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                height: 55,
-                child: ElevatedButton(
+              // SizedBox(
+              //   width: double.infinity,
+              //   height: 55,
+              //   child: ElevatedButton(
+              //
+              //       onPressed: () {
+              //         final userTypes =
+              //             selectedIndex == 0 ? 'EXPLORER' : 'DRIVER';
+              //         userBox.put('user_type', userTypes);
+              //         userType = userTypes;
+              //         debugPrint(userBox.get('user_type'));
+              //         debugPrint("App const = $userType");
+              //
+              //         Get.to(() => OnboardingScreen());
+              //       },
+              //       style: ElevatedButton.styleFrom(
+              //         backgroundColor: const Color(0xff2F8F3A),
+              //         shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(8),
+              //         ),
+              //       ),
+              //       child: CustomWidget().buildTextWidget(
+              //           title: "Continue",
+              //           fontSize: 16,
+              //           textColor: Colors.white)),
+              // ),
+              CustomWidget().buildMaterialBtn(text: "Continue",
+                color: AppColors.green500,
+                radius: 8,
+                onPressed: () {
+                final userTypes =
+                selectedIndex == 0 ? 'EXPLORER' : 'DRIVER';
+                userBox.put('user_type', userTypes);
+                userType = userTypes;
+                debugPrint(userBox.get('user_type'));
+                debugPrint("App const = $userType");
 
-                    onPressed: () {
-                      final userTypes =
-                          selectedIndex == 0 ? 'EXPLORER' : 'DRIVER';
-                      userBox.put('user_type', userTypes);
-                      userType = userTypes;
-                      debugPrint(userBox.get('user_type'));
-                      debugPrint("App const = $userType");
-
-                      Get.to(() => OnboardingScreen());
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff2F8F3A),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: CustomWidget().buildTextWidget(
-                        title: "Continue",
-                        fontSize: 16,
-                        textColor: Colors.white)),
-              ),
+                Get.to(() => OnboardingScreen());
+              },),
               const SizedBox(height: 20),
             ],
           ),
