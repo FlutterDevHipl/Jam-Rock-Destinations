@@ -1,3 +1,4 @@
+import 'package:Jam_Rock_Destinations/Common/controller/ProfileController.dart';
 
 import 'package:Jam_Rock_Destinations/Common/setting/TermsAndConditions.dart';
 import 'package:Jam_Rock_Destinations/Common/setting/faq_Screen.dart';
@@ -8,16 +9,14 @@ import 'package:Jam_Rock_Destinations/Driver/Vehicle_Management.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
 
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../../Utils/app_colors.dart';
 import '../../Utils/custom_widget.dart';
 import 'DelectAccount.dart';
-import '../Controller/ProfileController.dart';
+
 import '../membership/Membership.dart';
 import 'PrivacyPolicy.dart';
 
@@ -57,8 +56,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              profileController.hasChanges.value=false;
-                              profileController.selectedImage.value=null;
+                              profileController.hasChanges.value = false;
+                              profileController.selectedImage.value = null;
                               Get.to(ProfileScreen());
                             },
                             child: Container(
@@ -69,26 +68,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                               child: Row(
                                 children: [
-                                  profileController
-                                      .getProfileData["profile_image_url"]==null?
-                                CircleAvatar(
-                                radius: 28,
-                                backgroundColor: Colors.transparent,
-                                child: SvgPicture.asset(Images.personLogo),):
-                                  CircleAvatar(
-                                    radius: 28,
-                                    backgroundColor: Colors.transparent,
-                                    child: ClipOval(
-                                      child: Image.network(
-                                        profileController
-                                            .getProfileData["profile_image_url"]
-                                            .toString(),
-                                        width: 56,
-                                        height: 56,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
+                                  profileController.getProfileData[
+                                              "profile_image_url"] ==
+                                          null
+                                      ? CircleAvatar(
+                                          radius: 28,
+                                          backgroundColor: Colors.transparent,
+                                          child: SvgPicture.asset(
+                                              Images.personLogo),
+                                        )
+                                      : CircleAvatar(
+                                          radius: 28,
+                                          backgroundColor: Colors.transparent,
+                                          child: ClipOval(
+                                            child: Image.network(
+                                              profileController.getProfileData[
+                                                      "profile_image_url"]
+                                                  .toString(),
+                                              width: 56,
+                                              height: 56,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
                                   const SizedBox(width: 12),
                                   Column(
                                     crossAxisAlignment:
@@ -114,11 +116,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ),
                                   Visibility(
                                       visible:
-                                          userType != "EXPLORER" ? true : false,
+                                          userType != "customer" || userType == "EXPLORER" ? true : false,
                                       child: Spacer()),
                                   Visibility(
                                     visible:
-                                        userType != "EXPLORER" ? true : false,
+                                        userType != "customer" || userType == "EXPLORER"? true : false,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
@@ -160,7 +162,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             },
                           ),
                           Visibility(
-                            visible: userType != "EXPLORER" ? true : false,
+                            visible: userType != "customer" || userType == "EXPLORER" ? true : false,
                             child: _settingTile(
                               image: Images.vmIcon,
                               title: "Vehicle Management",
@@ -170,7 +172,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                           Visibility(
-                            visible: userType != "EXPLORER" ? true : false,
+                            visible: userType != "customer" || userType == "EXPLORER"? true : false,
                             child: _settingTile(
                               image: Images.kycIcon,
                               title: "KYC Documents",
@@ -180,7 +182,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                           Visibility(
-                            visible: userType != "EXPLORER" ? true : false,
+                            visible: userType != "customer" || userType == "EXPLORER"? true : false,
                             child: _settingTile(
                               image: Images.membershipIcon,
                               title: "Membership",
@@ -278,24 +280,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(width: 12),
           Visibility(
-            visible: userType == "EXPLORER" ? true : false,
+            visible: userType == "customer" || userType == "EXPLORER"? true : false,
             child: CircleAvatar(
               radius: 28,
               backgroundColor: Colors.transparent,
-              child:   profileController
-                  .getProfileData["profile_image_url"]==null?
-    CircleAvatar(
-    radius: 28,
-    backgroundColor: Colors.transparent,
-    child: SvgPicture.asset(Images.personLogo)):ClipOval(
-                child: Image.network(
-                  profileController.getProfileData["profile_image_url"]
-                      .toString(),
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                ),
-              ),
+              child: profileController.getProfileData["profile_image_url"] ==
+                      null
+                  ? CircleAvatar(
+                      radius: 28,
+                      backgroundColor: Colors.transparent,
+                      child: SvgPicture.asset(Images.personLogo))
+                  : ClipOval(
+                      child: Image.network(
+                        profileController.getProfileData["profile_image_url"]
+                            .toString(),
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
             ),
           ),
         ],
@@ -473,7 +476,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     const SizedBox(width: 16),
                     Obx(
-                      () =>  Expanded(
+                      () => Expanded(
                         child: InkWell(
                           onTap: () async {
                             profileController.Logout(context);
@@ -487,7 +490,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                             child: Center(
                               child: CustomWidget().buildTextWidget(
-                                title: profileController.isLogout.value?"Loading...":"Logout",
+                                title: profileController.isLogout.value
+                                    ? "Loading..."
+                                    : "Logout",
                                 fontSize: 16,
                                 textColor: Colors.white,
                                 fontWeight: FontWeight.w500,

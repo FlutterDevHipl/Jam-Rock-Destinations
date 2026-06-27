@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../Customer/home_screen.dart';
 import '../../Services/api_provider.dart';
@@ -45,6 +46,7 @@ class LoginController extends GetxController
   bool isDarkMode = Get.isDarkMode;
   final countryCode = ''.obs;
   final isEmailSelected = true.obs;
+  final countryName = ''.obs;
 
   Future<void> getFirebaseToken() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -53,7 +55,7 @@ class LoginController extends GetxController
     await messaging.requestPermission();
 
     // Get FCM token
-    String? token = await messaging.getToken();
+    String? token =await messaging.getToken();
 
     print("✅ FCM Token: $token");
   }
@@ -62,6 +64,7 @@ class LoginController extends GetxController
     required String displayName,
     required String email,
     required String photoURL,
+    required String login_type,
   })
   async {
     try
@@ -82,7 +85,7 @@ class LoginController extends GetxController
         "photo_url":photoURL,
       };
       final requestData = {
-        "login_type": "google", // normal,facebook,google,apple
+        "login_type": login_type, // normal,facebook,google,apple
         "social_user_id": socialUserId,
         "user_login":email, // email and phone
         "user_type": userType == "EXPLORER" ? "customer" : "driver",
@@ -164,6 +167,67 @@ class LoginController extends GetxController
     }
   }
 
+
+  Future<void> signInWithApple() async {
+    isLoading.value = true;
+
+    try {
+      // Request Apple ID credential
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      print("User Identifier: ${appleCredential.userIdentifier}");
+      print("Email: ${appleCredential.email}");
+      print("Given Name: ${appleCredential.givenName}");
+      print("Family Name: ${appleCredential.familyName}");
+      print("Identity Token: ${appleCredential.identityToken}");
+      print("Authorization Code: ${appleCredential.authorizationCode}");
+
+      // Create Firebase credential
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      // Sign in to Firebase
+      final UserCredential userCredential =
+      await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        print("Firebase UID: ${user.uid}");
+        print("Display Name: ${user.displayName}");
+        print("Email: ${user.email}");
+        print("Photo URL: ${user.photoURL}");
+
+        await socialLogin(
+          socialUserId: user.uid,
+          displayName: user.displayName ??
+              "${appleCredential.givenName ?? ""} ${appleCredential.familyName ?? ""}"
+                  .trim(),
+          email: user.email ?? appleCredential.email ?? "",
+          photoURL: user.photoURL ?? "", login_type: 'apple',
+        );
+      } else {
+        print("Firebase user is null.");
+      }
+    } on SignInWithAppleAuthorizationException catch (e) {
+      print("Apple Sign-In Authorization Error: ${e.code}");
+      print("Message: ${e.message}");
+    } on FirebaseAuthException catch (e) {
+      print("Firebase Auth Error: ${e.code}");
+      print("Message: ${e.message}");
+    } catch (e) {
+      print("Apple Sign-In Error: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
   Future<UserCredential?> signInWithGoogle() async {
     try {
       await GoogleSignIn.instance.initialize();
@@ -211,7 +275,7 @@ class LoginController extends GetxController
           await socialLogin(socialUserId: user.uid,
               displayName: user.displayName.toString(),
               email: user.email.toString(),
-              photoURL: user.photoURL.toString());
+              photoURL: user.photoURL.toString(), login_type: 'google');
 
         } catch (e) {
           print("Registration error: ${e.toString()}");

@@ -1,18 +1,15 @@
 import 'package:Jam_Rock_Destinations/Common/controller/ProfileController.dart';
 import 'package:Jam_Rock_Destinations/Customer/booking/BookingRideDetailScreen.dart';
 import 'package:Jam_Rock_Destinations/Customer/controller/BookingController.dart';
-import 'package:Jam_Rock_Destinations/Driver/controller/RideHistoryController.dart';
-import 'package:Jam_Rock_Destinations/Driver/ride_history/RideDetailScreen.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -30,6 +27,7 @@ class _BookingScreenState extends State<BookingScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    profileController.getUserProfile();
   }
 
   @override

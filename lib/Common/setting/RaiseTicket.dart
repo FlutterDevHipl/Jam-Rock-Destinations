@@ -1,5 +1,4 @@
-
-import 'package:Jam_Rock_Destinations/Common/Controller/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Common/controller/ProfileController.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:flutter/material.dart';
@@ -163,6 +162,7 @@ class _RaiseTicketScreenState extends State<RaiseTicketScreen> {
                                   maxLines: null,
                                   expands: true,
                                   textAlignVertical: TextAlignVertical.top,
+                                  cursorColor: AppColors.green500,
                                   decoration: const InputDecoration(
                                     hintText: "Type here....",
                                     hintStyle: TextStyle(

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:Jam_Rock_Destinations/Customer/home_screen.dart';
+import 'package:Jam_Rock_Destinations/Driver/home/DriverHomeScreen.dart';
 import 'package:Jam_Rock_Destinations/Driver/ride_history/RideHistoryScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../Common/setting/setting.dart';
 import '../Utils/app_colors.dart';
 import '../Utils/app_images.dart';
+import 'earning/EarningScreen.dart';
 
 
 class DriverBottomNavigation extends StatefulWidget {
@@ -51,6 +53,7 @@ class _DriverBottomNavigationState extends State<DriverBottomNavigation> {
     return Scaffold(
       body: buildScreen(),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: AppColors.whiteColor,
         currentIndex: currentIndex,
         selectedItemColor: AppColors.green500,
         unselectedItemColor: AppColors.black200,
@@ -107,7 +110,7 @@ class _DriverBottomNavigationState extends State<DriverBottomNavigation> {
               Images.settingIcon,
               color: AppColors.green500,
             ),
-            label: "Setting",
+            label: "Settings",
           ),
         ],
       ),
@@ -117,13 +120,13 @@ class _DriverBottomNavigationState extends State<DriverBottomNavigation> {
   Widget buildScreen() {
     switch (currentIndex) {
       case 1:
-        return HomeScreen();
+        return EarningScreen();
       case 2:
         return const RideHistoryScreen();
       case 3:
         return const SettingsScreen();
       default:
-        return const HomeScreen();
+        return const DriverHomeScreen();
     }
   }
 }

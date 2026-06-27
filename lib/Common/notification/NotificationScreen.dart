@@ -1,15 +1,12 @@
-import 'package:Jam_Rock_Destinations/Customer/booking/BookingCancelRideScreen.dart';
-import 'package:Jam_Rock_Destinations/Customer/controller/BookingController.dart';
-import 'package:Jam_Rock_Destinations/Customer/controller/HomeController.dart';
+
 import 'package:Jam_Rock_Destinations/Common/controller/NotificationController.dart';
-import 'package:Jam_Rock_Destinations/Driver/ride_history/CancelRideScreen.dart';
-import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+
+import '../../Utils/app_colors.dart';
 
 class NotificationScreen extends StatefulWidget {
   NotificationScreen({
@@ -50,10 +47,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
             fontSize: 20),
       ),
       body: SafeArea(
-        child: Obx(() => !controller.internetStatus.value
-            ? CustomWidget().customNetWorkWidget()
-            : controller.isLoading.value
-                ? Center(
+        child: Obx(() => controller.isLoading.value
+                ? const Center(
                     child: CircularProgressIndicator(color: AppColors.green500))
                 : controller.notificationList.length == 0
                     ? _emptyState()

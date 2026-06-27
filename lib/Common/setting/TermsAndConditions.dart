@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-import '../Controller/ProfileController.dart';
+import '../controller/ProfileController.dart';
 
 class TermsAndConditionsScreen extends StatefulWidget {
   const TermsAndConditionsScreen({super.key});
@@ -38,40 +38,42 @@ class _TermsAndConditionsScreenState
         centerTitle: true,
         title: CustomWidget().buildTextWidget(title: "Terms & Conditions",textColor: AppColors.black500,fontWeight: FontWeight.w700,fontSize: 20)
       ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.green500,),
-          );
-        }
-        if (controller.termsUrl.value.isEmpty) {
-          return const Center(
-            child: Text("PDF URL not found"),
-          );
-        }
-        return SfPdfViewer.network(
-          controller.termsUrl.value,
-          enableDoubleTapZooming: false,
-          initialZoomLevel: 1.0,
-          maxZoomLevel: 3.0,
-          interactionMode: PdfInteractionMode.pan,
-          onDocumentLoaded: (details) {
-            debugPrint("PDF Loaded Successfully");
-          },
-          onDocumentLoadFailed: (details) {
-            debugPrint("PDF Error: ${details.error}");
-            debugPrint("Description: ${details.description}");
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  "Failed to load PDF: ${details.description}",
-                ),
-              ),
+      body: SafeArea(
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.green500,),
             );
-          },
-        );
-      }),
+          }
+          if (controller.termsUrl.value.isEmpty) {
+            return const Center(
+              child: Text("PDF URL not found"),
+            );
+          }
+          return SfPdfViewer.network(
+            controller.termsUrl.value,
+            enableDoubleTapZooming: false,
+            initialZoomLevel: 1.0,
+            maxZoomLevel: 3.0,
+            interactionMode: PdfInteractionMode.pan,
+            onDocumentLoaded: (details) {
+              debugPrint("PDF Loaded Successfully");
+            },
+            onDocumentLoadFailed: (details) {
+              debugPrint("PDF Error: ${details.error}");
+              debugPrint("Description: ${details.description}");
+        
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    "Failed to load PDF: ${details.description}",
+                  ),
+                ),
+              );
+            },
+          );
+        }),
+      ),
     );
   }
 }

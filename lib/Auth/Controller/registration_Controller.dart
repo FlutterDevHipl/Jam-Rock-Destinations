@@ -23,13 +23,13 @@ import '../../Utils/app_colors.dart';
 import '../../Utils/storage.dart';
 import '../profileSetup1.dart';
 
-class RegistrationController extends GetxController{
+class RegistrationController extends GetxController {
   bool isEmailSelected = true;
   bool isPasswordVisible = false;
   final isConfirmPassVisible = false.obs;
   final selectedImage = Rxn<File>();
 
-   showImagePickerOptions(BuildContext context) {
+  showImagePickerOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -58,6 +58,7 @@ class RegistrationController extends GetxController{
       },
     );
   }
+
   // Future<void> pickImage(ImageSource camera) async {
   //   final XFile? image = await ImagePicker().pickImage(
   //     source: ImageSource.gallery,
@@ -79,19 +80,24 @@ class RegistrationController extends GetxController{
       selectedImage.value = File(image.path);
     }
   }
+
   bool isDarkMode = Get.isDarkMode;
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPassController = TextEditingController();
   final nameController = TextEditingController();
-  final otpController=TextEditingController();
+  final otpController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  final isLoading=false.obs;
-  final isEmailVerified=false.obs;
-  final isPhoneVerified=false.obs;
+  final isLoading = false.obs;
+  String verifiedEmail = "";
+  String verifiedPhone = "";
+  final isEmailVerified = false.obs;
+  final isPhoneVerified = false.obs;
+
   final otpError = ''.obs;
   final countryCode = ''.obs;
+  final countryName = ''.obs;
 
   bool validateOtp() {
     if (otpController.text.length != 4) {
@@ -102,6 +108,7 @@ class RegistrationController extends GetxController{
     otpError.value = '';
     return true;
   }
+
   Future<void> getFirebaseToken() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
@@ -113,6 +120,7 @@ class RegistrationController extends GetxController{
 
     print("✅ FCM Token: $token");
   }
+
   final Rx<Country?> selectedCountry = Rx<Country?>(
     Country(
       phoneCode: "1",
@@ -135,17 +143,19 @@ class RegistrationController extends GetxController{
 
     return '$countryCode X XXX XX$last2';
   }
+
   RxBool isOtpDialogOpen = false.obs;
   void showVerificationDialog({
     required BuildContext context,
     required bool isPhoneVerification,
     required String value,
-
     VoidCallback? onSubmit,
     VoidCallback? onResend,
     VoidCallback? onChange,
   }) {
-    final otpControllers = List.generate(4, (_) => TextEditingController(),
+    final otpControllers = List.generate(
+      4,
+      (_) => TextEditingController(),
     );
 
     showDialog(
@@ -173,10 +183,11 @@ class RegistrationController extends GetxController{
                 Align(
                   alignment: Alignment.topRight,
                   child: InkWell(
-                    onTap:() {
+                    onTap: () {
                       isOtpDialogOpen.value = false;
                       Get.back();
-                    },child:  const Icon(
+                    },
+                    child: const Icon(
                       Icons.close,
                       color: Colors.black54,
                       size: 22,
@@ -209,68 +220,63 @@ class RegistrationController extends GetxController{
                 ),
 
                 const SizedBox(height: 2),
-                isPhoneVerification?
-                CustomWidget().buildTextWidget(
-                  title: "+${countryCode.value.isEmpty?"1":countryCode.value} ${
-                      maskPhoneNumber(value)
-                      }",
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  textColor: const Color(0xffC5A227),
-                  textAlign: TextAlign.center,
-                ):
-                CustomWidget().buildTextWidget(
-                  title: value,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  textColor: const Color(0xffC5A227),
-                  textAlign: TextAlign.center,
-                ),
+                isPhoneVerification
+                    ? CustomWidget().buildTextWidget(
+                        title:
+                            "+${countryCode.value.isEmpty ? "1" : countryCode.value} ${maskPhoneNumber(value)}",
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        textColor: const Color(0xffC5A227),
+                        textAlign: TextAlign.center,
+                      )
+                    : CustomWidget().buildTextWidget(
+                        title: value,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        textColor: const Color(0xffC5A227),
+                        textAlign: TextAlign.center,
+                      ),
 
                 const SizedBox(height: 28),
 
                 /// OTP Fields
 
-
-
-          Column(
-          children: [
-          Pinput(
-          controller: otpController,
-          length: 4,
-          keyboardType: TextInputType.number,
-          onChanged: (_) {
-            otpError.value = '';
-          },
-          defaultPinTheme: PinTheme(
-            width: 58,
-            height: 58,
-            textStyle: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xffF4F4F4),
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 8),
-
-        Obx(
-        () => otpError.value.isNotEmpty
-        ? Text(
-        otpError.value,
-        style: const TextStyle(
-        color: Colors.red,
-        fontSize: 12,
-        ),
-        )
-            : const SizedBox.shrink(),
-        ),
-        ],
-        ),
+                Column(
+                  children: [
+                    Pinput(
+                      controller: otpController,
+                      length: 4,
+                      keyboardType: TextInputType.number,
+                      onChanged: (_) {
+                        otpError.value = '';
+                      },
+                      defaultPinTheme: PinTheme(
+                        width: 58,
+                        height: 58,
+                        textStyle: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xffF4F4F4),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Obx(
+                      () => otpError.value.isNotEmpty
+                          ? Text(
+                              otpError.value,
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
+                ),
 
                 const SizedBox(height: 22),
 
@@ -286,16 +292,13 @@ class RegistrationController extends GetxController{
                     ),
                     GestureDetector(
                       onTap: () async {
-                        if(isPhoneVerification==true)
-                        {
+                        if (isPhoneVerification == true) {
                           await sendPhoneOTp(phoneController.text, context);
                           // CustomWidget().showCustomToast(message: "OTP has been resent successfully.");
-                        }
-                        else
-                          {
-
+                        } else {
                           await sendEmailOTp(
-                          emailController.text,context,
+                            emailController.text,
+                            context,
                           );
                           // CustomWidget().showCustomToast(message: "OTP has been resent successfully.");
                         }
@@ -313,28 +316,30 @@ class RegistrationController extends GetxController{
                 const SizedBox(height: 24),
 
                 /// Submit Button
-                Obx(() =>      CustomWidget().buildMaterialBtn(
-                  text: isLoading.value ? "Loading..." : "Submit",
-                  color: AppColors.green500,
-                  radius: 8,
-                  fontSize: 16,
-                  onPressed:() async {
-                    if (otpController.text.length != 4) {
-                      otpError.value = "Please enter a valid 4-digit OTP";
-                      return;
-                    }
-                    if(isPhoneVerification==true)
-                      {
-                       await verifyPhoneOTp(phoneController.text, otpController.text, context);
+                Obx(
+                  () => CustomWidget().buildMaterialBtn(
+                    text: isLoading.value ? "Loading..." : "Submit",
+                    color: AppColors.green500,
+                    radius: 8,
+                    fontSize: 16,
+                    onPressed: () async {
+                      if (otpController.text.length != 4) {
+                        otpError.value = "Please enter a valid 4-digit OTP";
+                        return;
                       }
-                    else
-                      {
+                      if (isPhoneVerification == true) {
+                        await verifyPhoneOTp(
+                            phoneController.text, otpController.text, context);
+                      } else {
                         await verifyEmailOTp(
-                          emailController.text, otpController.text, context,
+                          emailController.text,
+                          otpController.text,
+                          context,
                         );
                       }
-
-                  },),),
+                    },
+                  ),
+                ),
 
                 const SizedBox(height: 20),
 
@@ -361,10 +366,11 @@ class RegistrationController extends GetxController{
       },
     );
   }
+
   Future<void> sendEmailOTp(
-      String email,
-      BuildContext context,
-      ) async {
+    String email,
+    BuildContext context,
+  ) async {
     try {
       isLoading.value = true;
 
@@ -376,7 +382,6 @@ class RegistrationController extends GetxController{
       );
 
       if (response['success'] == true) {
-
         CustomWidget().showCustomToast(
           message: "OTP has been sent",
           backgroundColor: AppColors.green500,
@@ -392,7 +397,6 @@ class RegistrationController extends GetxController{
             value: email,
           );
         }
-
       } else {
         CustomWidget().showCustomToast(
           message: response['message'] ?? "Failed to send OTP",
@@ -405,21 +409,24 @@ class RegistrationController extends GetxController{
       isLoading.value = false;
     }
   }
-  Future<void> sendPhoneOTp(
-      String phone,
-      BuildContext context,
 
-      ) async {
+  Future<void> sendPhoneOTp(
+    String phone,
+    BuildContext context,
+  ) async {
     try {
       isLoading.value = true;
-
+final body={
+  "phone": phone,
+  "country_code":"+${countryCode.value.isEmpty?"1":countryCode.value}"
+};
       var response = await ApiProvider().postRequest1(
         apiUrl: AppConstants.sendPhoneOTP,
-        data: {
-          "phone": "+${countryCode.value+phone}",
-        },
+        data: body
       );
-log("phone $phone");
+
+      log("phone $phone");
+      log("body $body");
       if (response['success'] == true) {
         CustomWidget().showCustomToast(
           message: "OTP has been sent",
@@ -456,11 +463,12 @@ log("phone $phone");
       isLoading.value = false;
     }
   }
+
   Future<void> verifyEmailOTp(
-      String email,
-      String otp,
-      BuildContext context,
-      ) async {
+    String email,
+    String otp,
+    BuildContext context,
+  ) async {
     try {
       isLoading.value = true;
 
@@ -475,14 +483,15 @@ log("phone $phone");
       print("response $response");
 
       if (response['success'] == true) {
-
         Get.back(); // Close OTP Dialog
-        isEmailVerified.value=true;
+        isEmailVerified.value = true;
         CustomWidget().showCustomToast(
           message: "Email verified successfully",
           backgroundColor: AppColors.green500,
         );
         isOtpDialogOpen.value = false;
+        isEmailVerified.value = true;
+        verifiedEmail = emailController.text.trim();
         isLoading.value = false;
       } else {
         CustomWidget().showCustomToast(
@@ -497,33 +506,37 @@ log("phone $phone");
       isLoading.value = false;
     }
   }
+
   Future<void> verifyPhoneOTp(
-      String phone,
-      String otp,
-      BuildContext context,
-      ) async {
+    String phone,
+    String otp,
+    BuildContext context,
+  ) async {
     try {
       isLoading.value = true;
-
+     final body= {
+        "phone": phone,
+    "otp": otp,
+    "country_code":"+${countryCode.value.isEmpty?"1":countryCode.value}"
+  };
       var response = await ApiProvider().postRequest1(
         apiUrl: AppConstants.verifyPhoneOTP,
-        data: {
-          "phone": "+${countryCode.value+phone}",
-          "otp": otp,
-        },
+        data:body
       );
 
       print("response $response");
+      print("verifyPhoneOTp body $body");
 
       if (response['success'] == true) {
-
         Get.back(); // Close OTP Dialog
-       isPhoneVerified.value=true;
+        isPhoneVerified.value = true;
         CustomWidget().showCustomToast(
           message: "Phone verified successfully",
           backgroundColor: AppColors.green500,
         );
         isOtpDialogOpen.value = false;
+        isPhoneVerified.value = true;
+        verifiedPhone = phoneController.text.trim();
         isLoading.value = false;
       } else {
         CustomWidget().showCustomToast(
@@ -538,6 +551,7 @@ log("phone $phone");
       isLoading.value = false;
     }
   }
+
   Future<Map<String, dynamic>> getDeviceInfo() async {
     final deviceInfo = DeviceInfoPlugin();
 
@@ -571,12 +585,13 @@ log("phone $phone");
 
     return {};
   }
-  Future<void> registerGoogleUser(
-      {required String socialUserId,
-      required String displayName,
-      required String email,
-      required String photoURL,
-      }) async {
+
+  Future<void> registerGoogleUser({
+    required String socialUserId,
+    required String displayName,
+    required String email,
+    required String photoURL,
+  }) async {
     try {
       isLoading.value = true;
 
@@ -589,10 +604,10 @@ log("phone $phone");
         log("❌ Firebase Token Error: $e");
         token = "";
       }
-      final googleData={
+      final googleData = {
         "name": displayName,
         "email": email,
-        "photo_url":photoURL,
+        "photo_url": photoURL,
       };
       print("googleData ${googleData}");
       final requestData = {
@@ -605,7 +620,7 @@ log("phone $phone");
         "device_id": deviceData["device_id"],
         "device_json": jsonEncode(deviceData["device_json"]),
         "device_token": token,
-        "social_user_id":socialUserId,  // Social login case
+        "social_user_id": socialUserId, // Social login case
         "social_json": jsonEncode({
           "name": displayName,
           "email": email,
@@ -630,12 +645,12 @@ log("phone $phone");
         print("User id ${response['data']["user"]["id"].toString()}");
         await userBox.put("user_id", response['data']["user"]["id"].toString());
         await userBox.put("token", response['data']["access_token"].toString());
-        await userBox.put("user_type", response['data']["user"]["user_type"].toString());
+        await userBox.put(
+            "user_type", response['data']["user"]["user_type"].toString());
 
-        Get.offAll(CustomerBottomNavigation(index: 0,)) ;
-
-
-
+        Get.offAll(CustomerBottomNavigation(
+          index: 0,
+        ));
       } else {
         String errorMessage = "Registration failed";
 
@@ -657,9 +672,8 @@ log("phone $phone");
       isLoading.value = false;
     }
   }
-  Future<void> registerUser(
 
-      ) async {
+  Future<void> registerUser() async {
     try {
       isLoading.value = true;
 
@@ -675,6 +689,7 @@ log("phone $phone");
       final requestData = {
         "register_type": "normal",
         "user_type": userType == "EXPLORER" ? "customer" : "driver",
+        "country_code":"+${countryCode.value.isEmpty?"1":countryCode.value}",
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
         "phone": "+${countryCode.value}${phoneController.text.trim()}",
@@ -685,7 +700,7 @@ log("phone $phone");
         "device_json": jsonEncode(deviceData["device_json"]),
         "device_token": token
       };
-
+print("requestData = $requestData");
       var response = await ApiProvider().putRequestProfile(
         apiUrl: AppConstants.register,
         fields: requestData,
@@ -703,10 +718,12 @@ log("phone $phone");
         print("User id ${response['data']["user"]["id"].toString()}");
         await userBox.put("user_id", response['data']["user"]["id"].toString());
         await userBox.put("token", response['data']["access_token"].toString());
-        await userBox.put("user_type", response['data']["user"]["user_type"].toString());
+        await userBox.put(
+            "user_type", response['data']["user"]["user_type"].toString());
 
-            Get.offAll(CustomerBottomNavigation(index: 0,)) ;
-
+        Get.offAll(CustomerBottomNavigation(
+          index: 0,
+        ));
       } else {
         String errorMessage = "Registration failed";
 
@@ -728,13 +745,13 @@ log("phone $phone");
       isLoading.value = false;
     }
   }
-  Future<void> googleDriverRegistration(
-      {required String socialUserId,
-        required String displayName,
-        required String email,
-        required String photoURL,
-      }
-      ) async {
+
+  Future<void> googleDriverRegistration({
+    required String socialUserId,
+    required String displayName,
+    required String email,
+    required String photoURL,
+  }) async {
     try {
       isLoading.value = true;
 
@@ -747,10 +764,10 @@ log("phone $phone");
         log("❌ Firebase Token Error: $e");
         fcmToken = "";
       }
-      final googleData={
+      final googleData = {
         "name": displayName,
         "email": email,
-        "photo_url":photoURL,
+        "photo_url": photoURL,
       };
       final requestData = {
         "register_step": 1,
@@ -764,12 +781,12 @@ log("phone $phone");
         "device_id": deviceData["device_id"],
         "device_json": jsonEncode(deviceData["device_json"]),
         "device_token": fcmToken,
-        "social_user_id":socialUserId,  // Social login case
+        "social_user_id": socialUserId, // Social login case
         "social_json": jsonEncode({
           "name": displayName,
           "email": email,
           "photo_url": photoURL,
-        }),   // Social login case
+        }), // Social login case
       };
 
       var response = await ApiProvider().putRequestProfile(
@@ -787,12 +804,14 @@ log("phone $phone");
           backgroundColor: AppColors.green500,
         );
 
-
-        print("Very First api for registration token =  ${response["data"]["registration_token"]}");
-        print("Very First api for registration  step = ${response["data"]["next_step"]}");
-        Get.to(ProfileSetupStepOneView(token: response["data"]["registration_token"],step: response["data"]["next_step"],));
-
-
+        print(
+            "Very First api for registration token =  ${response["data"]["registration_token"]}");
+        print(
+            "Very First api for registration  step = ${response["data"]["next_step"]}");
+        Get.to(ProfileSetupStepOneView(
+          token: response["data"]["registration_token"],
+          step: response["data"]["next_step"],
+        ));
       } else {
         String errorMessage = "Registration failed";
 
@@ -814,6 +833,7 @@ log("phone $phone");
       isLoading.value = false;
     }
   }
+
   Future<void> driverRegistration() async {
     try {
       isLoading.value = true;
@@ -858,12 +878,14 @@ log("phone $phone");
           backgroundColor: AppColors.green500,
         );
 
-
-        print("Very First api for registration token =  ${response["data"]["registration_token"]}");
-        print("Very First api for registration  step = ${response["data"]["next_step"]}");
-        Get.to(ProfileSetupStepOneView(token: response["data"]["registration_token"],step: response["data"]["next_step"],));
-
-
+        print(
+            "Very First api for registration token =  ${response["data"]["registration_token"]}");
+        print(
+            "Very First api for registration  step = ${response["data"]["next_step"]}");
+        Get.to(ProfileSetupStepOneView(
+          token: response["data"]["registration_token"],
+          step: response["data"]["next_step"],
+        ));
       } else {
         String errorMessage = "Registration failed";
 
@@ -929,6 +951,4 @@ log("phone $phone");
     nameController.dispose();
     super.dispose();
   }
-
-
 }

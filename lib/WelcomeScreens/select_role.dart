@@ -1,4 +1,4 @@
-import 'package:Jam_Rock_Destinations/Utils/api_url.dart';
+import 'package:Jam_Rock_Destinations/Auth/Login_View.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../Utils/app_const.dart';
 import '../Utils/storage.dart';
@@ -20,6 +21,15 @@ class SelectRoleScreen extends StatefulWidget {
 
 class _SelectRoleScreenState extends State<SelectRoleScreen> {
   int selectedIndex = 0;
+  final box = GetStorage();
+  bool seenOnboarding = false;
+  bool _showOnboarding = true;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    seenOnboarding = box.read('seenOnboarding') ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +46,13 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                 height: 90,
               ),
               const SizedBox(height: 40),
-              const Text(
-                "How would you like to\ncontinue?",
-                textAlign: TextAlign.center,
-                style: TextStyle(
+              CustomWidget().buildTextWidget(
+                  title: "How would you like to\ncontinue?",
                   fontSize: 24,
-                  color: Colors.black,
+                  textAlign: TextAlign.center,
                   fontWeight: FontWeight.w700,
-                ),
-              ),
+                  textColor: AppColors.black500),
+
               const SizedBox(height: 50),
               Row(
                 children: [
@@ -96,19 +104,29 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
               //           fontSize: 16,
               //           textColor: Colors.white)),
               // ),
-              CustomWidget().buildMaterialBtn(text: "Continue",
+              CustomWidget().buildMaterialBtn(
+                text: "Continue",
                 color: AppColors.green500,
                 radius: 8,
                 onPressed: () {
-                final userTypes =
-                selectedIndex == 0 ? 'EXPLORER' : 'DRIVER';
-                userBox.put('user_type', userTypes);
-                userType = userTypes;
-                debugPrint(userBox.get('user_type'));
-                debugPrint("App const = $userType");
+                  final userTypes = selectedIndex == 0 ? 'EXPLORER' : 'DRIVER';
+                  userBox.put('user_type', userTypes);
+                  userType = userTypes;
+                  debugPrint(userBox.get('user_type'));
+                  debugPrint("App const = $userType");
 
-                Get.to(() => OnboardingScreen());
-              },),
+                  // Get.to(() => OnboardingScreen());
+
+                  if (_showOnboarding) {
+                    setState(() {
+                      _showOnboarding = false;
+                    });
+                  }
+                  !seenOnboarding
+                      ? Get.to(const OnboardingScreen())
+                      : Get.to(() => const LoginScreen());
+                },
+              ),
               const SizedBox(height: 20),
             ],
           ),
@@ -136,43 +154,50 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
         alignment: Alignment.bottomCenter,
         clipBehavior: Clip.none,
         children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            height: Get.height*0.26,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: isSelected ? AppColors.green500 : AppColors.black50,
-              ),
+          ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 220,
+              minHeight: 200,
             ),
-            child: Column(
-              children: [
-                Image.asset(
-                  image,
-                  height: 90,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              // height: Get.height * 0.26,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: isSelected ? AppColors.green500 : AppColors.black50,
                 ),
-                const SizedBox(height: 16),
-                Padding(
-                    padding:
-                        // EdgeInsetsGeometry.symmetric(horizontal: 10),
-                        EdgeInsets.symmetric(horizontal: 10),
-                    child: CustomWidget().buildTextWidget(
-                        title: title,
-                        textAlign: TextAlign.center,
-                        textColor: isSelected
-                            ? AppColors.green500
-                            : AppColors.black400,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16)),
-                const SizedBox(height: 8),
-                CustomWidget().buildTextWidget(
-                    title: subtitle,
-                    textAlign: TextAlign.center,
-                    textColor: AppColors.black400,
-                    fontSize: 13),
-                heightSpace5
-              ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    image,
+                    height: 90,
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                      padding:
+                          // EdgeInsetsGeometry.symmetric(horizontal: 10),
+                          EdgeInsets.symmetric(horizontal: 5),
+                      child: CustomWidget().buildTextWidget(
+                          title: title,
+                          textAlign: TextAlign.center,
+                          textColor: isSelected
+                              ? AppColors.green500
+                              : AppColors.black400,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16)),
+                  const SizedBox(height: 8),
+                  CustomWidget().buildTextWidget(
+                      title: subtitle,
+                      textAlign: TextAlign.center,
+                      textColor: AppColors.black400,
+                      fontSize: 13),
+                  heightSpace5
+                ],
+              ),
             ),
           ),
           Positioned(
@@ -184,8 +209,7 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                       ? const Color(0xffEAF6EC)
                       : Colors.grey.shade100,
                   border: Border.all(
-                    color:
-                        isSelected ? AppColors.green500 : Colors.transparent,
+                    color: isSelected ? AppColors.green500 : Colors.transparent,
                   ),
                 ),
                 child: Padding(

@@ -1,4 +1,5 @@
-import 'package:Jam_Rock_Destinations/Common/Controller/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Common/controller/ProfileController.dart';
+
 import 'package:Jam_Rock_Destinations/Customer/controller/ServiceController.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
@@ -26,6 +27,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    profileController.getUserProfile();
   }
 
   @override
@@ -35,10 +37,10 @@ class _ServiceScreenState extends State<ServiceScreen> {
       body: SafeArea(
         child: Obx(
           () => controller.isLoading.value
-              ? Center(
+              ? const Center(
                   child: CircularProgressIndicator(color: AppColors.green500))
               : Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 0),
                   child: Column(
                     children: [
                       /// Header
@@ -50,6 +52,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                       /// Services Grid
                       Expanded(
                         child: GridView.builder(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
                           itemCount: controller.services.length,
                           physics: const BouncingScrollPhysics(),
                           gridDelegate:
@@ -143,8 +146,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
   Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 0,
-        vertical: 0,
+        horizontal: 16,
+        vertical: 12,
       ),
       child: Row(
         children: [
@@ -182,23 +185,26 @@ class _ServiceScreenState extends State<ServiceScreen> {
               ),
             ],
           ),
-          const SizedBox(width: 12),
-          Visibility(
-            visible: userType == "EXPLORER" ? true : false,
-            child: CircleAvatar(
-              radius: 28,
-              backgroundColor: Colors.transparent,
-              child: ClipOval(
-                child: Image.network(
-                  profileController.getProfileData["profile_image_url"]
-                      .toString(),
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+          CircleAvatar(
+            radius: 28,
+            backgroundColor: Colors.transparent,
+            child: profileController.getProfileData["profile_image_url"] ==
+                    null
+                ? CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Colors.transparent,
+                    child: SvgPicture.asset(Images.personLogo))
+                : ClipOval(
+                    child: Image.network(
+                      profileController.getProfileData["profile_image_url"]
+                          .toString(),
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
           ),
+          const SizedBox(width: 12),
         ],
       ),
     );

@@ -16,8 +16,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-
-  final LoginController loginController=Get.put(LoginController());
+  final LoginController loginController = Get.put(LoginController());
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -33,7 +32,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           child: Form(
             key: formKey,
             child: Obx(
-              () =>  Column(
+              () => Column(
                 children: [
                   const SizedBox(height: 40),
 
@@ -64,7 +63,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
 
                   const SizedBox(height: 28),
-
 
                   Row(
                     children: [
@@ -100,72 +98,95 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: CustomWidget().buildTextWidget(
-                      title: loginController.isEmailSelected.value ? "Email" : "Phone Number",
+                      title: loginController.isEmailSelected.value
+                          ? "Email"
+                          : "Phone Number",
                       fontSize: 14,
                       textColor: AppColors.black500,
                       fontWeight: FontWeight.w600,
                     ),
-
                   ),
 
                   const SizedBox(height: 8),
-              if(loginController.isEmailSelected.value)
-                  CustomWidget().buildTextFormField(darkMode: false,
-                    controller:
-                     loginController.forgotEmailController ,
-                    keyboardType:  TextInputType.emailAddress,
-                    prefixIcon: Icon(
-                      Icons.mail_outline,
-                      size: 20,
-                      color: AppColors.black500,
-                    ),
-                    hintText: "john@example.com",
-                    radius: 8,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Please enter your email";
-                      }
+                  if (loginController.isEmailSelected.value)
+                    CustomWidget().buildTextFormField(
+                      darkMode: false,
+                      controller: loginController.forgotEmailController,
+                      keyboardType: TextInputType.emailAddress,
+                      prefixIcon: Icon(
+                        Icons.mail_outline,
+                        size: 20,
+                        color: AppColors.black500,
+                      ),
+                      hintText: "john@example.com",
+                      radius: 8,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return "Please enter your email";
+                        }
 
-                      final emailRegex = RegExp(
-                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                      );
+                        final emailRegex = RegExp(
+                          r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                        );
 
-                      if (!emailRegex.hasMatch(value.trim())) {
-                        return "Please enter a valid email address";
-                      }
+                        if (!emailRegex.hasMatch(value.trim())) {
+                          return "Please enter a valid email address";
+                        }
 
-                      return null;
-                    },
-                  )
+                        return null;
+                      },
+                    )
                   else
-                  CustomWidget().buildPhoneField(
-                    darkMode: loginController.isDarkMode?true:false,
-                    radius: 8,
-                    color:  const Color(0xffF5F5F5),
-                    enableCountryPicker:userType != "EXPLORER"?false:true,
-                    controller: loginController.forgotPhoneController,
-                    selectedCountry: loginController.selectedCountry,
-                    hintText: "Enter phone number",
-                    maxLength: 10,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Please enter phone number";
-                      }
+                    CustomWidget().buildPhoneField(
+                      darkMode: loginController.isDarkMode ? true : false,
+                      radius: 8,
+                      color: const Color(0xffF5F5F5),
+                      enableCountryPicker:
+                          userType != "EXPLORER" ? false : true,
+                      controller: loginController.forgotPhoneController,
+                      selectedCountry: loginController.selectedCountry,
+                      hintText: "Enter Phone Number",
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return "Please enter phone number";
+                        }
 
-                      if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
-                        return "Phone number must be 10 digits";
-                      }
+                        if (!CustomWidget().isValidPhone(
+                            value, loginController.countryName.value)) {
+                          return "Enter a valid phone number";
+                        }
+                        // if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
+                        //   return "Phone number must be 10 digits";
+                        // }
 
-                      return null;
-                    },
-                    onCountryChanged: (country) {
-                      loginController.countryCode.value=country.phoneCode;
-                      print(
-                        "Selected Country: ${country.name} (+${country.phoneCode})",
-                      );
-                    },
-                  ),
+                        return null;
+                      },
+                      onCountryChanged: (country) {
+                        loginController.countryCode.value = country.phoneCode;
+                        loginController.countryName.value = country.countryCode;
+                        print(
+                          "Selected Country: ${country.name} (+${country.phoneCode}) (${country.countryCode})",
+                        );
+                      },
+                      // maxLength: 10,
+                      // validator: (value) {
+                      //   if (value == null || value.trim().isEmpty) {
+                      //     return "Please enter phone number";
+                      //   }
 
+                      //   if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
+                      //     return "Phone number must be 10 digits";
+                      //   }
+
+                      //   return null;
+                      // },
+                      // onCountryChanged: (country) {
+                      //   loginController.countryCode.value = country.phoneCode;
+                      //   print(
+                      //     "Selected Country: ${country.name} (+${country.phoneCode})",
+                      //   );
+                      // },
+                    ),
 
                   const SizedBox(height: 24),
 
@@ -178,8 +199,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         if (!formKey.currentState!.validate()) {
                           return;
                         }
-                        loginController.forgotStep1( loginController.isEmailSelected.value ? loginController.forgotEmailController.text : loginController.forgotPhoneController.text);
-
+                        loginController.forgotStep1(
+                            loginController.isEmailSelected.value
+                                ? loginController.forgotEmailController.text
+                                : loginController.forgotPhoneController.text);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.green,
@@ -188,17 +211,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
-                      child:
-                      loginController.isLoading.value?
-                         CustomWidget().buildTextWidget(title: "Loading...",textColor: Colors.white):
-                      CustomWidget().buildTextWidget(
-                        title: loginController.isEmailSelected.value
-                            ? "Verify Email"
-                            : "Verify Phone Number",
-                        textColor: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
+                      child: loginController.isLoading.value
+                          ? CustomWidget().buildTextWidget(
+                              title: "Loading...", textColor: Colors.white)
+                          : CustomWidget().buildTextWidget(
+                              title: loginController.isEmailSelected.value
+                                  ? "Verify Email"
+                                  : "Verify Phone Number",
+                              textColor: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
                     ),
                   ),
 
@@ -224,6 +247,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ),
     );
   }
+
   Widget _buildTab({
     required String title,
     required bool isSelected,
@@ -234,25 +258,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         vertical: 6,
       ),
       decoration: BoxDecoration(
-        color: isSelected
-            ?
-        AppColors.yellow50
-            : const Color(0xffF5F5F5),
+        color: isSelected ? AppColors.yellow50 : const Color(0xffF5F5F5),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isSelected
-              ? AppColors.amberColor700
-              : Colors.transparent,
+          color: isSelected ? AppColors.amberColor700 : Colors.transparent,
         ),
       ),
       child: CustomWidget().buildTextWidget(
           title: title,
           fontSize: 14,
           fontWeight: FontWeight.w500,
-          textColor: isSelected
-              ? AppColors.amberColor700
-              : AppColors.black300
-      ),
+          textColor: isSelected ? AppColors.amberColor700 : AppColors.black300),
     );
   }
 }

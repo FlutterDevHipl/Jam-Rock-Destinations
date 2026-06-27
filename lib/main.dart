@@ -1,16 +1,12 @@
 
 import 'dart:async';
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_core/firebase_core.dart';
-
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'Services/Internet_Controler.dart';
 import 'Services/firebase_notification_service.dart';
@@ -20,14 +16,14 @@ import 'WelcomeScreens/splashScreen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
   await FirebaseNotificationService.initializeFirebase();
 
   await Hive.initFlutter();
-
+  await GetStorage.init();
   await Future.wait([
     Hive.openBox('userBox'),
-    Hive.openBox('downloadBox'),
+    // Hive.openBox('downloadBox'),
   ]);
 
   runApp(const MyApp());

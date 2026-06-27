@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 
 import 'AppGradients.dart';
 import 'app_colors.dart';
@@ -164,26 +165,28 @@ class CustomWidget {
           height: height ?? 48,
           width: width ?? Get.width,
           child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(
-                color: btBorderColor,
-                width: 1,
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(
+                  color: btBorderColor,
+                  width: 1,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(radius ?? 30),
+                ),
+                backgroundColor: bgColor,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 14,
+                  horizontal: 24,
+                ),
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(radius ?? 30),
-              ),
-              backgroundColor: bgColor,
-              padding: const EdgeInsets.symmetric(
-                vertical: 14,
-                horizontal: 24,
-              ),
-            ),
-            onPressed: onPressed,
-            child:
-              Text(text, style: GoogleFonts.inter(
-                  fontSize: fontSize ?? 16, color: textColor, fontWeight: fontWeight),)
-
-          ),
+              onPressed: onPressed,
+              child: Text(
+                text,
+                style: GoogleFonts.inter(
+                    fontSize: fontSize ?? 16,
+                    color: textColor,
+                    fontWeight: fontWeight),
+              )),
         );
       },
     );
@@ -221,7 +224,7 @@ class CustomWidget {
     double? width,
     double? radius,
     Color color = AppColors.appColor,
-    Color backgroundColor = AppColors.purpleColor700,
+    Color backgroundColor = AppColors.green500,
     Gradient? gradient,
   }) {
     return Container(
@@ -345,6 +348,7 @@ class CustomWidget {
         color: AppColors.black500,
         fontSize: 15,
       ),
+      cursorColor: AppColors.green500,
       decoration: InputDecoration(
         fillColor: const Color(0xffF5F5F5),
         filled: filled,
@@ -406,6 +410,7 @@ class CustomWidget {
   }
 
   Widget buildPhoneField({
+    Function(String s)? onChanged,
     required bool darkMode,
     String? hintText,
     TextEditingController? controller,
@@ -446,7 +451,6 @@ class CustomWidget {
               child: Container(
                 height: 48,
                 padding: EdgeInsets.symmetric(horizontal: 15),
-
                 decoration: BoxDecoration(
                   color: color,
                   borderRadius: BorderRadius.circular(radius ?? 30),
@@ -487,6 +491,37 @@ class CustomWidget {
                                 ),
                                 onSelect: (Country country) {
                                   selectedCountry.value = country;
+                                  print(country.countryCode); // IN
+                                  print(country.phoneCode); // 91
+                                  // getMaxLength(country.countryCode, maxLength!);
+                                  // final data = CountryManager()
+                                  //     .countries
+                                  //     .firstWhere(
+                                  //       (e) =>
+                                  //           e.countryCode ==
+                                  //           country.countryCode,
+                                  //       orElse: () => CountryWithPhoneCode(
+                                  //         phoneCode: country.phoneCode,
+                                  //         countryCode: country.countryCode,
+                                  //         exampleNumberMobileNational: '',
+                                  //         exampleNumberFixedLineNational: '',
+                                  //         phoneMaskMobileNational:
+                                  //             '000000000000000',
+                                  //         phoneMaskFixedLineNational:
+                                  //             '000000000000000',
+                                  //         exampleNumberMobileInternational: '',
+                                  //         exampleNumberFixedLineInternational:
+                                  //             '',
+                                  //         phoneMaskMobileInternational: '',
+                                  //         countryName: country.countryCode,
+                                  //         phoneMaskFixedLineInternational: '',
+                                  //       ),
+                                  //     );
+
+                                  // maxLength = data.phoneMaskMobileNational
+                                  //     .replaceAll(RegExp(r'[^0]'), '')
+                                  //     .length;
+
                                   if (onCountryChanged != null) {
                                     onCountryChanged(country);
                                   }
@@ -507,8 +542,14 @@ class CustomWidget {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          SizedBox(width: 2,),
-                          Icon(Icons.keyboard_arrow_down_sharp,color: AppColors.green500,size: 16,)
+                          SizedBox(
+                            width: 2,
+                          ),
+                          Icon(
+                            Icons.keyboard_arrow_down_sharp,
+                            color: AppColors.green500,
+                            size: 16,
+                          )
                         ],
                       ),
                     ),
@@ -525,6 +566,7 @@ class CustomWidget {
                       child: TextFormField(
                         controller: controller,
                         enabled: enabled,
+                        onChanged: onChanged,
                         readOnly: readOnly,
                         onTap: onTap,
                         keyboardType: TextInputType.phone,
@@ -546,14 +588,13 @@ class CustomWidget {
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: 10,
                           ),
-
                           hintStyle: GoogleFonts.inter(
                             fontSize: 15,
                             color: AppColors.black200,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        onChanged: (value) => state.didChange(value),
+                        // onChanged: (value) => state.didChange(value),
                       ),
                     ),
                   ],
@@ -577,6 +618,30 @@ class CustomWidget {
       },
     );
   }
+
+  bool isValidPhone(String number, String isoCode) {
+    try {
+      final phone = PhoneNumber.parse(
+        number,
+        destinationCountry: IsoCode.values.byName(isoCode),
+      );
+
+      return phone.isValid();
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // void getMaxLength(String isoCode, int maxLength) {
+  //   final data = CountryManager().countries.firstWhere(
+  //         (e) => e.countryCode == isoCode,
+  //       );
+
+  //   maxLength =
+  //       data.phoneMaskMobileNational.replaceAll(RegExp(r'[^0]'), '').length;
+
+  //    state.setState(() {});
+  // }
 
   Widget buildExpandableText({
     required String text,
@@ -910,9 +975,7 @@ class CustomWidget {
                         )
                       else
                         SvgPicture.asset(
-                          isError
-                              ? Images.errorIcon
-                              : Images.successRightIcon,
+                          isError ? Images.errorIcon : Images.successRightIcon,
                         ),
 
                       heightSpace25,
@@ -1116,10 +1179,8 @@ class CustomWidget {
   }
 
   Widget customNetWorkWidget() {
-    return
-      Center(
+    return Center(
       child: Column(
-
         children: [
           Expanded(
             child: Column(

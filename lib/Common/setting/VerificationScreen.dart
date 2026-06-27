@@ -1,7 +1,7 @@
 import 'package:Jam_Rock_Destinations/Auth/Controller/login_Controller.dart';
 import 'package:Jam_Rock_Destinations/Auth/createPassword.dart';
 import 'package:Jam_Rock_Destinations/Auth/saveProfile.dart';
-import 'package:Jam_Rock_Destinations/Common/Controller/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Common/controller/ProfileController.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:flutter/material.dart';

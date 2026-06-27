@@ -108,7 +108,7 @@ class _CustomerBottomNavigationState extends State<CustomerBottomNavigation> {
               Images.settingIcon,
               color: AppColors.green500,
             ),
-            label: "Setting",
+            label: "Settings",
           ),
         ],
       ),

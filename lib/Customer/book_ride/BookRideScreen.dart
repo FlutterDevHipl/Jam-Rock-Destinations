@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:Jam_Rock_Destinations/Customer/controller/BookRideController.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
@@ -9,6 +9,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../Common/controller/LocationController.dart';
 
 class BookRideScreen extends StatefulWidget {
   const BookRideScreen({super.key});
@@ -19,6 +22,7 @@ class BookRideScreen extends StatefulWidget {
 
 class _BookRideScreenState extends State<BookRideScreen> {
   BookRidecontroller controller = Get.put(BookRidecontroller());
+  Locationcontroller locationController = Get.put(Locationcontroller());
 
   @override
   void initState() {
@@ -64,68 +68,82 @@ class _BookRideScreenState extends State<BookRideScreen> {
             () => controller.isLoading.value
                 ? const Center(
                     child: CircularProgressIndicator(color: AppColors.green500))
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                : Stack(
                     children: [
-                      Stack(
-                        children: [
-                          Container(),
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 12),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 14,
-                            ),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: AppColors.whiteColor,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(.08),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                                border: Border.all(color: AppColors.green500)),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _locationTile(
-                                    color: Colors.green,
-                                    loctionCont: controller.pickupLocCont,
-                                    hintText: "Pickup Location",
-                                    isPickUpValue: true,
-                                    isDropValue: false),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 6),
-                                  child: Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        Images.dottedLine,
-                                        // height: 35,
-                                      ),
-                                      widthSpace25,
-                                      Expanded(
-                                        child: Divider(
-                                          color: AppColors.black50,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                _locationTile(
-                                    color: Colors.amber,
-                                    loctionCont: controller.dropLocCont,
-                                    hintText: "Drop Location",
-                                    isPickUpValue: false,
-                                    isDropValue: true),
-                              ],
-                            ),
+                      SizedBox( 
+                        width: Get.width,
+                        height: Get.height,
+                        child: GoogleMap(
+                          markers: locationController.markers,
+                          initialCameraPosition: const CameraPosition(
+                            target: Locationcontroller.initialPosition,
+                            zoom: 14,
                           ),
-                        ],
+                          onMapCreated: (controller) async {
+                            locationController.mapController = controller;
+
+                            await locationController.fetchLocation();
+                            await locationController.moveToCurrentLocation();
+                          },
+                          myLocationEnabled: true,
+                          myLocationButtonEnabled: false,
+                          zoomControlsEnabled: false,
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: AppColors.whiteColor,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(.08),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                            border: Border.all(color: AppColors.green500)),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _locationTile(
+                                color: Colors.green,
+                                loctionCont: controller.pickupLocCont,
+                                hintText: "Pickup Location",
+                                isPickUpValue: true,
+                                isDropValue: false),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 6),
+                              child: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    Images.dottedLine,
+                                    // height: 35,
+                                  ),
+                                  widthSpace25,
+                                  Expanded(
+                                    child: Divider(
+                                      color: AppColors.black50,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            _locationTile(
+                                color: Colors.amber,
+                                loctionCont: controller.dropLocCont,
+                                hintText: "Drop Location",
+                                isPickUpValue: false,
+                                isDropValue: true),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -166,6 +184,7 @@ class _BookRideScreenState extends State<BookRideScreen> {
         ),
         Expanded(
             child: TextFormField(
+          cursorColor: AppColors.green500,
           controller: loctionCont,
           keyboardType: TextInputType.text,
           style: GoogleFonts.inter(
@@ -537,18 +556,20 @@ class PassengerBottomSheet extends StatelessWidget {
                   ),
           ),
           const SizedBox(height: 20),
-          GestureDetector(
-            onTap: () {
-              // if (controller.buttonText.value == "Confirm Drop") {
-              //   Future.delayed(
-              //     const Duration(milliseconds: 300),
-              //     () => _showPassengerBottomSheet(),
-              //   );
-              // }
-              // Get.back();
-            },
-            child: Obx(
-              () => Container(
+          Obx(
+            () => GestureDetector(
+              onTap: () {
+                if (int.tryParse(controller.selectedValue.value.toString())! >=
+                    9) {
+                  CustomWidget().showSuccessPopup(
+                      title: "Request Sent!",
+                      message: "Our admin team will contact you shortly",
+                      onPressed: () {},
+                      buttonText: "Okay");
+                } else {}
+                Get.back();
+              },
+              child: Container(
                 padding: EdgeInsets.symmetric(vertical: 12),
                 width: Get.width,
                 decoration: BoxDecoration(

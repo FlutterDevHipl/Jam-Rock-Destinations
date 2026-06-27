@@ -1,4 +1,4 @@
-
+import 'package:Jam_Rock_Destinations/Common/controller/LocationController.dart';
 import 'package:Jam_Rock_Destinations/Common/notification/NotificationScreen.dart';
 import 'package:Jam_Rock_Destinations/Driver/controller/DriverHomeController.dart';
 import 'package:Jam_Rock_Destinations/Driver/ride_history/CancelRideScreen.dart';
@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -21,6 +22,7 @@ class DriverHomeScreen extends StatefulWidget {
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
   DriverHomeController controller = Get.put(DriverHomeController());
+  Locationcontroller locationcontroller = Get.put(Locationcontroller());
 
   @override
   void initState() {
@@ -37,13 +39,35 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             () => controller.isLoading.value
                 ? Center(
                     child: CircularProgressIndicator(color: AppColors.green500))
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                : Stack(
                     children: [
-                      _buildHeader(),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildHeader(),
+                          Expanded(
+                              child: GoogleMap(
+                            markers: locationcontroller.markers,
+                            initialCameraPosition: const CameraPosition(
+                              target: Locationcontroller.initialPosition,
+                              zoom: 14,
+                            ),
+                            onMapCreated: (controller) async {
+                              locationcontroller.mapController = controller;
+
+                              await locationcontroller.fetchLocation();
+                              await locationcontroller.moveToCurrentLocation();
+                            },
+                            myLocationEnabled: true,
+                            myLocationButtonEnabled: false,
+                            zoomControlsEnabled: false,
+                          )),
+                        ],
+                      ),
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Container(
+                            height: MediaQuery.of(context).size.width * 0.7,
                             padding: EdgeInsets.all(20),
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -57,7 +81,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                                 ),
                               ],
                             ),
-                            child: OngoingRideSheet()),
+                            child: DriverStatusState()),
                       ),
                     ],
                   ),
@@ -164,7 +188,7 @@ class DriverStatusState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -318,152 +342,142 @@ class OngoingRideSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.5,
-      padding: const EdgeInsets.all(10),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(8),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomWidget().buildTextWidget(
-                      title: "Ongoing Ride",
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      textColor: AppColors.green500,
-                      textAlign: TextAlign.center),
-                  heightSpace4,
-                  CustomWidget().buildTextWidget(
-                      title: "\$800",
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                      textColor: AppColors.black500,
-                      textAlign: TextAlign.center),
-                ],
-              ),
-              Spacer(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  CustomWidget().buildTextWidget(
-                      title: "Arriving pickup point in",
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      textColor: AppColors.black400,
-                      textAlign: TextAlign.center),
-                  heightSpace4,
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: AppColors.green500),
-                    child: CustomWidget().buildTextWidget(
-                        title: "6 Min",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        textColor: AppColors.whiteColor,
-                        textAlign: TextAlign.center),
-                  )
-                ],
-              ),
-            ],
-          ),
-          const Divider(),
-          ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const CircleAvatar(
-                backgroundImage: NetworkImage(
-                  "https://i.pravatar.cc/150",
-                ),
-              ),
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomWidget().buildTextWidget(
-                      title: "Peter parker",
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      textColor: AppColors.black500,
-                      textAlign: TextAlign.start),
-                  Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: AppColors.green50),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.call,
-                            color: AppColors.green500,
-                          ),
-                          widthSpace5,
-                          CustomWidget().buildTextWidget(
-                              title: "Call",
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              textColor: AppColors.green500,
-                              textAlign: TextAlign.center),
-                          widthSpace5,
-                        ],
-                      ))
-                ],
-              )),
-          heightSpace12,
-          const LocationRow(
-            iconColor: Colors.green,
-            title: "Pickup Location",
-            subtitle: "4.1 km away",
-          ),
-          const SizedBox(height: 12),
-          const LocationRow(
-            iconColor: Colors.amber,
-            title: "Destination",
-            subtitle: "8.2 km ride",
-          ),
-          const Spacer(),
-          Container(
-            width: Get.width,
-            decoration: BoxDecoration(
-                color: AppColors.green500,
-                borderRadius: BorderRadius.circular(8)),
-            child: Row(
+    return ListView(
+      // crossAxisAlignment: CrossAxisAlignment.start,
+      // mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SvgPicture.asset(Images.slideIcon),
-                widthSpace10,
                 CustomWidget().buildTextWidget(
-                    title: "Slide To Confirm Your Arrival",
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    textColor: AppColors.whiteColor,
-                    textAlign: TextAlign.center)
+                    title: "Ongoing Ride",
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    textColor: AppColors.green500,
+                    textAlign: TextAlign.center),
+                heightSpace4,
+                CustomWidget().buildTextWidget(
+                    title: "\$800",
+                    fontSize: 32,
+                    fontWeight: FontWeight.w600,
+                    textColor: AppColors.black500,
+                    textAlign: TextAlign.center),
               ],
             ),
+            Spacer(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                CustomWidget().buildTextWidget(
+                    title: "Arriving pickup point in",
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    textColor: AppColors.black400,
+                    textAlign: TextAlign.center),
+                heightSpace4,
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: AppColors.green500),
+                  child: CustomWidget().buildTextWidget(
+                      title: "6 Min",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      textColor: AppColors.whiteColor,
+                      textAlign: TextAlign.center),
+                )
+              ],
+            ),
+          ],
+        ),
+        const Divider(),
+        ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const CircleAvatar(
+              backgroundImage: NetworkImage(
+                "https://i.pravatar.cc/150",
+              ),
+            ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomWidget().buildTextWidget(
+                    title: "Peter parker",
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    textColor: AppColors.black500,
+                    textAlign: TextAlign.start),
+                Container(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: AppColors.green50),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.call,
+                          color: AppColors.green500,
+                        ),
+                        widthSpace5,
+                        CustomWidget().buildTextWidget(
+                            title: "Call",
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            textColor: AppColors.green500,
+                            textAlign: TextAlign.center),
+                        widthSpace5,
+                      ],
+                    ))
+              ],
+            )),
+        heightSpace12,
+        const LocationRow(
+          iconColor: Colors.green,
+          title: "Pickup Location",
+          subtitle: "4.1 km away",
+        ),
+        const SizedBox(height: 12),
+        const LocationRow(
+          iconColor: Colors.amber,
+          title: "Destination",
+          subtitle: "8.2 km ride",
+        ),
+        const Spacer(),
+        Container(
+          width: Get.width,
+          decoration: BoxDecoration(
+              color: AppColors.green500,
+              borderRadius: BorderRadius.circular(8)),
+          child: Row(
+            children: [
+              SvgPicture.asset(Images.slideIcon),
+              widthSpace10,
+              CustomWidget().buildTextWidget(
+                  title: "Slide To Confirm Your Arrival",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  textColor: AppColors.whiteColor,
+                  textAlign: TextAlign.center)
+            ],
           ),
-          heightSpace10,
-          CustomWidget().buildOutlinedBtn(
-            text: "Cancel Ride",
-            btBorderColor: AppColors.redColor400,
-            fontSize: 16,
-            radius: 8,
-            textColor: AppColors.redColor400,
-            onPressed: () {
-              Get.to(CancelRideScreen());
-            },
-          )
-        ],
-      ),
+        ),
+        heightSpace10,
+        CustomWidget().buildOutlinedBtn(
+          text: "Cancel Ride",
+          btBorderColor: AppColors.redColor400,
+          fontSize: 16,
+          radius: 8,
+          textColor: AppColors.redColor400,
+          onPressed: () {
+            Get.to(CancelRideScreen());
+          },
+        )
+      ],
     );
   }
 }

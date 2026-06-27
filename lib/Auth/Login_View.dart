@@ -9,11 +9,14 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_utils/src/get_utils/get_utils.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../Utils/app_const.dart';
 import '../Utils/app_images.dart';
 import '../Utils/custom_widget.dart';
 import 'Controller/login_Controller.dart';
+
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,11 +28,21 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool isEmailSelected = true;
   bool isPasswordVisible = false;
+  final box = GetStorage();
   final LoginController loginController=Get.put(LoginController());
   // final emailController = TextEditingController();
   // final phoneController = TextEditingController();
   // final passwordController = TextEditingController();
 
+
+
+  int maxLength = 10;
+
+  @override
+  void initState() {
+    super.initState();
+    box.write('seenOnboarding', true);
+  }
 
 
   final formKey = GlobalKey<FormState>();
@@ -159,25 +172,36 @@ class _LoginScreenState extends State<LoginScreen> {
                     enableCountryPicker:userType != "EXPLORER"?false:true,
                     controller: loginController.phoneController,
                     selectedCountry: loginController.selectedCountry,
-                    hintText: "Enter phone number",
-                    maxLength: 10,
+                    hintText: "Enter Phone Number",
+                    // maxLength: 10,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return "Please enter phone number";
                       }
 
-                      if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
-                        return "Phone number must be 10 digits";
+                      if (!CustomWidget().isValidPhone(
+                          value, loginController.countryName.value)) {
+                        return "Enter a valid phone number";
                       }
+                      // if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
+                      //   return "Phone number must be 10 digits";
+                      // }
 
                       return null;
                     },
                     onCountryChanged: (country) {
-                      loginController.countryCode.value=country.phoneCode;
+                      loginController.countryCode.value = country.phoneCode;
+                      loginController.countryName.value = country.countryCode;
                       print(
-                        "Selected Country: ${country.name} (+${country.phoneCode})",
+                        "Selected Country: ${country.name} (+${country.phoneCode}) (${country.countryCode})",
                       );
                     },
+                    // onCountryChanged: (country) {
+                    //   loginController.countryCode.value=country.phoneCode;
+                    //   print(
+                    //     "Selected Country: ${country.name} (+${country.phoneCode})",
+                    //   );
+                    // },
                   ),
 
                 heightSpace24,
@@ -327,11 +351,44 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: _socialButton(
-                        icon: Icons.apple,
-                        title: "Apple",
-
-                      ),
+                      child:
+                      GestureDetector(
+                        onTap: () {
+                          loginController.signInWithApple();
+                        },
+                        child: Container(
+                          height: 55,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.14),
+                                blurRadius: 27.8,
+                                offset: const Offset(0, 0),
+                                spreadRadius: 0,
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.apple),
+                              widthSpace8,
+                              CustomWidget().buildTextWidget(
+                                title:"Apple",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                textColor: Colors.black,
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                      // _socialButton(
+                      //   icon: Icons.apple,
+                      //   title: "Apple",
+                      // ),
                     ),
                     widthSpace15,
                     Expanded(
@@ -436,50 +493,52 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  Widget _socialButton({
-    IconData? icon,
-    String? image,
-    required String title,
-  }) {
-    return Container(
-      height: 55,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.14),
-            blurRadius: 27.8,
-            offset: const Offset(0, 0),
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (icon != null)
-            Icon(
-              icon,
-              color: Colors.black,
-            ),
-
-          if (image != null)
-            Image.asset(
-              image,
-              height: 22,
-            ),
-
-          widthSpace8,
-
-          CustomWidget().buildTextWidget(
-            title: title,
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            textColor: Colors.black,
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _socialButton({
+  //   IconData? icon,
+  //   String? image,
+  //   required String title,
+  //
+  // }) {
+  //   return
+  //     Container(
+  //     height: 55,
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       borderRadius: BorderRadius.circular(10),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withOpacity(0.14),
+  //           blurRadius: 27.8,
+  //           offset: const Offset(0, 0),
+  //           spreadRadius: 0,
+  //         ),
+  //       ],
+  //     ),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         if (icon != null)
+  //           Icon(
+  //             icon,
+  //             color: Colors.black,
+  //           ),
+  //
+  //         if (image != null)
+  //           Image.asset(
+  //             image,
+  //             height: 22,
+  //           ),
+  //
+  //         widthSpace8,
+  //
+  //         CustomWidget().buildTextWidget(
+  //           title: title,
+  //           fontSize: 16,
+  //           fontWeight: FontWeight.w400,
+  //           textColor: Colors.black,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }
