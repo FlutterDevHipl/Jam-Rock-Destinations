@@ -32,7 +32,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           child: Form(
             key: formKey,
             child: Obx(
-              () => Column(
+                  () => Column(
                 children: [
                   const SizedBox(height: 40),
 
@@ -142,7 +142,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       radius: 8,
                       color: const Color(0xffF5F5F5),
                       enableCountryPicker:
-                          userType != "EXPLORER" ? false : true,
+                      userType != "EXPLORER" ? false : true,
                       controller: loginController.forgotPhoneController,
                       selectedCountry: loginController.selectedCountry,
                       hintText: "Enter Phone Number",
@@ -200,9 +200,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           return;
                         }
                         loginController.forgotStep1(
-                            loginController.isEmailSelected.value
+                            contactValue: loginController.isEmailSelected.value
                                 ? loginController.forgotEmailController.text
-                                : loginController.forgotPhoneController.text);
+                                : loginController.forgotPhoneController.text,
+                            type:loginController.isEmailSelected.value?"email":"phone" , userType: userType );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.green,
@@ -213,15 +214,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                       child: loginController.isLoading.value
                           ? CustomWidget().buildTextWidget(
-                              title: "Loading...", textColor: Colors.white)
+                          title: "Loading...", textColor: Colors.white)
                           : CustomWidget().buildTextWidget(
-                              title: loginController.isEmailSelected.value
-                                  ? "Verify Email"
-                                  : "Verify Phone Number",
-                              textColor: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                            ),
+                        title: loginController.isEmailSelected.value
+                            ? "Verify Email"
+                            : "Verify Phone Number",
+                        textColor: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
 

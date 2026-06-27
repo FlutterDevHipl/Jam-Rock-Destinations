@@ -35,11 +35,12 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
 
   @override
   void initState() {
-    controller.getVehicleData("vehicle_type");
-    controller.getVehicleData("vehicle_brand");
-
-    // TODO: implement initState
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getVehicleData("vehicle_type");
+      controller.getVehicleData("vehicle_brand");
+    });
   }
   @override
   Widget build(BuildContext context) {

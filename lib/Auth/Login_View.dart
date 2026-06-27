@@ -10,6 +10,7 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_utils/src/get_utils/get_utils.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 
 import '../Utils/app_const.dart';
 import '../Utils/app_images.dart';
@@ -175,12 +176,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: "Enter Phone Number",
                     // maxLength: 10,
                     validator: (value) {
+                      print("Value $value");
+                      print(loginController.countryName.value);
                       if (value == null || value.trim().isEmpty) {
                         return "Please enter phone number";
                       }
 
-                      if (!CustomWidget().isValidPhone(
+                      if (!isValidPhone(
                           value, loginController.countryName.value)) {
+
                         return "Enter a valid phone number";
                       }
                       // if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
@@ -443,7 +447,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     GestureDetector(
                       onTap: () {
                         Get.to(RegistrationView(socialUserId: "",isSocialLogin: false,
-                        image: "",fullname: "",email: "",));
+                        image: "",fullname: "",email: "",socialType: "normal",));
                       },
                       child:    CustomWidget().buildTextWidget(
                       title: "Register Now",
@@ -492,6 +496,18 @@ class _LoginScreenState extends State<LoginScreen> {
             : AppColors.black300
       ),
     );
+  }
+  bool isValidPhone(String number, String isoCode) {
+    try {
+      final phone = PhoneNumber.parse(
+        number,
+        destinationCountry: IsoCode.values.byName(isoCode),
+      );
+
+      return phone.isValid();
+    } catch (_) {
+      return false;
+    }
   }
   // Widget _socialButton({
   //   IconData? icon,

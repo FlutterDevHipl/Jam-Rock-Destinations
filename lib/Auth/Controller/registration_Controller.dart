@@ -97,7 +97,7 @@ class RegistrationController extends GetxController {
 
   final otpError = ''.obs;
   final countryCode = ''.obs;
-  final countryName = ''.obs;
+  final countryName = 'JM'.obs;
 
   bool validateOtp() {
     if (otpController.text.length != 4) {
@@ -124,7 +124,7 @@ class RegistrationController extends GetxController {
   final Rx<Country?> selectedCountry = Rx<Country?>(
     Country(
       phoneCode: "1",
-      countryCode: "IN",
+      countryCode: "JM",
       e164Sc: 0,
       geographic: true,
       level: 1,
@@ -293,7 +293,7 @@ class RegistrationController extends GetxController {
                     GestureDetector(
                       onTap: () async {
                         if (isPhoneVerification == true) {
-                          await sendPhoneOTp(phoneController.text, context);
+                          await sendPhoneOTp(phoneController.text, context,countryCode.value);
                           // CustomWidget().showCustomToast(message: "OTP has been resent successfully.");
                         } else {
                           await sendEmailOTp(
@@ -413,12 +413,17 @@ class RegistrationController extends GetxController {
   Future<void> sendPhoneOTp(
     String phone,
     BuildContext context,
+      String countryCode,
   ) async {
     try {
       isLoading.value = true;
+      if(countryCode.isEmpty)
+        {
+          countryCode="1";
+        }
 final body={
   "phone": phone,
-  "country_code":"+${countryCode.value.isEmpty?"1":countryCode.value}"
+  "country_code":"+${countryCode}"
 };
       var response = await ApiProvider().postRequest1(
         apiUrl: AppConstants.sendPhoneOTP,
@@ -591,6 +596,8 @@ final body={
     required String displayName,
     required String email,
     required String photoURL,
+    required String login_type,
+    required String countryCode,
   }) async {
     try {
       isLoading.value = true;
@@ -611,11 +618,12 @@ final body={
       };
       print("googleData ${googleData}");
       final requestData = {
-        "register_type": "google",
+        "register_type": login_type,
         "user_type": userType == "EXPLORER" ? "customer" : "driver",
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
-        "phone": "+${countryCode.value}${phoneController.text.trim()}",
+        "phone": phoneController.text.trim(),
+        "country_code":"${countryCode}",
         "platform": Platform.isAndroid ? "android" : "ios",
         "device_id": deviceData["device_id"],
         "device_json": jsonEncode(deviceData["device_json"]),
@@ -635,7 +643,7 @@ final body={
         userImage: selectedImage,
       );
 
-      print("Register Response: $response");
+      print("registerGoogleUser Register Response: $response");
 
       if (response['success'] == true) {
         CustomWidget().showCustomToast(
@@ -673,7 +681,10 @@ final body={
     }
   }
 
-  Future<void> registerUser() async {
+  Future<void> registerUser({
+    final loginType,
+    final countryCode
+}) async {
     try {
       isLoading.value = true;
 
@@ -687,12 +698,12 @@ final body={
         token = "";
       }
       final requestData = {
-        "register_type": "normal",
+        "register_type": loginType,
         "user_type": userType == "EXPLORER" ? "customer" : "driver",
-        "country_code":"+${countryCode.value.isEmpty?"1":countryCode.value}",
+        "country_code":countryCode,
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
-        "phone": "+${countryCode.value}${phoneController.text.trim()}",
+        "phone": phoneController.text.trim(),
         "password": passwordController.text,
         "password_confirmation": confirmPassController.text,
         "platform": Platform.isAndroid ? "android" : "ios",
@@ -740,7 +751,7 @@ print("requestData = $requestData");
         );
       }
     } catch (e) {
-      print("Register Error: $e");
+      print("Register Error!!: $e");
     } finally {
       isLoading.value = false;
     }
@@ -751,6 +762,8 @@ print("requestData = $requestData");
     required String displayName,
     required String email,
     required String photoURL,
+    required String login_type,
+    required String countryCode,
   }) async {
     try {
       isLoading.value = true;
@@ -772,11 +785,13 @@ print("requestData = $requestData");
       final requestData = {
         "register_step": 1,
         // "device_token": "fcm_token_here",
-        "register_type": "google",
+        "register_type": login_type,
         "user_type": "driver",
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
-        "phone": "+${countryCode.value}${phoneController.text.trim()}",
+        "phone": phoneController.text.trim(),
+        "country_code":"${countryCode}",
+        // "phone": "+${countryCode.value}${phoneController.text.trim()}",
         "platform": Platform.isAndroid ? "android" : "ios",
         "device_id": deviceData["device_id"],
         "device_json": jsonEncode(deviceData["device_json"]),
@@ -796,7 +811,7 @@ print("requestData = $requestData");
         userImage: selectedImage,
       );
 
-      print("Register Response: $response");
+      print("googleDriverRegistration Register Response: $response");
 
       if (response['success'] == true) {
         CustomWidget().showCustomToast(
@@ -834,7 +849,8 @@ print("requestData = $requestData");
     }
   }
 
-  Future<void> driverRegistration() async {
+  Future<void> driverRegistration({  required String login_type,
+    required String countryCode,}) async {
     try {
       isLoading.value = true;
 
@@ -850,11 +866,12 @@ print("requestData = $requestData");
       final requestData = {
         "register_step": 1,
         // "device_token": "fcm_token_here",
-        "register_type": "normal",
+        "register_type": login_type,
         "user_type": "driver",
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
-        "phone": "+${countryCode.value}${phoneController.text.trim()}",
+        "phone": phoneController.text.trim(),
+        "country_code":"${countryCode}",
         "password": passwordController.text,
         "password_confirmation": confirmPassController.text,
         "platform": Platform.isAndroid ? "android" : "ios",
@@ -870,7 +887,7 @@ print("requestData = $requestData");
         userImage: selectedImage,
       );
 
-      print("Register Response: $response");
+      print("driverRegistration Register Response: $response");
 
       if (response['success'] == true) {
         CustomWidget().showCustomToast(

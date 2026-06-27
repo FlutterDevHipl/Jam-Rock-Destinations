@@ -6,6 +6,7 @@ import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 
 import '../Common/setting/PrivacyPolicy.dart';
 import '../Utils/app_images.dart';
@@ -18,13 +19,17 @@ class RegistrationView extends StatefulWidget {
 
   final isSocialLogin;
   final image;
+  final socialType;
+  final countryCode;
   const RegistrationView(
       {super.key,
       this.fullname,
       this.email,
       this.isSocialLogin,
       this.image,
-      this.socialUserId});
+      this.socialUserId, this.socialType, this.countryCode,
+
+      });
 
   @override
   State<RegistrationView> createState() => _RegistrationViewState();
@@ -251,6 +256,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                                         top: 10, bottom: 10, right: 15),
                                     child: GestureDetector(
                                         onTap: () {
+                                          FocusScope.of(context).unfocus();
                                           final email = registrationController
                                               .emailController.text
                                               .trim();
@@ -340,109 +346,116 @@ class _RegistrationViewState extends State<RegistrationView> {
                       //   controller:  registrationController.phoneController,
                       //   readOnly: true,
                       // ):
-                      CustomWidget().buildPhoneField(
-                        darkMode:
-                            registrationController.isDarkMode ? true : false,
-                        // readOnly: registrationController.isPhoneVerified.value,
-                        
-                        onChanged: (value) {
-                          if (value.trim() !=
-                              registrationController.verifiedPhone) {
-                            registrationController.isPhoneVerified.value =
-                                false;
-                          }
-                        },
-                        radius: 8,
-                        enableCountryPicker:
-                            userType != "EXPLORER" ? false : true,
-                        color: const Color(0xffF5F5F5),
-                        suffixIcon: GestureDetector(
-                            onTap: () {
-                              // registrationController.showVerificationDialog(
-                              //   context: context,
-                              //   isPhoneVerification: true,
-                              //   value: "+1 ${registrationController.phoneController.text}",
-                              // );
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 10, bottom: 10),
-                              child: GestureDetector(
-                                  onTap: () {
-                                    registrationController.otpController
-                                        .clear();
-                                    final phone = registrationController
-                                        .phoneController.text
-                                        .trim();
 
-                                    if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
-                                      CustomWidget().showCustomToast(
-                                          message:
-                                              "Please enter valid phone number");
-                                      return;
-                                    }
-                                    if (!registrationController
-                                        .isPhoneVerified.value) {
-                                      registrationController.sendPhoneOTp(
-                                          phone, context);
-                                    }
-                                  },
-                                  child: CustomWidget().buildTextWidget(
-                                      title: registrationController
-                                              .isPhoneVerified.value
-                                          ? "Verified"
-                                          : "Verify",
-                                      textColor: registrationController
-                                              .isPhoneVerified.value
-                                          ? AppColors.green500
-                                          : AppColors.yellow700,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600)),
-                            )),
-                        controller: registrationController.phoneController,
-                        selectedCountry: registrationController.selectedCountry,
-                        hintText: "Enter Phone Number",
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return "Please enter phone number";
-                          }
-                          if (!CustomWidget().isValidPhone(value,
-                              registrationController.countryName.value)) {
-                            return "Enter a valid phone number";
-                          }
-                          // if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
-                          //   return "Phone number must be 10 digits";
-                          // }
+                      Obx(
+                        () =>  CustomWidget().buildPhoneField(
+                          darkMode:
+                              registrationController.isDarkMode ? true : false,
+                          readOnly: registrationController.isPhoneVerified.value,
 
-                          return null;
-                        },
-                        onCountryChanged: (country) {
-                          registrationController.countryCode.value =
-                              country.phoneCode;
-                          registrationController.countryName.value =
-                              country.countryCode;
-                          print(
-                            "Selected Country: ${country.name} (+${country.phoneCode}) (${country.countryCode})",
-                          );
-                        },
-                        // maxLength: 10,
-                        // validator: (value) {
-                        //   if (value == null || value.trim().isEmpty) {
-                        //     return "Please enter phone number";
-                        //   }
+                          onChanged: (value) {
+                            if (value.trim() !=
+                                registrationController.verifiedPhone) {
+                              registrationController.isPhoneVerified.value =
+                                  false;
+                            }
+                          },
+                          radius: 8,
+                          enableCountryPicker:
+                              userType != "EXPLORER" ? false : true,
+                          color: const Color(0xffF5F5F5),
+                          suffixIcon: GestureDetector(
+                              onTap: () {
+                                // registrationController.showVerificationDialog(
+                                //   context: context,
+                                //   isPhoneVerification: true,
+                                //   value: "+1 ${registrationController.phoneController.text}",
+                                // );
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 10, bottom: 10),
+                                child: GestureDetector(
+                                    onTap: () {
+                                      FocusScope.of(context).unfocus();
+                                      registrationController.otpController
+                                          .clear();
+                                      final phone = registrationController
+                                          .phoneController.text
+                                          .trim();
 
-                        //   if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
-                        //     return "Phone number must be 10 digits";
-                        //   }
+                                      if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
+                                        CustomWidget().showCustomToast(
+                                            message:
+                                                "Please enter valid phone number");
+                                        return;
+                                      }
+                                      if (!registrationController
+                                          .isPhoneVerified.value) {
+                                        registrationController.sendPhoneOTp(
+                                            phone, context,registrationController.countryCode.value);
+                                      }
+                                    },
+                                    child: CustomWidget().buildTextWidget(
+                                        title: registrationController
+                                                .isPhoneVerified.value
+                                            ? "Verified"
+                                            : "Verify",
+                                        textColor: registrationController
+                                                .isPhoneVerified.value
+                                            ? AppColors.green500
+                                            : AppColors.yellow700,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600)),
+                              )),
+                          controller: registrationController.phoneController,
+                          selectedCountry: registrationController.selectedCountry,
+                          hintText: "Enter Phone Number",
+                          maxLength: 15,
+                          validator: (value) {
+                            print("Value $value");
+                            print(registrationController.countryName.value);
+                            if (value == null || value.trim().isEmpty) {
+                              return "Please enter phone number";
+                            }
+                            if (!isValidPhone(value,
+                                registrationController.countryName.value==""|| registrationController.countryName.value.isEmpty?"JM":registrationController.countryName.value)) {
+                              return "Enter a valid phone number";
+                            }
+                            // if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
+                            //   return "Phone number must be 10 digits";
+                            // }
 
-                        //   return null;
-                        // },
-                        // onCountryChanged: (country) {
-                        //   registrationController.countryCode.value =
-                        //       country.phoneCode;
-                        //   print(
-                        //     "Selected Country: ${country.name} (+${country.phoneCode})",
-                        //   );
-                        // },
+                            return null;
+                          },
+                          onCountryChanged: (country) {
+                            registrationController.countryCode.value =
+                                country.phoneCode;
+                            registrationController.countryName.value =
+                                country.countryCode;
+                            print(
+                              "Selected Country: ${country.name} (+${country.phoneCode}) (${country.countryCode})",
+                            );
+                          },
+                          // maxLength: 10,
+                          // validator: (value) {
+                          //   if (value == null || value.trim().isEmpty) {
+                          //     return "Please enter phone number";
+                          //   }
+
+                          //   if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
+                          //     return "Phone number must be 10 digits";
+                          //   }
+
+                          //   return null;
+                          // },
+                          // onCountryChanged: (country) {
+                          //   registrationController.countryCode.value =
+                          //       country.phoneCode;
+                          //   print(
+                          //     "Selected Country: ${country.name} (+${country.phoneCode})",
+                          //   );
+                          // },
+                        ),
                       ),
                       heightSpace15,
 
@@ -468,7 +481,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                                       registrationController.passwordController,
                                   obscureText:
                                       !registrationController.isPasswordVisible,
-                                  keyboardType: TextInputType.name,
+                                  // keyboardType: TextInputType.name,
                                   hintText: "Enter Your Password",
                                   prefixIcon: Padding(
                                     padding: const EdgeInsets.all(14),
@@ -536,7 +549,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                                       .confirmPassController,
                                   obscureText: !registrationController
                                       .isConfirmPassVisible.value,
-                                  keyboardType: TextInputType.name,
+                                  // keyboardType: TextInputType.name,
                                   hintText: "Enter Your Confirm Password",
                                   prefixIcon: Padding(
                                     padding: const EdgeInsets.all(14),
@@ -591,6 +604,8 @@ class _RegistrationViewState extends State<RegistrationView> {
                                     displayName: widget.fullname,
                                     email: widget.email,
                                     photoURL: widget.image,
+                                    login_type: widget.socialType.toString(),
+                                      countryCode: widget.countryCode
                                   );
                                 }
                               } else {
@@ -598,7 +613,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                                     socialUserId: widget.socialUserId,
                                     displayName: widget.fullname,
                                     email: widget.email,
-                                    photoURL: widget.image);
+                                    photoURL: widget.image, login_type: widget.socialType, countryCode: widget.countryCode);
                               }
                             } else {
                               if (registrationController.selectedImage.value ==
@@ -638,10 +653,13 @@ class _RegistrationViewState extends State<RegistrationView> {
                                 return;
                               }
                               if (userType == "EXPLORER") {
-                                registrationController.registerUser();
+                                registrationController.registerUser(loginType: widget.socialType,
+                                  countryCode: "+${registrationController.countryCode.value.isEmpty?"1":registrationController.countryCode.value}"
+                                );
                                 // CustomWidget().showCustomToast(message: "Login Screen Redirections");
                               } else {
-                                registrationController.driverRegistration();
+                                registrationController.driverRegistration(login_type: "normal",  countryCode: "+${registrationController.countryCode.value.isEmpty?"1":
+                                registrationController.countryCode.value}" );
                               }
                             }
 
@@ -758,7 +776,20 @@ class _RegistrationViewState extends State<RegistrationView> {
       ),
     );
   }
+  bool isValidPhone(String number, String isoCode) {
+    try {
+      print("Number: $number");
+      print("ISO Code: $isoCode");
+      final phone = PhoneNumber.parse(
+        number,
+        destinationCountry: IsoCode.values.byName(isoCode),
+      );
 
+      return phone.isValid();
+    } catch (_) {
+      return false;
+    }
+  }
   Widget _socialButton({
     IconData? icon,
     String? image,

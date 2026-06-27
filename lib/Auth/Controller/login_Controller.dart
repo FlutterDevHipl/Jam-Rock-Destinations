@@ -46,7 +46,7 @@ class LoginController extends GetxController
   bool isDarkMode = Get.isDarkMode;
   final countryCode = ''.obs;
   final isEmailSelected = true.obs;
-  final countryName = ''.obs;
+  final countryName = "JM".obs;
 
   Future<void> getFirebaseToken() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -87,6 +87,7 @@ class LoginController extends GetxController
       final requestData = {
         "login_type": login_type, // normal,facebook,google,apple
         "social_user_id": socialUserId,
+        "country_code":"+${countryCode.value.isEmpty?"1":countryCode.value}",
         "user_login":email, // email and phone
         "user_type": userType == "EXPLORER" ? "customer" : "driver",
         "platform": Platform.isAndroid ? "android" : "ios",
@@ -95,8 +96,7 @@ class LoginController extends GetxController
         "device_token":token,
         "social_json" : jsonEncode(googleData["social_json"]),
       };
-      print(requestData["social_json"].runtimeType);
-      print("requestData $requestData");
+      log("requestData $requestData");
       var response = await ApiProvider().postRequest1(
           apiUrl: AppConstants.login,
           data: requestData
@@ -125,7 +125,7 @@ class LoginController extends GetxController
         if(response["error_type"]=="social_user_not_found")
           {
             Get.to(RegistrationView(email: email,fullname: displayName,isSocialLogin: true,image: photoURL,
-            socialUserId: socialUserId,));
+            socialUserId: socialUserId,socialType: login_type,countryCode:"+${countryCode.value.isEmpty?"1":countryCode.value}" ,));
           }
         else
           {
@@ -211,7 +211,8 @@ class LoginController extends GetxController
               "${appleCredential.givenName ?? ""} ${appleCredential.familyName ?? ""}"
                   .trim(),
           email: user.email ?? appleCredential.email ?? "",
-          photoURL: user.photoURL ?? "", login_type: 'apple',
+          photoURL: user.photoURL ?? "",
+          login_type: 'apple',
         );
       } else {
         print("Firebase user is null.");
@@ -327,7 +328,7 @@ class LoginController extends GetxController
   final Rx<Country?> selectedCountry = Rx<Country?>(
     Country(
       phoneCode: "1",
-      countryCode: "IN",
+      countryCode: "JM",
       e164Sc: 0,
       geographic: true,
       level: 1,
@@ -456,19 +457,35 @@ class LoginController extends GetxController
     }
   }
 
-Future<void> forgotStep1(String typeValue)
-  async {
-    try{
-      isLoading.value=true;
-      var response = await ApiProvider().postRequest1(
-        apiUrl: AppConstants.forgotPasswordStep1,
-        data: {
-            "contact" : typeValue  // "email": "john.doe@yopmail.com"
-        },
-      );
-      print(typeValue);
+  Future<void> forgotStep1({
+    required String contactValue,
+    type,
+    userType,
+  }) async {
+    try {
+      isLoading.value = true;
+      var body = {
+        "contact": contactValue,
+        "type": type,
+        "user_type": userType == 'EXPLORER' || userType == 'customer'
+            ? "customer"
+            : "driver",
 
-          if (response['success'] == true) {
+        if (type == "phone")
+          "country_code": "+${countryCode.value}" // in case of type phone
+      };
+      var response = await ApiProvider().postRequest1(
+          apiUrl: AppConstants.forgotPasswordStep1,
+          // data: {
+          //     "contact" : typeValue,
+          //      // "email": "john.doe@yopmail.com"
+          // },
+
+          data: body);
+
+      print(body);
+
+      if (response['success'] == true) {
         print("response after forgot $response");
         CustomWidget().showCustomToast(
           message: response['message'] ?? "Registration successful",
@@ -476,43 +493,22 @@ Future<void> forgotStep1(String typeValue)
         );
         Get.to(MailVerificationScreen(
           isForgotScreen: true,
-          signupType: isEmailSelected.value?"EMAIL":"PHONE",
-          emailorphone: isEmailSelected.value? forgotEmailController.text : forgotPhoneController.text,
+          signupType: isEmailSelected.value ? "EMAIL" : "PHONE",
+          emailorphone: isEmailSelected.value
+              ? forgotEmailController.text
+              : forgotPhoneController.text,
         ));
+      } else {
+        ApiProvider().showErrorFromResponse(response);
+        isLoading.value = false;
       }
-          else
-          {
-            String errorMessage = "Registration failed";
-
-            if (response['errors'] != null &&
-                response['errors'] is Map &&
-                response['errors'].isNotEmpty) {
-              final firstKey = response['errors'].keys.first;
-              errorMessage = response['errors'][firstKey].first.toString();
-            } else if (response['message'] != null &&
-                response['message'].toString().isNotEmpty) {
-              errorMessage = response['message'].toString();
-            }
-
-            CustomWidget().showCustomToast(
-              message: errorMessage,
-              backgroundColor: Colors.red,
-            );
-
-            isLoading.value = false;
-          }
-
-    }
-    catch(e)
-    {
-      isLoading.value=false;
+    } catch (e) {
+      isLoading.value = false;
       print(e);
+    } finally {
+      isLoading.value = false;
     }
-    finally
-        {
-          isLoading.value=false;
-        }
-}
+  }
   Future<void> verifyEmailOTp(
       String email_or_phone,
       String otp,
@@ -555,6 +551,7 @@ Future<void> forgotStep1(String typeValue)
       String password,
       String confirmPassword,
       BuildContext context,
+      String token
       ) async {
     try {
       isLoading.value = true;
@@ -562,7 +559,7 @@ Future<void> forgotStep1(String typeValue)
       var response = await ApiProvider().postRequest1(
         apiUrl: AppConstants.forgotPasswordStep3,
         data: {
-          "token" : "eyJpdiI6Iml5VUc3SGVzaDN3N2syTEw2dTFSVEE9PSIsInZhbHVlIjoiVU9PSzE5RUI4cG9PREo4VG5TM2ZtZz09IiwibWFjIjoiMDhjOTJlZWJlNzQxODIzMWMzMWQ5M2JmODc3OTA4M2Q3MGVhNTIzZDgyYWU0ZjI2MjMzNGFiNDllNGEyYWY5NiIsInRhZyI6IiJ9",
+          "token" : token.toString(),
           "contact": email,
           "password" : password,
           "confirmed_password" : confirmPassword,
@@ -575,10 +572,11 @@ Future<void> forgotStep1(String typeValue)
         print("response $response");
         isLoading.value = false;
       } else {
-        CustomWidget().showCustomToast(
-          message: response['message'] ?? "Something went wrong",
-          backgroundColor: Colors.red,
-        );
+        // CustomWidget().showCustomToast(
+        //   message: response['message'] ?? "Something went wrong",
+        //   backgroundColor: Colors.red,
+        // );
+        ApiProvider().showErrorFromResponse(response);
         isLoading.value = false;
       }
     } catch (e) {

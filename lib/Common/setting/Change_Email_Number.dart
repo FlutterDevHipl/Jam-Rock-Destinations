@@ -187,7 +187,7 @@ class _ContactUpdateScreenState extends State<ContactUpdateScreen> {
                           return "Please enter phone number";
                         }
 
-                        if (!CustomWidget().isValidPhone(
+                        if (!isValidPhone(
                             value, profileController.countryName.value)) {
                           return "Enter a valid phone number";
                         }

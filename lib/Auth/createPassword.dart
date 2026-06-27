@@ -22,13 +22,15 @@ class CreateNewPasswordScreen extends StatefulWidget {
 }
 
 class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
-  final LoginController loginController=Get.find<LoginController>();
+  final LoginController loginController = Get.find<LoginController>();
+  final formKey = GlobalKey<FormState>();
   @override
   void initState() {
     loginController.passwordController.clear();
     loginController.confirmPasswordController.clear();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,161 +42,218 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
             vertical: 20,
           ),
           child: Obx(
-            () =>  Column(
-              children: [
-                const SizedBox(height: 50),
+                () => Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  const SizedBox(height: 50),
 
-                /// Logo
-                Image.asset(
-                  Images.logoIcon,
-                  height: 90,
-                ),
+                  /// Logo
+                  Image.asset(
+                    Images.logoIcon,
+                    height: 90,
+                  ),
 
-                const SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
-                /// Title
-                CustomWidget().buildTextWidget(
-                  title: "Create New Password",
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  textColor: AppColors.appColor,
-                ),
+                  /// Title
+                  CustomWidget().buildTextWidget(
+                    title: "Create New Password",
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    textColor: AppColors.appColor,
+                  ),
 
-                const SizedBox(height: 8),
+                  const SizedBox(height: 8),
 
-                /// Subtitle
-                CustomWidget().buildTextWidget(
-                  title: "Please enter your new password",
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  textColor: AppColors.black400,
-                ),
-
-                const SizedBox(height: 35),
-
-                /// New Password Label
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: CustomWidget().buildTextWidget(
-                    title: "New Password",
+                  /// Subtitle
+                  CustomWidget().buildTextWidget(
+                    title: "Please enter your new password",
                     fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                     textColor: AppColors.black400,
                   ),
-                ),
 
-                const SizedBox(height: 8),
+                  const SizedBox(height: 35),
 
-                /// New Password Field
-                CustomWidget().buildTextFormField(
-                  darkMode: true,
-                  radius: 8,
-                  controller: loginController.passwordController,
-                  obscureText: !loginController.isPasswordVisible.value,
-                  keyboardType: TextInputType.visiblePassword,
-                  hintText: "Enter New Password",
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: SvgPicture.asset(
-                      Images.lockIcon,
+                  /// New Password Label
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: CustomWidget().buildTextWidget(
+                      title: "New Password",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      textColor: AppColors.black400,
                     ),
                   ),
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        loginController.isPasswordVisible.value = !loginController.isPasswordVisible.value;
-                      });
+
+                  const SizedBox(height: 8),
+
+                  /// New Password Field
+                  CustomWidget().buildTextFormField(
+                    darkMode: true,
+                    radius: 8,
+                    controller: loginController.passwordController,
+                    obscureText: !loginController.isPasswordVisible.value,
+                    keyboardType: TextInputType.visiblePassword,
+                    hintText: "Enter New Password",
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: SvgPicture.asset(
+                        Images.lockIcon,
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please Enter Password";
+                      }
+
+                      if (value.length < 7) {
+                        return "Password must be at least 7 characters";
+                      }
+
+                      if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                        return "Password must contain one uppercase letter";
+                      }
+
+                      if (!RegExp(r'[0-9]').hasMatch(value)) {
+                        return "Password must contain one number";
+                      }
+
+                      if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+                        return "Password must contain one special character";
+                      }
+
+                      return null;
                     },
-                    icon: Icon(
-                      loginController.isPasswordVisible.value
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      color: AppColors.black300,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                /// Confirm Password Label
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: CustomWidget().buildTextWidget(
-                    title: "Confirm Password",
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    textColor: AppColors.black400,
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                /// Confirm Password Field
-                CustomWidget().buildTextFormField(
-                  darkMode: true,
-                  radius: 8,
-                  controller: loginController.confirmPasswordController,
-                  obscureText: !loginController.isConfirmPasswordVisible.value,
-                  keyboardType: TextInputType.visiblePassword,
-                  hintText: "Enter Confirm Password",
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: SvgPicture.asset(
-                      Images.lockIcon,
-                    ),
-                  ),
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        loginController.isConfirmPasswordVisible.value =
-                        !loginController.isConfirmPasswordVisible.value;
-                      });
-                    },
-                    icon: Icon(
-                      loginController.isConfirmPasswordVisible.value
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      color: AppColors.black300,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-                /// Submit Button
-                Obx(
-                  () =>  SizedBox(
-                    width: double.infinity,
-                    height: 54,
-                    child: ElevatedButton(
+                    suffixIcon: IconButton(
                       onPressed: () {
-                        loginController.resetPassword(widget.email, loginController.passwordController.text,
-                            loginController.confirmPasswordController.text,context);
-
-                        // Reset Password API
+                        setState(() {
+                          loginController.isPasswordVisible.value =
+                          !loginController.isPasswordVisible.value;
+                        });
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.green,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                      icon: Icon(
+                        loginController.isPasswordVisible.value
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        color: AppColors.black300,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// Confirm Password Label
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: CustomWidget().buildTextWidget(
+                      title: "Confirm Password",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      textColor: AppColors.black400,
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  /// Confirm Password Field
+                  CustomWidget().buildTextFormField(
+                    darkMode: true,
+                    radius: 8,
+                    controller: loginController.confirmPasswordController,
+                    obscureText:
+                    !loginController.isConfirmPasswordVisible.value,
+                    keyboardType: TextInputType.visiblePassword,
+                    hintText: "Enter Confirm Password",
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: SvgPicture.asset(
+                        Images.lockIcon,
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please confirm your password';
+                      }
+                      if (value.length < 7) {
+                        return "Password must be at least 7 characters";
+                      }
+
+                      if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                        return "Password must contain one uppercase letter";
+                      }
+
+                      if (!RegExp(r'[0-9]').hasMatch(value)) {
+                        return "Password must contain one number";
+                      }
+                      if (value != loginController.passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          loginController.isConfirmPasswordVisible.value =
+                          !loginController.isConfirmPasswordVisible.value;
+                        });
+                      },
+                      icon: Icon(
+                        loginController.isConfirmPasswordVisible.value
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        color: AppColors.black300,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  /// Submit Button
+                  Obx(
+                        () => SizedBox(
+                      width: double.infinity,
+                      height: 54,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (!formKey.currentState!.validate()) {
+                            return;
+                          }
+                          loginController.resetPassword(
+                              widget.email,
+                              loginController.passwordController.text,
+                              loginController.confirmPasswordController.text,
+                            context,
+                              widget.token,
+                              );
+
+                          // Reset Password API
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.green,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: CustomWidget().buildTextWidget(
+                          title: loginController.isLoading.value
+                              ? "Loading..."
+                              : "Submit",
+                          textColor: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      child: CustomWidget().buildTextWidget(
-                        title: loginController.isLoading.value?"Loading...":"Submit",
-                        textColor: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
   }
-
 }

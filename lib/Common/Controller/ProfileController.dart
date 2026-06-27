@@ -35,7 +35,7 @@ class ProfileController extends GetxController {
   final Rx<Country?> selectedCountry = Rx<Country?>(
     Country(
       phoneCode: "1",
-      countryCode: "IN",
+      countryCode: "JM",
       e164Sc: 0,
       geographic: true,
       level: 1,
@@ -47,7 +47,7 @@ class ProfileController extends GetxController {
     ),
   );
   final countryCode = ''.obs;
-   final countryName = ''.obs;
+   final countryName = 'JM'.obs;
   final selectedImage = Rxn<File>();
 
   @override

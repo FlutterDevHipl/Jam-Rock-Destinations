@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 
 import '../Utils/app_colors.dart';
+import '../Utils/app_const.dart';
 
 class MailVerificationScreen extends StatefulWidget {
   final isForgotScreen;
@@ -152,7 +153,11 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      loginController.forgotStep1(widget.emailorphone);
+                      loginController.forgotStep1(
+                        contactValue: widget.emailorphone,
+                        type: widget.signupType.toString().toLowerCase(),
+                        userType: userType,
+                      );
                     },
                     child: CustomWidget().buildTextWidget(
                       title: "Resend Code",

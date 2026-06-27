@@ -448,6 +448,7 @@ class CustomWidget {
             Focus(
               focusNode: focusNode,
               onFocusChange: (_) => state.setState(() {}),
+
               child: Container(
                 height: 48,
                 padding: EdgeInsets.symmetric(horizontal: 15),
@@ -566,7 +567,7 @@ class CustomWidget {
                       child: TextFormField(
                         controller: controller,
                         enabled: enabled,
-                        onChanged: onChanged,
+                        // onChanged: onChanged,
                         readOnly: readOnly,
                         onTap: onTap,
                         keyboardType: TextInputType.phone,
@@ -595,6 +596,11 @@ class CustomWidget {
                           ),
                         ),
                         // onChanged: (value) => state.didChange(value),
+                        onChanged: (value) {
+                          state.didChange(value);
+                          onChanged;
+                        },
+
                       ),
                     ),
                   ],

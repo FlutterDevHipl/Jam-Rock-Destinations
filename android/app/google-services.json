@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "870545618442",
+    "project_id": "jam-rock",
+    "storage_bucket": "jam-rock.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:870545618442:android:4f158afa41a0682d6ad1f3",
+        "android_client_info": {
+          "package_name": "com.Jam.Rock.Destinations"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "870545618442-akcdpqkii11dj8tl4b3159hb86o94s75.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Jam.Rock.Destinations",
+            "certificate_hash": "7bd93ffc9dcc16c4ac09bb397ec1d8b37a876dd8"
+          }
+        },
+        {
+          "client_id": "870545618442-5j074nl405p60gehu9cgd8au1emj1nsj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANCA4c91LyrCKcH66myupH2RmGQhOK2tI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "870545618442-5j074nl405p60gehu9cgd8au1emj1nsj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "870545618442-g47ludbn2rg0lse24qhkeie1qdjc52uo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.jamrock"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
