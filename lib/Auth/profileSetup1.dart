@@ -155,7 +155,7 @@ class _ProfileSetupStepOneViewState extends State<ProfileSetupStepOneView> {
             ),
 
             const SizedBox(height: 4),
-            Padding(padding: EdgeInsetsGeometry.only(right: 20),child: CustomWidget().buildTextWidget(
+            Padding(padding: EdgeInsets.only(right: 20),child: CustomWidget().buildTextWidget(
               title: "Before you start, make sure you have the following ready for upload on the next step.",
               fontSize: 15,
               fontWeight: FontWeight.w400,

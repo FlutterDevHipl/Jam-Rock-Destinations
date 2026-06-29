@@ -1,7 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
-import 'package:Jam_Rock_Destinations/Auth/Controller/Driver_Registration.dart';
-import 'package:Jam_Rock_Destinations/Auth/profileSetup2.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
@@ -9,23 +6,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:image_picker/image_picker.dart';
-
 import '../Utils/custom_widget.dart';
 import 'controller/UpdateDocumentController.dart';
 
-class KycScreen extends  StatefulWidget{
-
+class KycScreen extends StatefulWidget {
   KycScreen({super.key});
   @override
   State<KycScreen> createState() => _KycScreenState();
 }
 
-
 class _KycScreenState extends State<KycScreen> {
-  final UpdateDocumentController documentController =Get.put(UpdateDocumentController());
+  final UpdateDocumentController documentController =
+      Get.put(UpdateDocumentController());
+  bool isSaveEnabled = false;
   void initState() {
     documentController.getKycDoc();
 
@@ -35,7 +28,6 @@ class _KycScreenState extends State<KycScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -54,97 +46,71 @@ class _KycScreenState extends State<KycScreen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Obx(
-            () =>  SizedBox(
-              height: 52,
-              child:
-        
-              CustomWidget().buildMaterialBtn(
-                color:  documentController.governmentFrontImage.value != null ||
-                    documentController.licenseFrontImage.value != null ||
-                    documentController.crbFrontImage.value != null
-                || documentController.governmentBackUrl.value.isEmpty
-                ||documentController.licenseBackUrl.value.isEmpty
-                ||documentController.crbBackUrl.value.isEmpty
-                    ? AppColors.green500
-                    : Colors.grey,
-                radius: 8,
-                height: 50,
-                minWidth: double.maxFinite,
-                textColor: Colors.white,
-                text:documentController.isKycDoc.value?"Loading...": "Save",
-                onPressed: () {
-        
-                  if (documentController.governmentFrontImage.value == null && documentController.governmentFrontUrl.isEmpty
-                  ) {
-                    CustomWidget().showCustomToast(
-                      message: "Please Upload Government ID",
-                    );
-                    return;
-                  }
-                  else if (documentController.licenseFrontImage.value == null&& documentController.licenseFrontUrl.isEmpty) {
-                    CustomWidget().showCustomToast(
-                      message: "Please Upload Driving License",
-                    );
-                    return;
-                  }
-                  else if (documentController.crbFrontImage.value == null&& documentController.crbFrontUrl.isEmpty) {
-                    CustomWidget().showCustomToast(
-                      message: "Please Upload CRB Document",
-                    );
-                    return;
-                  }
-        
-                  final hasData =
-                      documentController.governmentFrontImage.value != null ||
-                          documentController.licenseFrontImage.value != null ||
-                          documentController.crbFrontImage.value != null
-                          || documentController.governmentBackUrl.value.isEmpty
-                          ||documentController.licenseBackUrl.value.isEmpty
-                          ||documentController.crbBackUrl.value.isEmpty
-                  ;
+            padding: const EdgeInsets.all(20),
+            child: Obx(
+              () {
+                isSaveEnabled =
+                    (documentController.governmentFrontImage.value != null ||
+                            documentController.governmentFrontUrl.isNotEmpty) &&
+                        (documentController.licenseFrontImage.value != null ||
+                            documentController.licenseFrontUrl.isNotEmpty) &&
+                        (documentController.crbFrontImage.value != null ||
+                            documentController.crbFrontUrl.isNotEmpty);
+                return CustomWidget().buildMaterialBtn(
+                  color: documentController.hasChangesDoc.value
+                      ? AppColors.green500
+                      : AppColors.black100,
+                  // isSaveEnabled ? AppColors.green500 : AppColors.black100,
+                  radius: 8,
+                  height: 50,
+                  minWidth: double.maxFinite,
+                  textColor: Colors.white,
+                  text:
+                      documentController.isKycDoc.value ? "Loading..." : "Save",
+                  onPressed: () {
+                    if (documentController.hasChangesDoc.value) {
+                      if (documentController.governmentFrontImage.value ==
+                              null &&
+                          documentController.governmentFrontUrl.isEmpty) {
+                        CustomWidget().showCustomToast(
+                          message: "Please Upload Government ID",
+                        );
+                        return;
+                      } else if (documentController.licenseFrontImage.value ==
+                              null &&
+                          documentController.licenseFrontUrl.isEmpty) {
+                        CustomWidget().showCustomToast(
+                          message: "Please Upload Driving License",
+                        );
+                        return;
+                      } else if (documentController.crbFrontImage.value ==
+                              null &&
+                          documentController.crbFrontUrl.isEmpty) {
+                        CustomWidget().showCustomToast(
+                          message: "Please Upload CRB Document",
+                        );
+                        return;
+                      }
+                      documentController.updateKycDocuments();
+                    }else{
+                      print("No data uploaded");
+                    }
 
-                  hasData
-                      ? documentController.updateKycDocuments()
-                      : print("No data uploaded");
-        
-              // documentController.showDocumentUpdatePopup(onProceed: () {
-              //
-              // }, onCancel: () {
-              //   Get.back();
-              // },);
-        
-                },
-                // child: CustomWidget().buildTextWidget(
-                //   title: "Save & Next",
-                //   textColor:
-                //   Colors.white,
-                //   fontSize: 16,
-                //   fontWeight: FontWeight.w600,
-                // ),
-                // CustomWidget().buildMaterialBtn(
-                //   color: (controller.hasChanges.value ||
-                //       controller.selectedImage.value != null)
-                //       ? AppColors.green500
-                //       : Colors.grey,
-                //   radius: 8,
-                //   height: 50,
-                //   minWidth: double.maxFinite,
-                //   textColor: Colors.white,
-                //   text: "Save",
-                //   onPressed: () {
-                //     print(controller.selectedImage.value);
-                //     if (controller.hasChanges.value ||
-                //         controller.selectedImage.value != null) {
-                //       controller.editProfile();
-                //     }
-                //   },
-                // ),
-              ),
-            ),
-          ),
-        ),
+                    // final hasData =
+                    //     documentController.governmentFrontImage.value != null ||
+                    //         documentController.licenseFrontImage.value != null ||
+                    //         documentController.crbFrontImage.value != null ||
+                    //         documentController.governmentBackUrl.value.isEmpty ||
+                    //         documentController.licenseBackUrl.value.isEmpty ||
+                    //         documentController.crbBackUrl.value.isEmpty;
+
+                    // documentController.hasChangesDoc.value
+                    //     ? documentController.updateKycDocuments()
+                    //     : print("No data uploaded");
+                  },
+                );
+              },
+            )),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
@@ -152,76 +118,63 @@ class _KycScreenState extends State<KycScreen> {
           vertical: 10,
         ),
         child: Obx(
-          () =>
-              documentController.isLoading.value?
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.7,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.green500,
-                  ),
-                ),
-              )
-              :
-              Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              const SizedBox(height: 20),
-
-
-              _documentSection(
-                title: "Government ID",
-                frontImage: documentController.governmentFrontImage,
-                backImage: documentController.governmentBackImage,
-                frontUrl: documentController.governmentFrontUrl,
-                backUrl: documentController.governmentBackUrl,
-              ),
-
-              const SizedBox(height: 20),
-
-
-              _documentSection(
-                title: "Driving License",
-                frontImage: documentController.licenseFrontImage,
-                backImage: documentController.licenseBackImage,
-                frontUrl: documentController.licenseFrontUrl,
-                backUrl: documentController.licenseBackUrl,
-              ),
-
-              const SizedBox(height: 20),
-
-
-              _documentSection(
-                title: "CRB (Criminal Record Background) Check ",
-                frontImage: documentController.crbFrontImage,
-                backImage: documentController.crbBackImage,
-                frontUrl: documentController.crbFrontUrl,
-                backUrl: documentController.crbBackUrl,
-              ),
-
-              const SizedBox(height: 25),
-
-              Center(
-                child: Column(
-                  children: [
-                    CustomWidget().buildTextWidget(
-                      title: "Upload clear & valid documents",
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      textColor: AppColors.black400,
+          () => documentController.isLoading.value
+              ? SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.green500,
                     ),
-                    CustomWidget().buildTextWidget(
-                      title: "(JPG, PNG or PDF · Max 5MB)",
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      textColor: AppColors.green500,
+                  ),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    _documentSection(
+                      title: "Government ID",
+                      frontImage: documentController.governmentFrontImage,
+                      backImage: documentController.governmentBackImage,
+                      frontUrl: documentController.governmentFrontUrl,
+                      backUrl: documentController.governmentBackUrl,
+                    ),
+                    const SizedBox(height: 20),
+                    _documentSection(
+                      title: "Driving License",
+                      frontImage: documentController.licenseFrontImage,
+                      backImage: documentController.licenseBackImage,
+                      frontUrl: documentController.licenseFrontUrl,
+                      backUrl: documentController.licenseBackUrl,
+                    ),
+                    const SizedBox(height: 20),
+                    _documentSection(
+                      title: "CRB (Criminal Record Background) Check ",
+                      frontImage: documentController.crbFrontImage,
+                      backImage: documentController.crbBackImage,
+                      frontUrl: documentController.crbFrontUrl,
+                      backUrl: documentController.crbBackUrl,
+                    ),
+                    const SizedBox(height: 25),
+                    Center(
+                      child: Column(
+                        children: [
+                          CustomWidget().buildTextWidget(
+                            title: "Upload clear & valid documents",
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            textColor: AppColors.black400,
+                          ),
+                          CustomWidget().buildTextWidget(
+                            title: "(JPG, PNG or PDF · Max 5MB)",
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            textColor: AppColors.green500,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -233,7 +186,7 @@ class _KycScreenState extends State<KycScreen> {
     required Rx<File?> backImage,
     required RxString frontUrl,
     required RxString backUrl,
-  }){
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -243,48 +196,45 @@ class _KycScreenState extends State<KycScreen> {
           fontWeight: FontWeight.w600,
           textColor: AppColors.black300,
         ),
-
         const SizedBox(height: 10),
-
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
               color: const Color(0xffF7F7F7),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(width: 1,color: AppColors.black50)
-          ),
+              border: Border.all(width: 1, color: AppColors.black50)),
           child: Row(
             children: [
               Expanded(
                 child: Obx(
-                      () => _uploadBox(
-                        title: "Front",
-                        image: frontImage.value,
-                        imageUrl: frontUrl.value,
-                        onTap: () => documentController.pickImage(frontImage),
-                        onRemove: () {
-                          frontImage.value = null;
-                          frontUrl.value = '';
-                        },
-                      ),
+                  () => _uploadBox(
+                    title: "Front",
+                    image: frontImage.value,
+                    imageUrl: frontUrl.value,
+                    onTap: () => documentController.pickImage(frontImage),
+                    onRemove: () {
+                      frontImage.value = null;
+                      frontUrl.value = '';
+                      documentController.hasChangesDoc.value = true;
+                    },
+                  ),
                 ),
               ),
-
               const SizedBox(width: 12),
-
               Expanded(
                 child: Obx(
-                      () => _uploadBox(
-                        title: "Back (Optional)",
-                        image: backImage.value,
-                        imageUrl: backUrl.value,
-                        onTap: () => documentController.pickImage(backImage),
-
-                        onRemove: () {
-                          print("Clicked");
-                          backImage.value = null;
-                          backUrl.value = '';
-                        },                      ),
+                  () => _uploadBox(
+                    title: "Back (Optional)",
+                    image: backImage.value,
+                    imageUrl: backUrl.value,
+                    onTap: () => documentController.pickImage(backImage),
+                    onRemove: () {
+                      print("Clicked");
+                      backImage.value = null;
+                      backUrl.value = '';
+                      documentController.hasChangesDoc.value = true;
+                    },
+                  ),
                 ),
               ),
             ],
@@ -316,32 +266,30 @@ class _KycScreenState extends State<KycScreen> {
               width: double.infinity,
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.white
-              ),
+                  borderRadius: BorderRadius.circular(8), color: Colors.white),
               child: image != null
                   ? Image.file(
-                image,
-                fit: BoxFit.cover,
-              )
+                      image,
+                      fit: BoxFit.cover,
+                    )
                   : (imageUrl != null && imageUrl.isNotEmpty)
-                  ? Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-              )
-                  : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(Images.uploadIcon),
-                  const SizedBox(height: 6),
-                  CustomWidget().buildTextWidget(
-                    title: title,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    textColor: AppColors.black400,
-                  ),
-                ],
-              ),
+                      ? Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(Images.uploadIcon),
+                            const SizedBox(height: 6),
+                            CustomWidget().buildTextWidget(
+                              title: title,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              textColor: AppColors.black400,
+                            ),
+                          ],
+                        ),
             ),
           ),
 

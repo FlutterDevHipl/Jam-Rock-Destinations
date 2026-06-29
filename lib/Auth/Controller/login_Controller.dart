@@ -168,163 +168,163 @@ class LoginController extends GetxController
   }
 
 
-  Future<void> signInWithApple() async {
-    isLoading.value = true;
+  // Future<void> signInWithApple() async {
+  //   isLoading.value = true;
 
-    try {
-      // Request Apple ID credential
-      final appleCredential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-      );
+  //   try {
+  //     // Request Apple ID credential
+  //     final appleCredential = await SignInWithApple.getAppleIDCredential(
+  //       scopes: [
+  //         AppleIDAuthorizationScopes.email,
+  //         AppleIDAuthorizationScopes.fullName,
+  //       ],
+  //     );
 
-      print("User Identifier: ${appleCredential.userIdentifier}");
-      print("Email: ${appleCredential.email}");
-      print("Given Name: ${appleCredential.givenName}");
-      print("Family Name: ${appleCredential.familyName}");
-      print("Identity Token: ${appleCredential.identityToken}");
-      print("Authorization Code: ${appleCredential.authorizationCode}");
+  //     print("User Identifier: ${appleCredential.userIdentifier}");
+  //     print("Email: ${appleCredential.email}");
+  //     print("Given Name: ${appleCredential.givenName}");
+  //     print("Family Name: ${appleCredential.familyName}");
+  //     print("Identity Token: ${appleCredential.identityToken}");
+  //     print("Authorization Code: ${appleCredential.authorizationCode}");
 
-      // Create Firebase credential
-      final oauthCredential = OAuthProvider("apple.com").credential(
-        idToken: appleCredential.identityToken,
-        accessToken: appleCredential.authorizationCode,
-      );
+  //     // Create Firebase credential
+  //     final oauthCredential = OAuthProvider("apple.com").credential(
+  //       idToken: appleCredential.identityToken,
+  //       accessToken: appleCredential.authorizationCode,
+  //     );
 
-      // Sign in to Firebase
-      final UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+  //     // Sign in to Firebase
+  //     final UserCredential userCredential =
+  //     await FirebaseAuth.instance.signInWithCredential(oauthCredential);
 
-      final User? user = userCredential.user;
+  //     final User? user = userCredential.user;
 
-      if (user != null) {
-        print("Firebase UID: ${user.uid}");
-        print("Display Name: ${user.displayName}");
-        print("Email: ${user.email}");
-        print("Photo URL: ${user.photoURL}");
+  //     if (user != null) {
+  //       print("Firebase UID: ${user.uid}");
+  //       print("Display Name: ${user.displayName}");
+  //       print("Email: ${user.email}");
+  //       print("Photo URL: ${user.photoURL}");
 
-        await socialLogin(
-          socialUserId: user.uid,
-          displayName: user.displayName ??
-              "${appleCredential.givenName ?? ""} ${appleCredential.familyName ?? ""}"
-                  .trim(),
-          email: user.email ?? appleCredential.email ?? "",
-          photoURL: user.photoURL ?? "",
-          login_type: 'apple',
-        );
-      } else {
-        print("Firebase user is null.");
-      }
-    } on SignInWithAppleAuthorizationException catch (e) {
-      print("Apple Sign-In Authorization Error: ${e.code}");
-      print("Message: ${e.message}");
-    } on FirebaseAuthException catch (e) {
-      print("Firebase Auth Error: ${e.code}");
-      print("Message: ${e.message}");
-    } catch (e) {
-      print("Apple Sign-In Error: $e");
-    } finally {
-      isLoading.value = false;
-    }
-  }
-  Future<UserCredential?> signInWithGoogle() async {
-    try {
-      await GoogleSignIn.instance.initialize();
+  //       await socialLogin(
+  //         socialUserId: user.uid,
+  //         displayName: user.displayName ??
+  //             "${appleCredential.givenName ?? ""} ${appleCredential.familyName ?? ""}"
+  //                 .trim(),
+  //         email: user.email ?? appleCredential.email ?? "",
+  //         photoURL: user.photoURL ?? "",
+  //         login_type: 'apple',
+  //       );
+  //     } else {
+  //       print("Firebase user is null.");
+  //     }
+  //   } on SignInWithAppleAuthorizationException catch (e) {
+  //     print("Apple Sign-In Authorization Error: ${e.code}");
+  //     print("Message: ${e.message}");
+  //   } on FirebaseAuthException catch (e) {
+  //     print("Firebase Auth Error: ${e.code}");
+  //     print("Message: ${e.message}");
+  //   } catch (e) {
+  //     print("Apple Sign-In Error: $e");
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
+  // Future<UserCredential?> signInWithGoogle() async {
+  //   try {
+  //     await GoogleSignIn.instance.initialize();
 
-      final GoogleSignInAccount googleUser =
-      await GoogleSignIn.instance.authenticate();
+  //     final GoogleSignInAccount googleUser =
+  //     await GoogleSignIn.instance.authenticate();
 
-      final googleAuth = googleUser.authentication;
+  //     final googleAuth = googleUser.authentication;
 
-      final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-      );
+  //     final credential = GoogleAuthProvider.credential(
+  //       idToken: googleAuth.idToken,
+  //     );
 
-      final userCredential = await FirebaseAuth.instance
-          .signInWithCredential(credential);
+  //     final userCredential = await FirebaseAuth.instance
+  //         .signInWithCredential(credential);
 
-      final user = userCredential.user;
+  //     final user = userCredential.user;
 
-      print("All Details: ${user}");
-      print("UID: ${user?.uid}");
-      print("Name: ${user?.displayName}");
-      print("Email: ${user?.email}");
-      print("Photo: ${user?.photoURL}");
+  //     print("All Details: ${user}");
+  //     print("UID: ${user?.uid}");
+  //     print("Name: ${user?.displayName}");
+  //     print("Email: ${user?.email}");
+  //     print("Photo: ${user?.photoURL}");
 
-      final idToken = await user?.getIdToken();
-      print("Firebase Token: $idToken");
-      if (user != null) {
-        print("User Details -- $user");
+  //     final idToken = await user?.getIdToken();
+  //     print("Firebase Token: $idToken");
+  //     if (user != null) {
+  //       print("User Details -- $user");
 
-        // Only update controllers if widget is still mounted
+  //       // Only update controllers if widget is still mounted
 
-          // try {
-          //   emailController.text = user.email ?? '';
-          //   // fullNameController.text = user.displayName ?? '';
-          //   // socialUserIdController.text = user.uid;
-          // } catch (e) {
-          //   print("Controller error: $e");
-          // }
-          //
+  //         // try {
+  //         //   emailController.text = user.email ?? '';
+  //         //   // fullNameController.text = user.displayName ?? '';
+  //         //   // socialUserIdController.text = user.uid;
+  //         // } catch (e) {
+  //         //   print("Controller error: $e");
+  //         // }
+  //         //
 
-        try {
-          // await SharedPreferencesUtil.setValue("isGoogleLogin", true);
-          // selectLoginTypeGoogle(true);
-          // selectLoginTypeApple.value=false;
-          await socialLogin(socialUserId: user.uid,
-              displayName: user.displayName.toString(),
-              email: user.email.toString(),
-              photoURL: user.photoURL.toString(), login_type: 'google');
+  //       try {
+  //         // await SharedPreferencesUtil.setValue("isGoogleLogin", true);
+  //         // selectLoginTypeGoogle(true);
+  //         // selectLoginTypeApple.value=false;
+  //         await socialLogin(socialUserId: user.uid,
+  //             displayName: user.displayName.toString(),
+  //             email: user.email.toString(),
+  //             photoURL: user.photoURL.toString(), login_type: 'google');
 
-        } catch (e) {
-          print("Registration error: ${e.toString()}");
-          // CustomWidget().handleApiError(e);
-        } finally {
-          isLoading.value = false;
-        }
-        // await googleSignIn.signOut();
-      } else {
-        print("Firebase user is null.");
-      }
+  //       } catch (e) {
+  //         print("Registration error: ${e.toString()}");
+  //         // CustomWidget().handleApiError(e);
+  //       } finally {
+  //         isLoading.value = false;
+  //       }
+  //       // await googleSignIn.signOut();
+  //     } else {
+  //       print("Firebase user is null.");
+  //     }
 
-      return userCredential;
-    } catch (e) {
-      print("Google Sign-In Error: $e");
-      return null;
-    }
-  }
-  Future<void> loginWithGoogle() async {
-    UserCredential? userCredential = await signInWithGoogle();
+  //     return userCredential;
+  //   } catch (e) {
+  //     print("Google Sign-In Error: $e");
+  //     return null;
+  //   }
+  // }
+  // Future<void> loginWithGoogle() async {
+  //   UserCredential? userCredential = await signInWithGoogle();
 
-    if (userCredential == null) {
-      print("Login cancelled");
-      return;
-    }
+  //   if (userCredential == null) {
+  //     print("Login cancelled");
+  //     return;
+  //   }
 
-    User? user = userCredential.user;
+  //   User? user = userCredential.user;
 
-    print("UID: ${user?.uid}");
-    print("Name: ${user?.displayName}");
-    print("Email: ${user?.email}");
-    print("Photo: ${user?.photoURL}");
+  //   print("UID: ${user?.uid}");
+  //   print("Name: ${user?.displayName}");
+  //   print("Email: ${user?.email}");
+  //   print("Photo: ${user?.photoURL}");
 
-    final idToken = await user?.getIdToken();
+  //   final idToken = await user?.getIdToken();
 
-    print("Firebase ID Token: $idToken");
+  //   print("Firebase ID Token: $idToken");
 
-    // Send to backend
-    Map<String, dynamic> payload = {
-      "name": user?.displayName,
-      "email": user?.email,
-      "firebase_uid": user?.uid,
-      "id_token": idToken,
-      "profile_image": user?.photoURL,
-    };
+  //   // Send to backend
+  //   Map<String, dynamic> payload = {
+  //     "name": user?.displayName,
+  //     "email": user?.email,
+  //     "firebase_uid": user?.uid,
+  //     "id_token": idToken,
+  //     "profile_image": user?.photoURL,
+  //   };
 
-    print(payload);
-  }
+  //   print(payload);
+  // }
   final Rx<Country?> selectedCountry = Rx<Country?>(
     Country(
       phoneCode: "1",

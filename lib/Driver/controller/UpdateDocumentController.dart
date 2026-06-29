@@ -19,8 +19,9 @@ import '../../Utils/api_url.dart';
 import '../../Utils/app_colors.dart';
 import '../../Utils/storage.dart';
 import 'package:http/http.dart' as http;
+
 class UpdateDocumentController extends GetxController {
-  final hasChanges=false.obs;
+  final hasChanges = false.obs;
   final Rx<File?> governmentFrontImage = Rx<File?>(null);
   final Rx<File?> governmentBackImage = Rx<File?>(null);
 
@@ -42,6 +43,9 @@ class UpdateDocumentController extends GetxController {
   final ImagePicker picker = ImagePicker();
   final isLoading = false.obs;
   final isKycDoc = false.obs;
+
+  var hasChangesDoc = false.obs;
+  var hasChangesVechicleDoc = false.obs;
 
   // @override
   // void onInit() {
@@ -87,7 +91,7 @@ class UpdateDocumentController extends GetxController {
 
                 CustomWidget().buildTextWidget(
                   title:
-                  "Your updated documents will be\nreviewed by our team.",
+                      "Your updated documents will be\nreviewed by our team.",
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                   textAlign: TextAlign.center,
@@ -98,7 +102,7 @@ class UpdateDocumentController extends GetxController {
 
                 CustomWidget().buildTextWidget(
                   title:
-                  "Your account will be on hold\nuntil verification is complete.",
+                      "Your account will be on hold\nuntil verification is complete.",
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                   textAlign: TextAlign.center,
@@ -131,9 +135,7 @@ class UpdateDocumentController extends GetxController {
                         ),
                       ),
                     ),
-
                     const SizedBox(width: 16),
-
                     Expanded(
                       child: ElevatedButton(
                         onPressed: onProceed,
@@ -164,6 +166,7 @@ class UpdateDocumentController extends GetxController {
       },
     );
   }
+
   Future<void> pickImage(Rx<File?> imageFile) async {
     final XFile? image = await picker.pickImage(
       source: ImageSource.gallery,
@@ -172,14 +175,18 @@ class UpdateDocumentController extends GetxController {
 
     if (image != null) {
       imageFile.value = File(image.path);
+      hasChangesDoc.value = true;
+      hasChangesVechicleDoc.value = true;
     }
   }
+
   RxInt governmentDocId = 0.obs;
   RxInt licenseDocId = 0.obs;
   RxInt crbDocId = 0.obs;
+
   Future<void> getKycDoc() async {
     try {
-      isLoading.value=true;
+      isLoading.value = true;
       var response = await ApiProvider().getRequest(
         apiUrl: AppConstants.getKYCDoc,
         token: getToken(),
@@ -191,15 +198,15 @@ class UpdateDocumentController extends GetxController {
         final docs = response["data"]["user"]["driver_profile"]["documents"];
 
         final government = docs.firstWhere(
-              (e) => e["document_type"] == "government_id",
+          (e) => e["document_type"] == "government_id",
         );
 
         final license = docs.firstWhere(
-              (e) => e["document_type"] == "driving_license",
+          (e) => e["document_type"] == "driving_license",
         );
 
         final crb = docs.firstWhere(
-              (e) => e["document_type"] == "criminal_background_check",
+          (e) => e["document_type"] == "criminal_background_check",
         );
         governmentDocId.value = government["document_upload_id"];
         licenseDocId.value = license["document_upload_id"];
@@ -212,7 +219,7 @@ class UpdateDocumentController extends GetxController {
 
         crbFrontUrl.value = crb["front_url"] ?? "";
         crbBackUrl.value = crb["back_url"] ?? "";
-        isLoading.value=false;
+        isLoading.value = false;
         print("Front Image: ${governmentFrontImage.value}");
         print("Back Image: ${governmentBackImage.value}");
         print("Front URL: ${governmentFrontUrl.value}");
@@ -220,15 +227,11 @@ class UpdateDocumentController extends GetxController {
       }
     } catch (e) {
       print(e);
-      isLoading.value=false;
-    }
-    finally{
-      isLoading.value=false;
+      isLoading.value = false;
+    } finally {
+      isLoading.value = false;
     }
   }
-
-
-
 
   // Future<void> updateKycDocuments() async {
   //   try {
@@ -436,11 +439,9 @@ class UpdateDocumentController extends GetxController {
           );
         } else if (crbBackUrl.value.isNotEmpty) {
           request.fields['documents[$index][back_image]'] = '';
+        } else {
+          print("Null conditions");
         }
-        else
-          {
-            print("Null conditions");
-          }
 
         index++;
       }
@@ -473,9 +474,7 @@ class UpdateDocumentController extends GetxController {
           );
         } else if (licenseBackUrl.value.isNotEmpty) {
           request.fields['documents[$index][back_image]'] = '';
-        }
-        else
-        {
+        } else {
           print("Null conditions");
         }
 
@@ -501,7 +500,6 @@ class UpdateDocumentController extends GetxController {
           request.fields['documents[$index][front_image]'] = '';
         }
 
-
         if (governmentBackImage.value != null) {
           request.files.add(
             await http.MultipartFile.fromPath(
@@ -511,9 +509,7 @@ class UpdateDocumentController extends GetxController {
           );
         } else if (governmentBackUrl.value.isNotEmpty) {
           request.fields['documents[$index][back_image]'] = '';
-        }
-        else
-        {
+        } else {
           print("Null conditions");
         }
 
@@ -535,12 +531,12 @@ class UpdateDocumentController extends GetxController {
 
       if (responseData["success"] == true) {
         CustomWidget().showCustomToast(
-          message: responseData["message"] ??
-              "Documents updated successfully",
+          message: responseData["message"] ?? "Documents updated successfully",
           backgroundColor: AppColors.green500,
         );
 
         await getKycDoc();
+        Get.back();
       } else {
         CustomWidget().showCustomToast(
           message: responseData["message"] ?? "Something went wrong",
@@ -558,6 +554,7 @@ class UpdateDocumentController extends GetxController {
       isKycDoc.value = false;
     }
   }
+
   //****************************** Vehicle Management **************************//
   final RxString vehicleTypeError = "".obs;
   final RxString vehicleCapacityError = "".obs;
@@ -613,9 +610,10 @@ class UpdateDocumentController extends GetxController {
 
     if (image != null) {
       imageFile.value = File(image.path);
+      hasChangesDoc.value = true;
+      hasChangesVechicleDoc.value = true;
     }
   }
-
 
   final selectedImage = Rxn<File>();
   RxList<Map<String, dynamic>> vehicleTypes = <Map<String, dynamic>>[].obs;
@@ -654,10 +652,11 @@ class UpdateDocumentController extends GetxController {
             (response["data"] as List)
                 .map<Map<String, dynamic>>(
                   (e) => {
-                "id": e["id"],
-                "name": e["name"],
-              },
-            ).toList(),
+                    "id": e["id"],
+                    "name": e["name"],
+                  },
+                )
+                .toList(),
           );
 
           lastPage = response["meta"]["last_page"] ?? 1;
@@ -681,6 +680,7 @@ class UpdateDocumentController extends GetxController {
       isLoading.value = false;
     }
   }
+
   Future<void> getVehicleDetails() async {
     try {
       isLoading.value = true;
@@ -697,35 +697,27 @@ class UpdateDocumentController extends GetxController {
           final vehicle = vehicles.first;
           print("capacity = ${vehicle["capacity"]}");
           // Basic Details
-          regNoController.text =
-              vehicle["registration_number"] ?? "";
+          regNoController.text = vehicle["registration_number"] ?? "";
 
-          selectedVehicleCapacity.value =
-              vehicle["capacity"]?.toString();
+          selectedVehicleCapacity.value = vehicle["capacity"]?.toString();
 
-          selectedVehicleTypeId.value =
-              vehicle["vehicle_type"]?["id"] ?? 0;
+          selectedVehicleTypeId.value = vehicle["vehicle_type"]?["id"] ?? 0;
 
-          selectedVehicleType.value =
-              vehicle["vehicle_type"]?["name"] ?? "";
+          selectedVehicleType.value = vehicle["vehicle_type"]?["name"] ?? "";
 
-          selectedVehicleBrandId.value =
-              vehicle["vehicle_brand"]?["id"] ?? 0;
+          selectedVehicleBrandId.value = vehicle["vehicle_brand"]?["id"] ?? 0;
 
-          selectedVehicleBrand.value =
-              vehicle["vehicle_brand"]?["name"] ?? "";
-          modelController.text=selectedVehicleBrand.value;
+          selectedVehicleBrand.value = vehicle["vehicle_brand"]?["name"] ?? "";
+          modelController.text = selectedVehicleBrand.value;
 
           // Documents
           final documents = vehicle["documents"] as List;
 
           for (var doc in documents) {
             if (doc["document_type"] == "registration") {
-              vehicleDocumentFrontUrl.value =
-                  doc["front_url"] ?? "";
+              vehicleDocumentFrontUrl.value = doc["front_url"] ?? "";
 
-              vehicleDocumentBackUrl.value =
-                  doc["back_url"] ?? "";
+              vehicleDocumentBackUrl.value = doc["back_url"] ?? "";
             }
           }
 
@@ -740,13 +732,9 @@ class UpdateDocumentController extends GetxController {
               interiorIndex++;
 
               if (interiorIndex == 1) {
-                interiorImage1Url.value =
-                    image["image_url"] ?? "";
+                interiorImage1Url.value = image["image_url"] ?? "";
               } else if (interiorIndex == 2) {
-
-                interiorImage2Url.value =
-                    image["image_url"] ?? "";
-
+                interiorImage2Url.value = image["image_url"] ?? "";
               }
             }
 
@@ -754,20 +742,16 @@ class UpdateDocumentController extends GetxController {
               exteriorIndex++;
               switch (exteriorIndex) {
                 case 1:
-                  exteriorImage1Url.value =
-                      image["image_url"] ?? "";
+                  exteriorImage1Url.value = image["image_url"] ?? "";
                   break;
                 case 2:
-                  exteriorImage2Url.value =
-                      image["image_url"] ?? "";
+                  exteriorImage2Url.value = image["image_url"] ?? "";
                   break;
                 case 3:
-                  exteriorImage3Url.value =
-                      image["image_url"] ?? "";
+                  exteriorImage3Url.value = image["image_url"] ?? "";
                   break;
                 case 4:
-                  exteriorImage4Url.value =
-                      image["image_url"] ?? "";
+                  exteriorImage4Url.value = image["image_url"] ?? "";
                   break;
               }
             }
@@ -780,6 +764,7 @@ class UpdateDocumentController extends GetxController {
       isLoading.value = false;
     }
   }
+
   Future<void> updateVehicle() async {
     try {
       isLoading.value = true;
@@ -799,14 +784,11 @@ class UpdateDocumentController extends GetxController {
       request.fields['vehicle_brand_id'] =
           selectedVehicleBrandId.value.toString();
 
-      request.fields['registration_number'] =
-          regNoController.text.trim();
+      request.fields['registration_number'] = regNoController.text.trim();
 
-      request.fields['capacity'] =
-          selectedVehicleCapacity.value ?? '';
+      request.fields['capacity'] = selectedVehicleCapacity.value ?? '';
 
-      request.fields['model_number'] =
-          modelController.text.trim();
+      request.fields['model_number'] = modelController.text.trim();
 
       /// Vehicle Documents
       request.fields['documents[0][document_id]'] = '1';
@@ -826,11 +808,9 @@ class UpdateDocumentController extends GetxController {
             vehicleDocumentFront.value!.path,
           ),
         );
+      } else if (vehicleDocumentFrontUrl.value.isNotEmpty) {
+        request.fields['documents[0][front_image]'] = '';
       }
-      else if(vehicleDocumentFrontUrl.value.isNotEmpty)
-        {
-          request.fields['documents[0][front_image]'] = '';
-        }
       // else
       //   {
       //     request.fields['documents[0][front_image]'] = '';
@@ -860,13 +840,9 @@ class UpdateDocumentController extends GetxController {
             vehicleDocumentBack.value!.path,
           ),
         );
-      }
-      else if(vehicleDocumentBackUrl.value.isNotEmpty)
-        {
-          request.fields['documents[0][back_image]'] = '';
-        }
-      else {
-
+      } else if (vehicleDocumentBackUrl.value.isNotEmpty) {
+        request.fields['documents[0][back_image]'] = '';
+      } else {
         // or 'null' depending on backend requirement
       }
 
@@ -957,11 +933,9 @@ class UpdateDocumentController extends GetxController {
       for (int i = 0; i < images.length; i++) {
         final item = images[i];
 
-        request.fields['images[$i][image_id]'] =
-            item['image_id'].toString();
+        request.fields['images[$i][image_id]'] = item['image_id'].toString();
 
-        request.fields['images[$i][image_type]'] =
-        item['image_type'];
+        request.fields['images[$i][image_type]'] = item['image_type'];
 
         if (item['image'] != null) {
           request.files.add(
@@ -979,18 +953,19 @@ class UpdateDocumentController extends GetxController {
 
       var response = await request.send();
 
-      var responseData =
-      jsonDecode(await response.stream.bytesToString());
+      var responseData = jsonDecode(await response.stream.bytesToString());
 
       print(responseData);
 
-      if (response.statusCode == 200 ||
-          response.statusCode == 201) {
-        CustomWidget().showCustomToast(message:  responseData["message"],backgroundColor: AppColors.green500);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        CustomWidget().showCustomToast(
+            message: responseData["message"],
+            backgroundColor: AppColors.green500);
       } else {
         print("Error!$responseData");
-        CustomWidget().showCustomToast(message:  responseData["message"] ?? "Something went wrong",backgroundColor: Colors.red);
-
+        CustomWidget().showCustomToast(
+            message: responseData["message"] ?? "Something went wrong",
+            backgroundColor: Colors.red);
       }
     } catch (e) {
       print("Update Vehicle Error: $e");
