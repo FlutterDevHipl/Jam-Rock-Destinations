@@ -205,15 +205,17 @@ class ProfileController extends GetxController {
   ) async {
     try {
       isLoading.value = true;
-
+      final body={
+        type: value,
+        "country_code":"${countryCode}"
+      };
       var response = await ApiProvider().postRequest1(
         apiUrl: type == "email"
             ? AppConstants.sendEmailOTP
             : AppConstants.sendPhoneOTP,
-        data: {
-          type: value,
-        },
+        data: body
       );
+      print("Body ${body}");
       if (response['success'] == true) {
         CustomWidget().showCustomToast(
           message: "OTP has been sent",
@@ -242,21 +244,26 @@ class ProfileController extends GetxController {
     String type,
     String otp,
     BuildContext context,
+      final countryCode
   ) async {
     try {
       isLoading.value = true;
 
+final body={
+  type: value,
+  "otp": otp,
+  "country_code":countryCode
+
+};
       var response = await ApiProvider().postRequest1(
           apiUrl: type == "email"
               ? AppConstants.verifyEmailOTP
               : AppConstants.verifyPhoneOTP,
-          data: {
-            type: value,
-            "otp": otp,
-          },
+          data: body,
           token: getToken());
 
       print("response $response");
+      print("body $body");
 
       if (response['success'] == true) {
         type == "email"
@@ -279,28 +286,28 @@ class ProfileController extends GetxController {
   }
 
   Future<void> getUserProfile() async {
-    // try{
-    //
-    // }
-    // catch (e){
-    //   isLoading.value=false;
-    // }
-    // finally{
-    //   isLoading.value=false;
-    // }
-    isLoading.value = true;
-    print("Token ${getToken()}");
-    final response = await ApiProvider()
-        .getRequest(apiUrl: AppConstants.getProfile, token: getToken());
+    try{
+      isLoading.value = true;
+      print("Token ${getToken()}");
+      final response = await ApiProvider()
+          .getRequest(apiUrl: AppConstants.getProfile, token: getToken());
 
-    if (response['success'] == true) {
-      getProfileData.value = response["data"]["user"];
-      print(response);
-      print("getProfileData = ${getProfileData.values}");
-      isLoading.value = false;
-    } else {
-      print("else getProfileData = ${response}");
+      if (response['success'] == true) {
+        getProfileData.value = response["data"]["user"];
+        print(response);
+        print("getProfileData = ${getProfileData.values}");
+        isLoading.value = false;
+      } else {
+        print("else getProfileData = ${response}");
+      }
     }
+    catch (e){
+      isLoading.value=false;
+    }
+    finally{
+      isLoading.value=false;
+    }
+
   }
 
   final privacyUrl = "".obs;

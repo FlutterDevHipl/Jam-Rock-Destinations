@@ -30,6 +30,7 @@ class _ContactUpdateScreenState extends State<ContactUpdateScreen> {
   @override
   void initState() {
     super.initState();
+    print("User Type = $userType");
     // controller = TextEditingController(text: widget.value);
   }
 
@@ -200,7 +201,7 @@ class _ContactUpdateScreenState extends State<ContactUpdateScreen> {
 
                       color: const Color(0xffF5F5F5),
                       enableCountryPicker:
-                          userType != "EXPLORER" ? false : true,
+                          userType == "customer" ? true : false,
                       onCountryChanged: (country) {
                         profileController.countryCode.value = country.phoneCode;
                         profileController.countryName.value =
@@ -235,12 +236,10 @@ class _ContactUpdateScreenState extends State<ContactUpdateScreen> {
                       print("Email: $value");
                     } else {
                       profileController.sendVerificationOTp(
-                          "+${profileController.countryCode.value + value}",
+                          "${value}",
                           "phone",
                           context,
-                          profileController.countryCode.value.isEmpty
-                              ? "1"
-                              : profileController.countryCode.value);
+                          profileController.countryCode.value.isEmpty ? "+1" : "+${profileController.countryCode.value}");
                       print("Phone: $value");
                     }
                   },

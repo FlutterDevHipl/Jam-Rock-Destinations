@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return "Please enter your email";
+                        return "Please enter email";
                       }
 
                       final emailRegex = RegExp(
@@ -247,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return "Please enter your password";
+                      return "Please enter password";
                     }
 
                     if (value.length < 8) {
@@ -306,14 +306,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         final identifier = isEmailSelected
                             ? loginController.emailController.text.trim()
-                            : "+${loginController.countryCode.value}${loginController.phoneController.text.trim()}";
+                            : "${loginController.phoneController.text.trim()}";
                         debugPrint(
                             "Login Type: ${isEmailSelected ? "EMAIL" : "PHONE"}");
 
                         debugPrint("Identifier: $identifier");
 
                         debugPrint("Password: ${loginController.passwordController.text}");
-                        loginController.login(identifier, loginController.passwordController.text);
+                        loginController.login(identifier, loginController.passwordController.text,
+                            "+${loginController.countryCode.value.isEmpty?"1":loginController.countryCode.value}");
 
 
 

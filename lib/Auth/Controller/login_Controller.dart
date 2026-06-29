@@ -372,7 +372,7 @@ class LoginController extends GetxController
 
     return {};
   }
-  Future<void> login(String userLogin ,String password)
+  Future<void> login(String userLogin ,String password,final countryCode)
   async {
     try
     {
@@ -389,6 +389,7 @@ class LoginController extends GetxController
       final requestData = {
         "login_type": "normal", // normal,facebook,google,apple
         "social_user_id": "",
+        "country_code":countryCode,
         "user_login":userLogin, // email and phone
         "user_type": userType == "EXPLORER" ? "customer" : "driver",
         "password": passwordController.text,
@@ -461,6 +462,7 @@ class LoginController extends GetxController
     required String contactValue,
     type,
     userType,
+    final countryCode
   }) async {
     try {
       isLoading.value = true;
@@ -472,8 +474,9 @@ class LoginController extends GetxController
             : "driver",
 
         if (type == "phone")
-          "country_code": "+${countryCode.value}" // in case of type phone
+          "country_code": "${countryCode}" // in case of type phone
       };
+      print("Body $body");
       var response = await ApiProvider().postRequest1(
           apiUrl: AppConstants.forgotPasswordStep1,
           // data: {
@@ -493,10 +496,11 @@ class LoginController extends GetxController
         );
         Get.to(MailVerificationScreen(
           isForgotScreen: true,
-          signupType: isEmailSelected.value ? "EMAIL" : "PHONE",
+          signupType: isEmailSelected.value ? "email" : "phone",
           emailorphone: isEmailSelected.value
               ? forgotEmailController.text
               : forgotPhoneController.text,
+          countryCode: countryCode,
         ));
       } else {
         ApiProvider().showErrorFromResponse(response);
@@ -513,16 +517,20 @@ class LoginController extends GetxController
       String email_or_phone,
       String otp,
       BuildContext context,
+      final countryCode,
+      String type
       ) async {
     try {
       isLoading.value = true;
-
+      var body = {
+        "contact": countryCode+email_or_phone,
+        "otp": otp,
+        // "country_code":countryCode
+      };
+      print("body = $body");
       var response = await ApiProvider().postRequest1(
         apiUrl: AppConstants.forgotPasswordStep2,
-        data: {
-          "contact": email_or_phone,
-          "otp": otp,
-        },
+        data: body
       );
 
       if (response['success'] == true) {
@@ -530,7 +538,10 @@ class LoginController extends GetxController
           message: response['message'],
           backgroundColor: AppColors.green500,
         );
-        Get.to(CreateNewPasswordScreen(email: email_or_phone,token: response["data"]["token"],));
+        Get.to(CreateNewPasswordScreen(email: email_or_phone,token: response["data"]["token"],
+          type: type,
+          countryCode: countryCode,
+        ));
         print("response $response");
         isLoading.value = false;
       } else {
@@ -547,11 +558,12 @@ class LoginController extends GetxController
     }
   }
   Future<void> resetPassword(
-      String email,
+      String email_or_phone,
       String password,
       String confirmPassword,
       BuildContext context,
-      String token
+      String token,
+      String type
       ) async {
     try {
       isLoading.value = true;
@@ -560,9 +572,10 @@ class LoginController extends GetxController
         apiUrl: AppConstants.forgotPasswordStep3,
         data: {
           "token" : token.toString(),
-          "contact": email,
+          "contact": email_or_phone,
           "password" : password,
           "confirmed_password" : confirmPassword,
+          "type":type
         },
       );
 

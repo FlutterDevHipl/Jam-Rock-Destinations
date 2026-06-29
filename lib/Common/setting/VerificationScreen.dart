@@ -102,7 +102,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
                   CustomWidget().buildTextWidget(
                     title: isNumber
-                        ? '+${widget.countryCode} ${maskPhoneNumber(widget.emailorphone, widget.countryCode)}'
+                        ? '${widget.countryCode} ${maskPhoneNumber(widget.emailorphone, widget.countryCode)}'
                         : widget.emailorphone,
                     textColor: AppColors.yellow700,
                     fontWeight: FontWeight.w600,
@@ -195,10 +195,18 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       }
                       if(widget.signupType=="email")
                         {
-                          profileController.verifyOTp(widget.emailorphone, widget.signupType, profileController.otpController.text, context);
+                          profileController.verifyOTp(widget.emailorphone, widget.signupType,
+                              profileController.otpController.text, context,"");
                         }
                       else{
-                        profileController.verifyOTp(widget.emailorphone, widget.signupType, profileController.otpController.text, context);
+                        profileController.verifyOTp
+                          (
+                            widget.emailorphone,
+                          widget.signupType,
+                            profileController.otpController.text,
+                          context,
+                          widget.countryCode
+                           );
                       }
 
                     },

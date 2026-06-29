@@ -116,18 +116,18 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
 
                 if (controller.selectedVehicleType.value=="" ||controller.selectedVehicleType.value==null) {
                   controller.vehicleTypeError.value =
-                  "Please Select Vehicle Type";
+                  "Please select vehicle type";
                   isValid = false;
                 }
                 if (controller.selectedVehicleBrand.value=="" ||controller.selectedVehicleBrand.value==null) {
                   controller.vehicleBrandError.value =
-                  "Please Select Vehicle Brand";
+                  "Please select vehicle brand";
                   isValid = false;
                 }
 
                 if (controller.selectedVehicleCapacity.value==""||controller.selectedVehicleCapacity.value==null) {
                   controller.vehicleCapacityError.value =
-                  "Please Select Vehicle Capacity";
+                  "Please select vehicle capacity";
                   isValid = false;
                 }
 
@@ -313,7 +313,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                   }
 
                   if (!RegExp(r'^[a-zA-Z0-9\s\-]+$').hasMatch(value.trim())) {
-                    return "Model must contain only English letters and numbers";
+                    return "Model must contain only english letters and numbers";
                   }
 
                   return null;

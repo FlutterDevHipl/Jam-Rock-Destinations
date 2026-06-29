@@ -196,6 +196,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     height: 52,
                     child: ElevatedButton(
                       onPressed: () {
+                        FocusScope.of(context).unfocus();
                         if (!formKey.currentState!.validate()) {
                           return;
                         }
@@ -203,7 +204,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             contactValue: loginController.isEmailSelected.value
                                 ? loginController.forgotEmailController.text
                                 : loginController.forgotPhoneController.text,
-                            type:loginController.isEmailSelected.value?"email":"phone" , userType: userType );
+                            type:loginController.isEmailSelected.value?"email":"phone" , userType: userType,
+                        countryCode:"+${loginController.countryCode.value.isEmpty?"1":loginController.countryCode.value}");
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.green,

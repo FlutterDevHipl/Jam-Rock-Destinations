@@ -14,7 +14,10 @@ import 'Controller/login_Controller.dart';
 class CreateNewPasswordScreen extends StatefulWidget {
   final email;
   final token;
-  const CreateNewPasswordScreen({super.key, this.email, this.token});
+  final type;
+  final countryCode;
+
+  const CreateNewPasswordScreen({super.key, this.email, this.token, this.type, this.countryCode});
 
   @override
   State<CreateNewPasswordScreen> createState() =>
@@ -105,7 +108,7 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Please Enter Password";
+                        return "Please enter password";
                       }
 
                       if (value.length < 7) {
@@ -188,7 +191,7 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                         return "Password must contain one number";
                       }
                       if (value != loginController.passwordController.text) {
-                        return 'Passwords do not match';
+                        return 'Confirm password must match new password.';
                       }
                       return null;
                     },
@@ -220,13 +223,27 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                           if (!formKey.currentState!.validate()) {
                             return;
                           }
-                          loginController.resetPassword(
-                              widget.email,
-                              loginController.passwordController.text,
-                              loginController.confirmPasswordController.text,
-                            context,
-                              widget.token,
+                          if(widget.type!="email")
+                            {
+                              loginController.resetPassword(
+                                  widget.countryCode+widget.email,
+                                  loginController.passwordController.text,
+                                  loginController.confirmPasswordController.text,
+                                  context, widget.token,
+                                  widget.type
                               );
+                            }
+                          else
+                            {
+                              loginController.resetPassword(
+                                  widget.email,
+                                  loginController.passwordController.text,
+                                  loginController.confirmPasswordController.text,
+                                  context, widget.token,
+                                  widget.type
+                              );
+                            }
+
 
                           // Reset Password API
                         },

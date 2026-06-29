@@ -555,6 +555,28 @@ class _RegistrationViewState extends State<RegistrationView> {
                                     padding: const EdgeInsets.all(14),
                                     child: SvgPicture.asset(Images.lockIcon),
                                   ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please confirm your password';
+                                    }
+                                    if (value.length < 7) {
+                                      return "Password must be at least 7 characters";
+                                    }
+
+                                    if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                                      return "Password must contain one uppercase letter";
+                                    }
+
+                                    if (!RegExp(r'[0-9]').hasMatch(value)) {
+                                      return "Password must contain one number";
+                                    }
+                                    if (value !=
+                                        registrationController
+                                            .passwordController.text) {
+                                      return 'Confirm password must match new password';
+                                    }
+                                    return null;
+                                  },
                                   suffixIcon: IconButton(
                                     onPressed: () {
                                       registrationController

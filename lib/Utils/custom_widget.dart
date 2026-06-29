@@ -324,6 +324,7 @@ class CustomWidget {
     int maxLines = 1,
   }) {
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       textAlign: textAlign,
       controller: controller,
       initialValue: controller == null ? initialValue : null,
@@ -611,7 +612,7 @@ class CustomWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 5, left: 10),
                 child: Text(
-                  state.errorText ?? '',
+                  state.errorText == null?"": "   ${state.errorText}" ,
                   style: GoogleFonts.lato(
                     fontSize: 12,
                     color: Colors.red,
