@@ -14,7 +14,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../Common/Controller/ProfileController.dart';
+import '../../Common/ProfileController/ProfileController.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -33,8 +33,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // controller.getFAQ();
       profileController.getUserProfile();
-      userType=profileController.getProfileData["user_type"];
-      print("Get profile ${profileController.getProfileData["user_type"]}");
+
     });
     super.initState();
   }

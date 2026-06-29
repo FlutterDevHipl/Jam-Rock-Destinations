@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-import '../controller/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Common/ProfileController/ProfileController.dart';
 
 class PrivacyPolicy extends StatefulWidget {
   const PrivacyPolicy({super.key});

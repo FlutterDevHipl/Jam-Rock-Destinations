@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'dart:ui';
-
 import 'package:Jam_Rock_Destinations/Common/setting/VerificationScreen.dart';
 import 'package:Jam_Rock_Destinations/Driver/driver_bottom_navigation.dart';
 import 'package:Jam_Rock_Destinations/Services/api_provider.dart';
@@ -16,8 +14,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../Utils/app_colors.dart';
+import '../../Utils/app_const.dart';
 import '../../Utils/app_images.dart';
 import '../../Utils/custom_widget.dart';
 
@@ -294,6 +292,8 @@ final body={
 
       if (response['success'] == true) {
         getProfileData.value = response["data"]["user"];
+        userType=getProfileData["user_type"];
+        print("Get profile ${getProfileData["user_type"]}");
         print(response);
         print("getProfileData = ${getProfileData.values}");
         isLoading.value = false;

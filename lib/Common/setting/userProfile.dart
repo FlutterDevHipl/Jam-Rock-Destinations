@@ -5,11 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
-
 import '../../../Utils/app_images.dart';
-import '../controller/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Common/ProfileController/ProfileController.dart';
 import 'Change_Email_Number.dart';
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 

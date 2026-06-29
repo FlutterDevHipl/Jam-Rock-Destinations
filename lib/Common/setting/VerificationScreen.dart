@@ -1,7 +1,3 @@
-import 'package:Jam_Rock_Destinations/Auth/Controller/login_Controller.dart';
-import 'package:Jam_Rock_Destinations/Auth/createPassword.dart';
-import 'package:Jam_Rock_Destinations/Auth/saveProfile.dart';
-import 'package:Jam_Rock_Destinations/Common/controller/ProfileController.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 
 import '../../Utils/app_colors.dart';
+import '../ProfileController/ProfileController.dart';
 
 class VerificationScreen extends StatefulWidget {
   final signupType;

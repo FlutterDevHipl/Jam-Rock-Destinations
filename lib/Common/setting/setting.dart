@@ -1,5 +1,3 @@
-import 'package:Jam_Rock_Destinations/Common/Controller/ProfileController.dart';
-
 import 'package:Jam_Rock_Destinations/Common/setting/TermsAndConditions.dart';
 import 'package:Jam_Rock_Destinations/Common/setting/faq_Screen.dart';
 import 'package:Jam_Rock_Destinations/Common/setting/userProfile.dart';
@@ -12,11 +10,10 @@ import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
 import '../../Utils/app_colors.dart';
 import '../../Utils/custom_widget.dart';
+import 'package:Jam_Rock_Destinations/Common/ProfileController/ProfileController.dart';
 import 'DelectAccount.dart';
-
 import '../membership/Membership.dart';
 import 'PrivacyPolicy.dart';
 
@@ -70,7 +67,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 children: [
                                   profileController.getProfileData[
                                               "profile_image"] ==
-                                          null
+                                          null ||  profileController.getProfileData[
+                                          "profile_image"] ==""
                                       ? CircleAvatar(
                                           radius: 28,
                                           backgroundColor: Colors.transparent,

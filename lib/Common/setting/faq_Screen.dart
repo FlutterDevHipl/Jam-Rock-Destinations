@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 
-import '../controller/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Common/ProfileController/ProfileController.dart';
 
 class FAQScreen extends StatefulWidget {
   const FAQScreen({super.key});

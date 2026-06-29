@@ -1,4 +1,4 @@
-import 'package:Jam_Rock_Destinations/Common/controller/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Common/ProfileController/ProfileController.dart';
 import 'package:Jam_Rock_Destinations/Customer/book_ride/BookRideScreen.dart';
 import 'package:Jam_Rock_Destinations/Customer/controller/HomeController.dart';
 import 'package:Jam_Rock_Destinations/Customer/customer_bottom_navigation.dart';
@@ -33,8 +33,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // controller.getFAQ();
       profileController.getUserProfile();
-      userType=profileController.getProfileData["user_type"];
-      print("Get profile ${profileController.getProfileData["user_type"]}");
+
     });
     // TODO: implement initState
     super.initState();

@@ -1,5 +1,4 @@
-import 'package:Jam_Rock_Destinations/Common/controller/ProfileController.dart';
-import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
+import 'package:Jam_Rock_Destinations/Common/ProfileController/ProfileController.dart';import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

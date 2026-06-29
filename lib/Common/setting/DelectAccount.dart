@@ -7,7 +7,7 @@ import 'package:get/get_instance/src/extension_instance.dart';
 
 import '../../Utils/app_colors.dart';
 import '../../Utils/custom_widget.dart';
-import '../controller/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Common/ProfileController/ProfileController.dart';
 
 class DeleteAccountScreen extends StatelessWidget {
   DeleteAccountScreen({super.key});

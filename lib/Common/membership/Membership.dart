@@ -1,4 +1,4 @@
-import 'package:Jam_Rock_Destinations/Common/controller/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Common/ProfileController/ProfileController.dart';
 import 'package:Jam_Rock_Destinations/Common/membership/MembershipHistory.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
@@ -7,9 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
-
 import '../../Utils/app_images.dart';
-
 class MembershipScreen extends StatefulWidget {
   const MembershipScreen({super.key});
 
