@@ -1,3 +1,4 @@
+import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -64,7 +65,7 @@ class Locationcontroller extends GetxController {
 
       update(); // if using GetBuilder
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomWidget().showCustomToast(message: e.toString());
     } finally {
       isLoading.value = false;
     }

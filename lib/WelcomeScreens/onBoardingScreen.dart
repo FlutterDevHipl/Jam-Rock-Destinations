@@ -63,7 +63,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: SafeArea(
         child: PageView.builder(
           controller: pageController,
-          itemCount: userType == "EXPLORER"
+          itemCount: userType == "customer"
               ? onboardingData.length
               : driverOnboardingData.length,
           onPageChanged: (index) {
@@ -73,7 +73,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             box.write('seenOnboarding', true);
           },
           itemBuilder: (context, index) {
-            final item = userType == "EXPLORER"
+            final item = userType == "customer"
                 ? onboardingData[index]
                 : driverOnboardingData[index];
 

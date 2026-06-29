@@ -198,7 +198,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             SvgPicture.asset(Images.emailOutlineIcon),
                             const SizedBox(width: 10),
                             Expanded(
-                              child: CustomWidget().buildTextWidget(
+                              child:
+
+                              CustomWidget().buildTextWidget(
                                 title: controller.getProfileData["email"]
                                     .toString(),
                                 fontSize: 16,
@@ -208,9 +210,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             updateButton(
                               () {
-                                Get.to(ContactUpdateScreen(
-                                    isEmail: true,
-                                    value: controller.getProfileData["email"]));
+                                if(controller.getProfileData["login_type"]=="normal")
+                                  {
+                                    Get.to(ContactUpdateScreen(
+                                        isEmail: true,
+                                        value: controller.getProfileData["email"]));
+                                  }
+
                               },
                             ),
                           ],

@@ -3,6 +3,7 @@ import 'package:Jam_Rock_Destinations/Common/notification/NotificationScreen.dar
 import 'package:Jam_Rock_Destinations/Driver/controller/DriverHomeController.dart';
 import 'package:Jam_Rock_Destinations/Driver/ride_history/CancelRideScreen.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
+import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../Common/Controller/ProfileController.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -23,15 +26,22 @@ class DriverHomeScreen extends StatefulWidget {
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
   DriverHomeController controller = Get.put(DriverHomeController());
   Locationcontroller locationcontroller = Get.put(Locationcontroller());
-
+  final ProfileController profileController = Get.put(ProfileController());
   @override
   void initState() {
     // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // controller.getFAQ();
+      profileController.getUserProfile();
+      userType=profileController.getProfileData["user_type"];
+      print("Get profile ${profileController.getProfileData["user_type"]}");
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(

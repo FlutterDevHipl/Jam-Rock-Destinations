@@ -23,15 +23,27 @@ class MailVerificationScreen extends StatefulWidget {
 class _MailVerificationScreenState extends State<MailVerificationScreen> {
   final LoginController loginController=Get.find<LoginController>();
   final otpError = ''.obs;
-  String maskPhoneNumber(String phone) {
-    if (phone.length < 6) return phone;
+  // String maskPhoneNumber(String phone) {
+  //   if (phone.length < 6) return phone;
+  //
+  //   String countryCode = phone.substring(0, 2); // +1
+  //   String last2 = phone.substring(phone.length - 2);
+  //
+  //   return '$countryCode X XXX XX$last2';
+  // }
 
-    String countryCode = phone.substring(0, 2); // +1
+  String maskPhoneNumber(String phone, String countryCode) {
+    phone = phone.replaceAll('+', '');
+
+    if (phone.startsWith(countryCode)) {
+      phone = phone.substring(countryCode.length);
+    }
+
+    String start2 = phone.substring(0, 2);
     String last2 = phone.substring(phone.length - 2);
 
-    return '$countryCode X XXX XX$last2';
+    return '${start2}X XXX XX$last2';
   }
-
   bool validateOtp() {
     if (loginController.otpController.text.length != 4) {
       otpError.value = "Please enter a valid 4-digit OTP";
@@ -70,7 +82,9 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
                 heightSpace25,
             
                 /// Title
-                CustomWidget().buildTextWidget(title: "Mail Verification",
+                CustomWidget().buildTextWidget(title:
+
+                widget.signupType=="email"? "Mail Verification":"Phone Number Verification",
                     textColor: Colors.black,fontWeight: FontWeight.w700,fontSize: 24),
             
                 heightSpace5,
@@ -88,10 +102,20 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
             
                     const SizedBox(height: 2),
             
+                    // CustomWidget().buildTextWidget(
+                    //   title:
+                    //   // isNumber?maskPhoneNumber( widget.emailorphone,widget.countryCode):
+                    //   // widget.emailorphone,
+                    //
+                    //   textColor: AppColors.yellow700,
+                    //   fontWeight: FontWeight.w600,
+                    //   fontSize: 16,
+                    //   textAlign: TextAlign.center,
+                    // ),
                     CustomWidget().buildTextWidget(
-                      title:
-                      isNumber?maskPhoneNumber( widget.emailorphone):
-                      widget.emailorphone,
+                      title: isNumber
+                          ? '${widget.countryCode} ${maskPhoneNumber(widget.emailorphone, widget.countryCode)}'
+                          : widget.emailorphone,
                       textColor: AppColors.yellow700,
                       fontWeight: FontWeight.w600,
                       fontSize: 16,

@@ -116,18 +116,18 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
 
                 if (controller.selectedVehicleType.value=="" ||controller.selectedVehicleType.value==null) {
                   controller.vehicleTypeError.value =
-                  "Please select vehicle type";
+                  "  Please select vehicle type";
                   isValid = false;
                 }
                 if (controller.selectedVehicleBrand.value=="" ||controller.selectedVehicleBrand.value==null) {
                   controller.vehicleBrandError.value =
-                  "Please select vehicle brand";
+                  "  Please select vehicle brand";
                   isValid = false;
                 }
 
                 if (controller.selectedVehicleCapacity.value==""||controller.selectedVehicleCapacity.value==null) {
                   controller.vehicleCapacityError.value =
-                  "Please select vehicle capacity";
+                  "  Please select vehicle capacity";
                   isValid = false;
                 }
 
@@ -217,6 +217,7 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
                   items: controller.vehicleTypes
                       .map((e) => e["name"].toString())
                       .toList(),
+                      prefixImage: Images.carIcon,
                   value: controller.selectedVehicleType.value.isEmpty
                       ? null
                       : controller.selectedVehicleType.value,

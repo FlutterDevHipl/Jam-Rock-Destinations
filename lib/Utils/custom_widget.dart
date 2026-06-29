@@ -547,10 +547,13 @@ class CustomWidget {
                           SizedBox(
                             width: 2,
                           ),
-                          Icon(
-                            Icons.keyboard_arrow_down_sharp,
-                            color: AppColors.green500,
-                            size: 16,
+                          Visibility(
+                            visible: enableCountryPicker,
+                            child: Icon(
+                              Icons.keyboard_arrow_down_sharp,
+                              color: AppColors.green500,
+                              size: 16,
+                            ),
                           )
                         ],
                       ),
@@ -599,7 +602,9 @@ class CustomWidget {
                         // onChanged: (value) => state.didChange(value),
                         onChanged: (value) {
                           state.didChange(value);
-                          onChanged;
+                          if (onChanged != null) {
+                            onChanged(value);
+                          }
                         },
 
                       ),

@@ -109,7 +109,7 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                 color: AppColors.green500,
                 radius: 8,
                 onPressed: () {
-                  final userTypes = selectedIndex == 0 ? 'EXPLORER' : 'DRIVER';
+                  final userTypes = selectedIndex == 0 ? "customer" : "driver";
                   userBox.put('user_type', userTypes);
                   userType = userTypes;
                   debugPrint(userBox.get('user_type'));

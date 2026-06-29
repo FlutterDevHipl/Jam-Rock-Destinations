@@ -619,7 +619,7 @@ final body={
       print("googleData ${googleData}");
       final requestData = {
         "register_type": login_type,
-        "user_type": userType == "EXPLORER" ? "customer" : "driver",
+        "user_type": userType == "customer" ? "customer" : "driver",
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
         "phone": phoneController.text.trim(),
@@ -699,7 +699,7 @@ final body={
       }
       final requestData = {
         "register_type": loginType,
-        "user_type": userType == "EXPLORER" ? "customer" : "driver",
+        "user_type": userType == "customer" ? "customer" : "driver",
         "country_code":countryCode,
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),

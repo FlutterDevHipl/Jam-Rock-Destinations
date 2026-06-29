@@ -142,7 +142,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       radius: 8,
                       color: const Color(0xffF5F5F5),
                       enableCountryPicker:
-                      userType != "EXPLORER" ? false : true,
+                      userType != "customer" ? false : true,
                       controller: loginController.forgotPhoneController,
                       selectedCountry: loginController.selectedCountry,
                       hintText: "Enter Phone Number",

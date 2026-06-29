@@ -89,7 +89,7 @@ class LoginController extends GetxController
         "social_user_id": socialUserId,
         "country_code":"+${countryCode.value.isEmpty?"1":countryCode.value}",
         "user_login":email, // email and phone
-        "user_type": userType == "EXPLORER" ? "customer" : "driver",
+        "user_type": userType == "customer" ? "customer" : "driver",
         "platform": Platform.isAndroid ? "android" : "ios",
         "device_id": deviceData["device_id"],
         "device_json": jsonEncode(deviceData["device_json"]),
@@ -114,7 +114,7 @@ class LoginController extends GetxController
           message: response['message'] ?? "Registration successful",
           backgroundColor: AppColors.green500,
         );
-        userType=="EXPLORER"?
+        userType=="customer"?
         Get.offAll(CustomerBottomNavigation(index: 0,)):
         Get.offAll(DriverBottomNavigation(index: 0,));
         isLoading.value=false;
@@ -391,7 +391,7 @@ class LoginController extends GetxController
         "social_user_id": "",
         "country_code":countryCode,
         "user_login":userLogin, // email and phone
-        "user_type": userType == "EXPLORER" ? "customer" : "driver",
+        "user_type": userType == "customer" ? "customer" : "driver",
         "password": passwordController.text,
         "platform": Platform.isAndroid ? "android" : "ios",
         "device_id": deviceData["device_id"],
@@ -415,7 +415,7 @@ class LoginController extends GetxController
           message: response['message'] ?? "Registration successful",
           backgroundColor: AppColors.green500,
         );
-        userType=="EXPLORER"?
+        userType=="customer"?
         Get.offAll(CustomerBottomNavigation(index: 0,)):
         Get.offAll(DriverBottomNavigation(index: 0,));
         isLoading.value=false;
@@ -469,9 +469,7 @@ class LoginController extends GetxController
       var body = {
         "contact": contactValue,
         "type": type,
-        "user_type": userType == 'EXPLORER' || userType == 'customer'
-            ? "customer"
-            : "driver",
+        "user_type": userType == "customer" ? "customer" : "driver",
 
         if (type == "phone")
           "country_code": "${countryCode}" // in case of type phone

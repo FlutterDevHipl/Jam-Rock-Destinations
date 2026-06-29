@@ -1,4 +1,4 @@
-import 'package:Jam_Rock_Destinations/Common/controller/ProfileController.dart';
+import 'package:Jam_Rock_Destinations/Common/Controller/ProfileController.dart';
 
 import 'package:Jam_Rock_Destinations/Common/setting/TermsAndConditions.dart';
 import 'package:Jam_Rock_Destinations/Common/setting/faq_Screen.dart';
@@ -32,7 +32,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     profileController.getUserProfile();
-    print(userType);
+    print("userType $userType");
     // TODO: implement initState
     super.initState();
   }
@@ -69,7 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               child: Row(
                                 children: [
                                   profileController.getProfileData[
-                                              "profile_image_url"] ==
+                                              "profile_image"] ==
                                           null
                                       ? CircleAvatar(
                                           radius: 28,
@@ -83,7 +83,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           child: ClipOval(
                                             child: Image.network(
                                               profileController.getProfileData[
-                                                      "profile_image_url"]
+                                                      "profile_image"]
                                                   .toString(),
                                               width: 56,
                                               height: 56,
@@ -116,11 +116,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ),
                                   Visibility(
                                       visible:
-                                          userType != "customer" || userType == "EXPLORER" ? true : false,
+                                          userType != "customer"  ? true : false,
                                       child: Spacer()),
                                   Visibility(
                                     visible:
-                                        userType != "customer" || userType == "EXPLORER"? true : false,
+                                        userType != "customer"? true : false,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
@@ -162,7 +162,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             },
                           ),
                           Visibility(
-                            visible: userType != "customer" || userType == "EXPLORER" ? true : false,
+                            visible: userType != "customer"  ? true : false,
                             child: _settingTile(
                               image: Images.vmIcon,
                               title: "Vehicle Management",
@@ -172,7 +172,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                           Visibility(
-                            visible: userType != "customer" || userType == "EXPLORER"? true : false,
+                            visible: userType != "customer" ? true : false,
                             child: _settingTile(
                               image: Images.kycIcon,
                               title: "KYC Documents",
@@ -182,7 +182,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                           Visibility(
-                            visible: userType != "customer" || userType == "EXPLORER"? true : false,
+                            visible: userType != "customer" ? true : false,
                             child: _settingTile(
                               image: Images.membershipIcon,
                               title: "Membership",
@@ -280,7 +280,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(width: 12),
           Visibility(
-            visible: userType == "customer" || userType == "EXPLORER"? true : false,
+            visible: userType == "customer" ? true : false,
             child: CircleAvatar(
               radius: 28,
               backgroundColor: Colors.transparent,

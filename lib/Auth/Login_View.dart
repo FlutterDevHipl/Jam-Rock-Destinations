@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Jam_Rock_Destinations/Auth/forgot_password.dart';
 import 'package:Jam_Rock_Destinations/Auth/registration_View.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
@@ -170,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     darkMode: loginController.isDarkMode?true:false,
                     radius: 8,
                     color:  const Color(0xffF5F5F5),
-                    enableCountryPicker:userType != "EXPLORER"?false:true,
+                    enableCountryPicker:userType != "customer"?false:true,
                     controller: loginController.phoneController,
                     selectedCountry: loginController.selectedCountry,
                     hintText: "Enter Phone Number",
@@ -355,6 +357,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 Row(
                   children: [
+                    if(Platform.isIOS)
                     Expanded(
                       child:
                       GestureDetector(

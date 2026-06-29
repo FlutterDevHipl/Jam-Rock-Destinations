@@ -98,18 +98,18 @@ class _VehicleDetailsViewState extends State<VehicleDetailsView> {
 
                   if (controller.selectedVehicleType.value=="" || controller.selectedVehicleType.value.isEmpty) {
                     controller.vehicleTypeError.value =
-                    "Please select vehicle type";
+                    "  Please select vehicle type";
                     isValid = false;
                   }
                   if (controller.selectedVehicleBrand.value=="" ||controller.selectedVehicleBrand.value.isEmpty) {
                     controller.vehicleBrandError.value =
-                    "Please select vehicle brand";
+                    "  Please select vehicle brand";
                     isValid = false;
                   }
 
                   if (controller.selectedVehicleCapacity.value==""||controller.selectedVehicleCapacity.value==null) {
                     controller.vehicleCapacityError.value =
-                    "Please select vehicle capacity";
+                    "  Please select vehicle capacity";
                     isValid = false;
                   }
 

@@ -351,7 +351,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                         () =>  CustomWidget().buildPhoneField(
                           darkMode:
                               registrationController.isDarkMode ? true : false,
-                          readOnly: registrationController.isPhoneVerified.value,
+                          // readOnly: registrationController.isPhoneVerified.value,
 
                           onChanged: (value) {
                             if (value.trim() !=
@@ -362,7 +362,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                           },
                           radius: 8,
                           enableCountryPicker:
-                              userType != "EXPLORER" ? false : true,
+                              userType != "customer" ? false : true,
                           color: const Color(0xffF5F5F5),
                           suffixIcon: GestureDetector(
                               onTap: () {
@@ -383,10 +383,19 @@ class _RegistrationViewState extends State<RegistrationView> {
                                           .phoneController.text
                                           .trim();
 
-                                      if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
+                                      if (!isValidPhone(
+                                          phone,
+                                          registrationController
+                                              .countryName.value ==
+                                              "" ||
+                                              registrationController
+                                                  .countryName.value.isEmpty
+                                              ? "JM"
+                                              : registrationController
+                                              .countryName.value)) {
                                         CustomWidget().showCustomToast(
                                             message:
-                                                "Please enter valid phone number");
+                                            "Please enter valid phone number");
                                         return;
                                       }
                                       if (!registrationController
@@ -604,7 +613,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                         child: ElevatedButton(
                           onPressed: () {
                             if (widget.isSocialLogin) {
-                              if (userType == "EXPLORER") {
+                              if (userType == "customer") {
                                 if (!registrationController
                                     .isPhoneVerified.value) {
                                   CustomWidget().showCustomToast(
@@ -614,7 +623,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                                 } else if (registrationController
                                             .selectedImage.value ==
                                         null &&
-                                    userType != "EXPLORER" &&
+                                    userType != "customer" &&
                                     widget.image == null) {
                                   CustomWidget().showCustomToast(
                                       message: "Please upload profile picture",
@@ -640,7 +649,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                             } else {
                               if (registrationController.selectedImage.value ==
                                       null &&
-                                  userType != "EXPLORER") {
+                                  userType != "customer") {
                                 CustomWidget().showCustomToast(
                                     message: "Please upload profile picture",
                                     backgroundColor: Colors.red);
@@ -674,7 +683,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                                     backgroundColor: Colors.red);
                                 return;
                               }
-                              if (userType == "EXPLORER") {
+                              if (userType == "customer") {
                                 registrationController.registerUser(loginType: widget.socialType,
                                   countryCode: "+${registrationController.countryCode.value.isEmpty?"1":registrationController.countryCode.value}"
                                 );
