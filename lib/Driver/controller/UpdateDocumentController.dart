@@ -4,11 +4,8 @@ import 'dart:io';
 import 'package:Jam_Rock_Destinations/Services/api_provider.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get_connect/http/src/multipart/form_data.dart';
-import 'package:get/get_connect/http/src/multipart/multipart_file.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
@@ -47,11 +44,72 @@ class UpdateDocumentController extends GetxController {
   var hasChangesDoc = false.obs;
   var hasChangesVechicleDoc = false.obs;
 
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   getKycDoc();
-  // }
+  //****************************** Vehicle Management **************************//
+  final RxString vehicleTypeError = "".obs;
+  final RxString vehicleCapacityError = "".obs;
+
+  final regNoController = TextEditingController();
+  final modelController = TextEditingController();
+
+  final vehicleCapacities = <String>[
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+  ].obs;
+
+  final selectedVehicleCapacity = RxnString();
+
+  /// Vehicle Document
+
+  final vehicleDocumentFront = Rx<File?>(null);
+  final vehicleDocumentBack = Rx<File?>(null);
+
+  /// Interior Images
+
+  final interiorImage1 = Rx<File?>(null);
+  final interiorImage2 = Rx<File?>(null);
+
+  /// Exterior Images
+
+  final exteriorImage1 = Rx<File?>(null);
+  final exteriorImage2 = Rx<File?>(null);
+  final exteriorImage3 = Rx<File?>(null);
+  final exteriorImage4 = Rx<File?>(null);
+  final vehicleDocumentFrontUrl = ''.obs;
+  final vehicleDocumentBackUrl = ''.obs;
+
+  final interiorImage1Url = ''.obs;
+  final interiorImage2Url = ''.obs;
+
+  final exteriorImage1Url = ''.obs;
+  final exteriorImage2Url = ''.obs;
+  final exteriorImage3Url = ''.obs;
+  final exteriorImage4Url = ''.obs;
+  final ImagePicker vehiclePicker = ImagePicker();
+  final selectedImage = Rxn<File>();
+  RxList<Map<String, dynamic>> vehicleTypes = <Map<String, dynamic>>[].obs;
+
+  RxList<Map<String, dynamic>> vehicleBrands = <Map<String, dynamic>>[].obs;
+
+  RxInt selectedVehicleTypeId = 0.obs;
+  RxInt selectedVehicleBrandId = 0.obs;
+
+  RxString selectedVehicleType = ''.obs;
+  RxString selectedVehicleBrand = ''.obs;
+
+  RxBool isLoadingVehicleTypes = false.obs;
+  RxBool isLoadingVehicleBrands = false.obs;
+
+  RxString vehicleBrandError = "".obs;
+
+  RxInt governmentDocId = 0.obs;
+  RxInt licenseDocId = 0.obs;
+  RxInt crbDocId = 0.obs;
+
   void showDocumentUpdatePopup({
     required Function() onProceed,
     required Function() onCancel,
@@ -167,22 +225,41 @@ class UpdateDocumentController extends GetxController {
     );
   }
 
+  // Future<void> pickImage(Rx<File?> imageFile) async {
+  //   final XFile? image = await picker.pickImage(
+  //     source: ImageSource.gallery,
+  //     imageQuality: 80,
+  //   );
+
+  //   if (image != null) {
+  //     imageFile.value = File(image.path);
+  //     hasChangesDoc.value = true;
+  //     hasChangesVechicleDoc.value = true;
+  //   }
+
+  // }
+
   Future<void> pickImage(Rx<File?> imageFile) async {
     final XFile? image = await picker.pickImage(
       source: ImageSource.gallery,
-      imageQuality: 80,
     );
 
-    if (image != null) {
-      imageFile.value = File(image.path);
-      hasChangesDoc.value = true;
-      hasChangesVechicleDoc.value = true;
-    }
+    if (image == null) return;
+
+    // Crop Image
+    final croppedPath = await CustomWidget().cropImage(image.path);
+    if (croppedPath == null) return;
+
+    // Compress Image
+    final compressedFile =
+        await CustomWidget().compressImage(File(croppedPath));
+
+    imageFile.value = compressedFile;
+
+    hasChangesDoc.value = true;
+    hasChangesVechicleDoc.value = true;
   }
 
-  RxInt governmentDocId = 0.obs;
-  RxInt licenseDocId = 0.obs;
-  RxInt crbDocId = 0.obs;
 
   Future<void> getKycDoc() async {
     try {
@@ -395,6 +472,7 @@ class UpdateDocumentController extends GetxController {
   //     isKycDoc.value = false;
   //   }
   // }
+
   Future<void> updateKycDocuments() async {
     try {
       isKycDoc.value = true;
@@ -555,81 +633,19 @@ class UpdateDocumentController extends GetxController {
     }
   }
 
-  //****************************** Vehicle Management **************************//
-  final RxString vehicleTypeError = "".obs;
-  final RxString vehicleCapacityError = "".obs;
+  // Future<void> vehiclePickImage(Rx<File?> imageFile) async {
+  //   final XFile? image = await picker.pickImage(
+  //     source: ImageSource.gallery,
+  //     imageQuality: 80,
+  //   );
 
-  final regNoController = TextEditingController();
-  final modelController = TextEditingController();
+  //   if (image != null) {
+  //     imageFile.value = File(image.path);
+  //     hasChangesDoc.value = true;
+  //     hasChangesVechicleDoc.value = true;
+  //   }
+  // }
 
-  final vehicleCapacities = <String>[
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-  ].obs;
-
-  final selectedVehicleCapacity = RxnString();
-
-  /// Vehicle Document
-
-  final vehicleDocumentFront = Rx<File?>(null);
-  final vehicleDocumentBack = Rx<File?>(null);
-
-  /// Interior Images
-
-  final interiorImage1 = Rx<File?>(null);
-  final interiorImage2 = Rx<File?>(null);
-
-  /// Exterior Images
-
-  final exteriorImage1 = Rx<File?>(null);
-  final exteriorImage2 = Rx<File?>(null);
-  final exteriorImage3 = Rx<File?>(null);
-  final exteriorImage4 = Rx<File?>(null);
-  final vehicleDocumentFrontUrl = ''.obs;
-  final vehicleDocumentBackUrl = ''.obs;
-
-  final interiorImage1Url = ''.obs;
-  final interiorImage2Url = ''.obs;
-
-  final exteriorImage1Url = ''.obs;
-  final exteriorImage2Url = ''.obs;
-  final exteriorImage3Url = ''.obs;
-  final exteriorImage4Url = ''.obs;
-  final ImagePicker vehiclePicker = ImagePicker();
-
-  Future<void> vehiclePickImage(Rx<File?> imageFile) async {
-    final XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80,
-    );
-
-    if (image != null) {
-      imageFile.value = File(image.path);
-      hasChangesDoc.value = true;
-      hasChangesVechicleDoc.value = true;
-    }
-  }
-
-  final selectedImage = Rxn<File>();
-  RxList<Map<String, dynamic>> vehicleTypes = <Map<String, dynamic>>[].obs;
-
-  RxList<Map<String, dynamic>> vehicleBrands = <Map<String, dynamic>>[].obs;
-
-  RxInt selectedVehicleTypeId = 0.obs;
-  RxInt selectedVehicleBrandId = 0.obs;
-
-  RxString selectedVehicleType = ''.obs;
-  RxString selectedVehicleBrand = ''.obs;
-
-  RxBool isLoadingVehicleTypes = false.obs;
-  RxBool isLoadingVehicleBrands = false.obs;
-
-  RxString vehicleBrandError = "".obs;
   Future<void> getVehicleData(String type) async {
     try {
       isLoading.value = true;

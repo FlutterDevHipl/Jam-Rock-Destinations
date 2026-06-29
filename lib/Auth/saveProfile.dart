@@ -16,12 +16,9 @@ class ProfileSetupScreen extends StatefulWidget {
 }
 
 class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
-  final TextEditingController fullNameController =
-  TextEditingController();
-  final TextEditingController emailController =
-  TextEditingController();
-  final TextEditingController phoneController =
-  TextEditingController();
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
   File? selectedImage;
   bool isPasswordVisible = false;
@@ -31,14 +28,20 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       imageQuality: 80,
     );
 
-    if (image != null) {
-      setState(() {
-        selectedImage = File(image.path);
-      });
-    }
+    if (image == null) return;
+
+    // Crop Image
+    final croppedPath = await CustomWidget().cropImage(image.path);
+    if (croppedPath == null) return;
+
+    // Compress Image
+    final compressedFile =
+        await CustomWidget().compressImage(File(croppedPath));
+
+    setState(() {
+      selectedImage = compressedFile;
+    });
   }
-
-
 
   @override
   void dispose() {
@@ -65,7 +68,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back,color: Colors.black,),
+                    child: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
+                    ),
                   ),
                   const Spacer(),
                   CustomWidget().buildTextWidget(
@@ -132,10 +138,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                         : null,
                     child: selectedImage == null
                         ? const Icon(
-                      Icons.person,
-                      size: 60,
-                      color: Colors.grey,
-                    )
+                            Icons.person,
+                            size: 60,
+                            color: Colors.grey,
+                          )
                         : null,
                   ),
                   Positioned(
@@ -171,7 +177,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: CustomWidget().buildTextWidget(
-                  title: "Full Name" ,
+                  title: "Full Name",
                   fontSize: 14,
                   textColor: AppColors.black400,
                   fontWeight: FontWeight.w600,
@@ -180,18 +186,16 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
               heightSpace8,
 
-              CustomWidget().buildTextFormField(darkMode: true, radius: 8,
-                controller:fullNameController,
+              CustomWidget().buildTextFormField(
+                darkMode: true, radius: 8,
+                controller: fullNameController,
                 keyboardType: TextInputType.name,
                 // hintText:  "Sam Rider",
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(14),
-
-                  child: SvgPicture.asset(
-                      Images.emailIcon
-                  ),
-                ), ),
-
+                  child: SvgPicture.asset(Images.emailIcon),
+                ),
+              ),
 
               heightSpace24,
 
@@ -208,17 +212,19 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
               heightSpace8,
 
-              CustomWidget().buildTextFormField(darkMode: true, radius: 8,
+              CustomWidget().buildTextFormField(
+                darkMode: true, radius: 8,
                 controller: fullNameController,
                 keyboardType: TextInputType.name,
                 // hintText: "sam.rider@gmail.com",
-                prefixIcon: Padding (
+                prefixIcon: Padding(
                   padding: const EdgeInsets.all(14),
                   child: SvgPicture.asset(
-                      Images.emailIcon,
+                    Images.emailIcon,
                     color: AppColors.black500,
                   ),
-                ), ),
+                ),
+              ),
 
               heightSpace24,
 
@@ -228,19 +234,20 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 child: CustomWidget().buildTextWidget(
                   title: "Phone",
                   fontSize: 14,
-                  textColor:AppColors.black400,
+                  textColor: AppColors.black400,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               heightSpace8,
-              CustomWidget().buildTextFormField(darkMode: true, radius: 8,
+              CustomWidget().buildTextFormField(
+                darkMode: true, radius: 8,
                 controller: phoneController,
                 keyboardType: TextInputType.number,
                 // hintText: "+1 876 555 1234",
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(14),
                   child: SvgPicture.asset(
-                      Images.phoneIcon,
+                    Images.phoneIcon,
                     color: AppColors.black500,
                   ),
                 ),
@@ -255,15 +262,13 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-
                     // Save & Next
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.green500,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                      BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: CustomWidget().buildTextWidget(

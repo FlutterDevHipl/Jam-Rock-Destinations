@@ -2,12 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:Jam_Rock_Destinations/Auth/saveProfile.dart';
 import 'package:Jam_Rock_Destinations/Customer/customer_bottom_navigation.dart';
-import 'package:Jam_Rock_Destinations/Customer/home_screen.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_const.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
-import 'package:Jam_Rock_Destinations/Driver/driver_bottom_navigation.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -76,9 +73,17 @@ class RegistrationController extends GetxController {
       imageQuality: 80,
     );
 
-    if (image != null) {
-      selectedImage.value = File(image.path);
-    }
+    if (image == null) return;
+
+    // Crop Image
+    final croppedPath = await CustomWidget().cropImage(image.path);
+    if (croppedPath == null) return;
+
+    // Compress Image
+    final compressedFile =
+        await CustomWidget().compressImage(File(croppedPath));
+
+    selectedImage.value = compressedFile;
   }
 
   bool isDarkMode = Get.isDarkMode;
@@ -293,7 +298,8 @@ class RegistrationController extends GetxController {
                     GestureDetector(
                       onTap: () async {
                         if (isPhoneVerification == true) {
-                          await sendPhoneOTp(phoneController.text, context,countryCode.value);
+                          await sendPhoneOTp(
+                              phoneController.text, context, countryCode.value);
                           // CustomWidget().showCustomToast(message: "OTP has been resent successfully.");
                         } else {
                           await sendEmailOTp(
@@ -413,22 +419,16 @@ class RegistrationController extends GetxController {
   Future<void> sendPhoneOTp(
     String phone,
     BuildContext context,
-      String countryCode,
+    String countryCode,
   ) async {
     try {
       isLoading.value = true;
-      if(countryCode.isEmpty)
-        {
-          countryCode="1";
-        }
-final body={
-  "phone": phone,
-  "country_code":"+${countryCode}"
-};
-      var response = await ApiProvider().postRequest1(
-        apiUrl: AppConstants.sendPhoneOTP,
-        data: body
-      );
+      if (countryCode.isEmpty) {
+        countryCode = "1";
+      }
+      final body = {"phone": phone, "country_code": "+${countryCode}"};
+      var response = await ApiProvider()
+          .postRequest1(apiUrl: AppConstants.sendPhoneOTP, data: body);
 
       log("phone $phone");
       log("body $body");
@@ -519,15 +519,14 @@ final body={
   ) async {
     try {
       isLoading.value = true;
-     final body= {
+      final body = {
         "phone": phone,
-    "otp": otp,
-    "country_code":"+${countryCode.value.isEmpty?"1":countryCode.value}"
-  };
-      var response = await ApiProvider().postRequest1(
-        apiUrl: AppConstants.verifyPhoneOTP,
-        data:body
-      );
+        "otp": otp,
+        "country_code":
+            "+${countryCode.value.isEmpty ? "1" : countryCode.value}"
+      };
+      var response = await ApiProvider()
+          .postRequest1(apiUrl: AppConstants.verifyPhoneOTP, data: body);
 
       print("response $response");
       print("verifyPhoneOTp body $body");
@@ -623,7 +622,7 @@ final body={
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
         "phone": phoneController.text.trim(),
-        "country_code":"${countryCode}",
+        "country_code": "${countryCode}",
         "platform": Platform.isAndroid ? "android" : "ios",
         "device_id": deviceData["device_id"],
         "device_json": jsonEncode(deviceData["device_json"]),
@@ -681,10 +680,7 @@ final body={
     }
   }
 
-  Future<void> registerUser({
-    final loginType,
-    final countryCode
-}) async {
+  Future<void> registerUser({final loginType, final countryCode}) async {
     try {
       isLoading.value = true;
 
@@ -700,7 +696,7 @@ final body={
       final requestData = {
         "register_type": loginType,
         "user_type": userType == "customer" ? "customer" : "driver",
-        "country_code":countryCode,
+        "country_code": countryCode,
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
         "phone": phoneController.text.trim(),
@@ -711,7 +707,7 @@ final body={
         "device_json": jsonEncode(deviceData["device_json"]),
         "device_token": token
       };
-print("requestData = $requestData");
+      print("requestData = $requestData");
       var response = await ApiProvider().putRequestProfile(
         apiUrl: AppConstants.register,
         fields: requestData,
@@ -790,7 +786,7 @@ print("requestData = $requestData");
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
         "phone": phoneController.text.trim(),
-        "country_code":"${countryCode}",
+        "country_code": "${countryCode}",
         // "phone": "+${countryCode.value}${phoneController.text.trim()}",
         "platform": Platform.isAndroid ? "android" : "ios",
         "device_id": deviceData["device_id"],
@@ -849,8 +845,10 @@ print("requestData = $requestData");
     }
   }
 
-  Future<void> driverRegistration({  required String login_type,
-    required String countryCode,}) async {
+  Future<void> driverRegistration({
+    required String login_type,
+    required String countryCode,
+  }) async {
     try {
       isLoading.value = true;
 
@@ -871,7 +869,7 @@ print("requestData = $requestData");
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
         "phone": phoneController.text.trim(),
-        "country_code":"${countryCode}",
+        "country_code": "${countryCode}",
         "password": passwordController.text,
         "password_confirmation": confirmPassController.text,
         "platform": Platform.isAndroid ? "android" : "ios",

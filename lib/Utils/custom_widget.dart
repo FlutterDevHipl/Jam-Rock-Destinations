@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,12 +6,15 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 
 import 'AppGradients.dart';
@@ -449,7 +453,6 @@ class CustomWidget {
             Focus(
               focusNode: focusNode,
               onFocusChange: (_) => state.setState(() {}),
-
               child: Container(
                 height: 48,
                 padding: EdgeInsets.symmetric(horizontal: 15),
@@ -606,7 +609,6 @@ class CustomWidget {
                             onChanged(value);
                           }
                         },
-
                       ),
                     ),
                   ],
@@ -617,7 +619,7 @@ class CustomWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 5, left: 10),
                 child: Text(
-                  state.errorText == null?"": "   ${state.errorText}" ,
+                  state.errorText == null ? "" : "   ${state.errorText}",
                   style: GoogleFonts.lato(
                     fontSize: 12,
                     color: Colors.red,
@@ -1125,6 +1127,60 @@ class CustomWidget {
         );
       },
     );
+  }
+
+  Future<File> compressImage(File file) async {
+    final dir = await getTemporaryDirectory();
+
+    final targetPath =
+        "${dir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg";
+
+    int quality = 90;
+
+    File result = file;
+
+    while (quality >= 10) {
+      final compressed = await FlutterImageCompress.compressAndGetFile(
+        result.path,
+        targetPath,
+        quality: quality,
+        format: CompressFormat.jpeg,
+      );
+
+      if (compressed == null) break;
+
+      result = File(compressed.path);
+
+      final sizeInMB = result.lengthSync() / (1024 * 1024);
+
+      if (sizeInMB <= 2) {
+        break;
+      }
+
+      quality -= 10;
+    }
+
+    return result;
+  }
+
+  Future<String?> cropImage(String imagePath) async {
+    final CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imagePath,
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 100,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: "Crop Image",
+          toolbarColor: Colors.black,
+          toolbarWidgetColor: Colors.white,
+        ),
+        IOSUiSettings(
+          title: "Crop Image",
+        ),
+      ],
+    );
+
+    return croppedFile?.path;
   }
 
   String formatMinutes(int seconds) {

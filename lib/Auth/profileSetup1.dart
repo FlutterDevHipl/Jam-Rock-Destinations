@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:Jam_Rock_Destinations/Auth/Controller/Driver_Registration.dart';
-import 'package:Jam_Rock_Destinations/Auth/profileSetup2.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
@@ -11,7 +10,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../Utils/custom_widget.dart';
 

@@ -29,7 +29,7 @@ class ProfileController extends GetxController {
   TextEditingController otpController = TextEditingController();
   var faq = [].obs;
   bool isDarkMode = Get.isDarkMode;
-    final box = GetStorage();
+  final box = GetStorage();
   final Rx<Country?> selectedCountry = Rx<Country?>(
     Country(
       phoneCode: "1",
@@ -45,7 +45,7 @@ class ProfileController extends GetxController {
     ),
   );
   final countryCode = ''.obs;
-   final countryName = 'JM'.obs;
+  final countryName = 'JM'.obs;
   final selectedImage = Rxn<File>();
 
   @override
@@ -91,9 +91,21 @@ class ProfileController extends GetxController {
       imageQuality: 80,
     );
 
-    if (image != null) {
-      selectedImage.value = File(image.path);
-    }
+    // if (image != null) {
+    //   selectedImage.value = File(image.path);
+    // }
+
+    if (image == null) return;
+
+    // Crop Image
+    final croppedPath = await CustomWidget().cropImage(image.path);
+    if (croppedPath == null) return;
+
+    // Compress Image
+    final compressedFile =
+        await CustomWidget().compressImage(File(croppedPath));
+
+    selectedImage.value = compressedFile;
   }
 
   Future<void> editProfile() async {
@@ -203,16 +215,12 @@ class ProfileController extends GetxController {
   ) async {
     try {
       isLoading.value = true;
-      final body={
-        type: value,
-        "country_code":"${countryCode}"
-      };
+      final body = {type: value, "country_code": "${countryCode}"};
       var response = await ApiProvider().postRequest1(
-        apiUrl: type == "email"
-            ? AppConstants.sendEmailOTP
-            : AppConstants.sendPhoneOTP,
-        data: body
-      );
+          apiUrl: type == "email"
+              ? AppConstants.sendEmailOTP
+              : AppConstants.sendPhoneOTP,
+          data: body);
       print("Body ${body}");
       if (response['success'] == true) {
         CustomWidget().showCustomToast(
@@ -237,22 +245,12 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> verifyOTp(
-    String value,
-    String type,
-    String otp,
-    BuildContext context,
-      final countryCode
-  ) async {
+  Future<void> verifyOTp(String value, String type, String otp,
+      BuildContext context, final countryCode) async {
     try {
       isLoading.value = true;
 
-final body={
-  type: value,
-  "otp": otp,
-  "country_code":countryCode
-
-};
+      final body = {type: value, "otp": otp, "country_code": countryCode};
       var response = await ApiProvider().postRequest1(
           apiUrl: type == "email"
               ? AppConstants.verifyEmailOTP
@@ -284,7 +282,7 @@ final body={
   }
 
   Future<void> getUserProfile() async {
-    try{
+    try {
       isLoading.value = true;
       print("Token ${getToken()}");
       final response = await ApiProvider()
@@ -292,7 +290,7 @@ final body={
 
       if (response['success'] == true) {
         getProfileData.value = response["data"]["user"];
-        userType=getProfileData["user_type"];
+        userType = getProfileData["user_type"];
         print("Get profile ${getProfileData["user_type"]}");
         print(response);
         print("getProfileData = ${getProfileData.values}");
@@ -300,14 +298,11 @@ final body={
       } else {
         print("else getProfileData = ${response}");
       }
+    } catch (e) {
+      isLoading.value = false;
+    } finally {
+      isLoading.value = false;
     }
-    catch (e){
-      isLoading.value=false;
-    }
-    finally{
-      isLoading.value=false;
-    }
-
   }
 
   final privacyUrl = "".obs;
@@ -401,7 +396,7 @@ final body={
         Get.offAll(() => const SelectRoleScreen());
         if (Navigator.canPop(context)) Navigator.pop(context);
         isLogout.value = false;
-         box.write('seenOnboarding', true);
+        box.write('seenOnboarding', true);
       } else {
         isLogout.value = false;
       }
