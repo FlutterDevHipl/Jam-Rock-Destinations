@@ -1,14 +1,13 @@
-import 'package:Jam_Rock_Destinations/Customer/booking/BookingCancelRideScreen.dart';
-import 'package:Jam_Rock_Destinations/Customer/controller/BookingController.dart';
-import 'package:Jam_Rock_Destinations/Customer/controller/HomeController.dart';
-import 'package:Jam_Rock_Destinations/Driver/ride_history/CancelRideScreen.dart';
+import 'package:Jam_Rock_Destinations/Common/Controller/LocationController.dart';
+import 'package:Jam_Rock_Destinations/Customer/controller/DestinationController.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_colors.dart';
 import 'package:Jam_Rock_Destinations/Utils/app_images.dart';
 import 'package:Jam_Rock_Destinations/Utils/custom_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+
+import 'LocationBottomSheet.dart';
 
 class DestinationScreen extends StatefulWidget {
   DestinationScreen({
@@ -20,16 +19,57 @@ class DestinationScreen extends StatefulWidget {
 }
 
 class _DestinationScreenState extends State<DestinationScreen> {
-  HomeController controller = Get.put(HomeController());
+  // HomeController controller = Get.put(HomeController());
+  DestinationController controller = Get.put(DestinationController());
+  Locationcontroller locationcontroller = Get.put(Locationcontroller());
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkUserLocation();
+      controller.initialize(
+        search: "",
+        lat: locationcontroller.latitude.toDouble(),
+        lng: locationcontroller.longitude.toDouble(),
+        // lat: 17.9970200,
+        // lng: -76.7935800,
+        range: 5,
+      );
+    });
+  }
+
+  void checkUserLocation() {
+    if (locationcontroller.currentCountry != "Jamaica" &&
+        !controller.locationSheetShown.value) {
+      controller.locationSheetShown.value = true;
+      showLocationBottomSheet();
+    }
+  }
+
+  void showLocationBottomSheet() {
+    Get.bottomSheet(
+      PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          if (didPop) return;
+
+          // Bottom sheet aur screen dono close ho jayenge
+          Get.back(); // Close DestinationScreen
+        },
+        child: LocationBottomSheet(),
+      ),
+      isDismissible: false,
+      enableDrag: false,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -64,41 +104,43 @@ class _DestinationScreenState extends State<DestinationScreen> {
           () => controller.isLoading.value
               ? Center(
                   child: CircularProgressIndicator(color: AppColors.green500))
-              : ListView(
-                  padding: EdgeInsets.all(20),
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // heightSpace20,
-                    CustomWidget().buildTextFormField(
-                        darkMode: false,
-                        hintText: "Search destinations",
-                        prefixIcon: Icon(Icons.search)),
-
-                    heightSpace20, 
-                    // _emptyState(),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 8,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.9,
-                      ),
-                      itemBuilder: (context, index) {
-                        return const DestinationCard();
-                      },
-                    )
-                  ],
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomWidget().buildTextFormField(
+                          darkMode: false,
+                          hintText: "Search destinations",
+                          prefixIcon: const Icon(Icons.search)),
+                      if (controller.destinationData.isNotEmpty) heightSpace20,
+                      Expanded(
+                        child: controller.destinationData.isEmpty
+                            ? _emptyState()
+                            : GridView.builder(
+                                shrinkWrap: true,
+                                itemCount: 8,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 12,
+                                  childAspectRatio: 0.9,
+                                ),
+                                itemBuilder: (context, index) {
+                                  return const DestinationCard();
+                                },
+                              ),
+                      )
+                    ],
+                  ),
                 ),
         ),
       ),
     );
   }
 
-  static Widget _emptyState() {
+  Widget _emptyState() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -111,17 +153,24 @@ class _DestinationScreenState extends State<DestinationScreen> {
           ),
           heightSpace10,
           CustomWidget().buildTextWidget(
-              title: " No results found",
+              title: "No results found",
               textColor: AppColors.black500,
               fontWeight: FontWeight.w700,
               fontSize: 24),
           heightSpace10,
           CustomWidget().buildTextWidget(
-              title: "We couldn't find anything matching Hanamachi",
+              title: "We couldn't find anything matching",
               textColor: AppColors.black400,
               fontWeight: FontWeight.w400,
               textAlign: TextAlign.center,
               fontSize: 16),
+          if (controller.searchCont.text.isNotEmpty)
+            CustomWidget().buildTextWidget(
+                title: '"${controller.searchCont.text}"',
+                textColor: AppColors.green500,
+                fontWeight: FontWeight.w400,
+                textAlign: TextAlign.center,
+                fontSize: 16),
         ],
       ),
     );

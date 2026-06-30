@@ -1,10 +1,9 @@
 class AppConstants {
-   // static const String BASE_URL = 'http://46.225.130.234:5000/api/';
+  // static const String BASE_URL = 'http://46.225.130.234:5000/api/';
   static const String BASE_URL = 'https://rich-jamrok.hipl-staging3.com/api';
   // static const String imageBaseUrl= 'http://46.225.130.234:5001/api/';
 
 //****************************  Auth Sign Up ************************ */
-
 
   static const String registerCustomer = "${BASE_URL}/auth/register";
   static const String sendEmailOTP = "${BASE_URL}/email/send-otp";
@@ -14,8 +13,14 @@ class AppConstants {
   static const String register = "${BASE_URL}/auth/register";
   static const String login = "${BASE_URL}/auth/login";
   static const String forgotPasswordStep1 = "${BASE_URL}/auth/forgot-password";
-  static const String forgotPasswordStep2 = "${BASE_URL}/auth/password/verify-otp";
-  static const String forgotPasswordStep3 = "${BASE_URL}/auth/password/reset-password";
+  static const String forgotPasswordStep2 =
+      "${BASE_URL}/auth/password/verify-otp";
+  static const String forgotPasswordStep3 =
+      "${BASE_URL}/auth/password/reset-password";
+
+//****************************  Destination ************************ */
+  static const String getDestination =
+      "${BASE_URL}/destination/get-destination";
 
   //*************************** Profile Section ************************ */
   static const String getProfile = "${BASE_URL}/profile";
@@ -25,16 +30,13 @@ class AppConstants {
   static const String deleteAccount = "${BASE_URL}/profile/destroy";
   static const String getVehicles = "${BASE_URL}/common/get-vehicles";
   static const String editProfile = "${BASE_URL}/profile";
-
+  static const String createTickit = "${BASE_URL}/ticket/create-ticket";
 
   //*************************** KYC ************************************** */
   static const String getKYCDoc = "${BASE_URL}/driver/get-kyc-documents";
   static const String uploadKYCDoc = "${BASE_URL}/driver/update-kyc-documents";
-  static const String getVehicleDetails = "${BASE_URL}/driver/get-vehicle-details";
-  static const String updateVehicleDetails = "${BASE_URL}/driver/update-vehicle-details";
-
-
+  static const String getVehicleDetails =
+      "${BASE_URL}/driver/get-vehicle-details";
+  static const String updateVehicleDetails =
+      "${BASE_URL}/driver/update-vehicle-details";
 }
-
-
-

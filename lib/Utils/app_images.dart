@@ -52,8 +52,10 @@ class Images {
    // static const String dottedLine = "assets/images/dottedLine.png";
    static const String rideHistoryEmpty = "assets/images/ride_history_empty.png";
    static const String carImage = "assets/images/carImage.png";
+   static const String destinationImagePNG = "assets/images/destinationImage.png";
   //  static const String rideHistoryEmpty = "assets/images/ride_history_empty.svg";
-
+  static const String rejectedProfileReview = "assets/image/rejectedProfileReview.png";
+  static const String destinationImage = "assets/image/destinationImage.svg";
   static const String googleLogo = "assets/image/googleLogo.svg";
   static const String kycDoc = "assets/image/kycDoc.svg";
   static const String messageIcon = "assets/image/MessageIcon.svg";

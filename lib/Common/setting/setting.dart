@@ -1,3 +1,4 @@
+import 'package:Jam_Rock_Destinations/Common/setting/RaiseTicket.dart';
 import 'package:Jam_Rock_Destinations/Common/setting/TermsAndConditions.dart';
 import 'package:Jam_Rock_Destinations/Common/setting/faq_Screen.dart';
 import 'package:Jam_Rock_Destinations/Common/setting/userProfile.dart';
@@ -192,27 +193,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           _settingTile(
                             image: Images.raiseTicketIcon,
                             title: "Raise Ticket",
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(const RaiseTicketScreen());
+                            },
                           ),
                           _settingTile(
                             image: Images.faqIcon,
                             title: "FAQs",
                             onTap: () {
-                              Get.to(FAQScreen());
+                              Get.to(const FAQScreen());
                             },
                           ),
                           _settingTile(
                             image: Images.termCondition,
                             title: "Terms & Conditions",
                             onTap: () {
-                              Get.to(TermsAndConditionsScreen());
+                              Get.to(const TermsAndConditionsScreen());
                             },
                           ),
                           _settingTile(
                             image: Images.privacyIcon,
                             title: "Privacy Policy",
                             onTap: () {
-                              Get.to(PrivacyPolicy());
+                              Get.to(const PrivacyPolicy());
                             },
                           ),
                           _settingTile(

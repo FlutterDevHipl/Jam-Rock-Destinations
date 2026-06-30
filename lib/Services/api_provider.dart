@@ -213,6 +213,7 @@ class ApiProvider {
       return Future.error('Network Problem');
     }
   }
+  
   Future<dynamic> getRequestWithBody({
     required String apiUrl,
     required Map<String, dynamic> body,
@@ -261,6 +262,7 @@ class ApiProvider {
       return Future.error(e.toString());
     }
   }
+  
   Future<dynamic> PostRequestProfile({
     required String apiUrl,
     required Map<String, dynamic> fields,
@@ -309,6 +311,7 @@ class ApiProvider {
       print("ERROR => $e");
     }
   }
+  
   Future<dynamic> putRequestProfile(
       {required apiUrl,
       required Map<String, dynamic> fields,
@@ -379,6 +382,7 @@ class ApiProvider {
       log("catch ${e.toString()}");
     }
   }
+  
   Future<dynamic> putRequestProfileWithDocuments({
     required String apiUrl,
     required Map<String, dynamic> fields,
@@ -450,6 +454,7 @@ class ApiProvider {
       log("catch ${e.toString()}");
     }
   }
+ 
   Future<dynamic> putRequestProfileWithDocuments2({
     required String apiUrl,
     required Map<String, dynamic> fields,
@@ -505,6 +510,7 @@ class ApiProvider {
       log(e.toString());
     }
   }
+  
   void handleSessionExpire() {
     userBox.clear();
     CustomWidget().showCustomToast(
