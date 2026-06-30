@@ -81,10 +81,39 @@ class RegistrationController extends GetxController {
 
     // Compress Image
     final compressedFile =
-        await CustomWidget().compressImage(File(croppedPath));
+    await CustomWidget().compressImage(File(croppedPath));
+
+    // Check file size (5 MB)
+    const int maxSizeInBytes = 5 * 1024 * 1024;
+
+    if (await compressedFile.length() > maxSizeInBytes) {
+      CustomWidget().showCustomToast(
+        message: "Image size should not exceed 5 MB",
+        backgroundColor: Colors.red,
+      );
+      return;
+    }
 
     selectedImage.value = compressedFile;
   }
+  // Future<void> pickImage(ImageSource source) async {
+  //   final XFile? image = await ImagePicker().pickImage(
+  //     source: source,
+  //     imageQuality: 80,
+  //   );
+  //
+  //   if (image == null) return;
+  //
+  //   // Crop Image
+  //   final croppedPath = await CustomWidget().cropImage(image.path);
+  //   if (croppedPath == null) return;
+  //
+  //   // Compress Image
+  //   final compressedFile =
+  //       await CustomWidget().compressImage(File(croppedPath));
+  //
+  //   selectedImage.value = compressedFile;
+  // }
 
   bool isDarkMode = Get.isDarkMode;
   final emailController = TextEditingController();

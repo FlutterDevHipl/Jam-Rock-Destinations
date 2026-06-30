@@ -222,6 +222,12 @@ class _RegistrationViewState extends State<RegistrationView> {
                               controller:
                                   registrationController.emailController,
                               readOnly: true,
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: SvgPicture.asset(
+                           Images.messageIcon
+                          ),
+                        ),
                             )
                           : CustomWidget().buildTextFormField(
                               darkMode: true,
@@ -612,6 +618,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () {
+                            FocusScope.of(context).unfocus();
                             if (widget.isSocialLogin) {
                               if (userType == "customer") {
                                 if (!registrationController
@@ -620,9 +627,8 @@ class _RegistrationViewState extends State<RegistrationView> {
                                       message:
                                           "Please Verify your phone number",
                                       backgroundColor: Colors.red);
-                                } else if (registrationController
-                                            .selectedImage.value ==
-                                        null &&
+                                }
+                                else if (registrationController.selectedImage.value == null &&
                                     userType != "customer" &&
                                     widget.image == null) {
                                   CustomWidget().showCustomToast(
@@ -639,14 +645,45 @@ class _RegistrationViewState extends State<RegistrationView> {
                                       countryCode: widget.countryCode
                                   );
                                 }
-                              } else {
-                                registrationController.googleDriverRegistration(
-                                    socialUserId: widget.socialUserId,
-                                    displayName: widget.fullname,
-                                    email: widget.email,
-                                    photoURL: widget.image, login_type: widget.socialType, countryCode: widget.countryCode);
                               }
-                            } else {
+
+                              else {
+                                print("selectedImage == null : ${registrationController.selectedImage.value }");
+                                print("userType != customer : ${userType }");
+                                print("widget.image == null : ${widget.image }");
+                                if (!registrationController
+                                    .isPhoneVerified.value) {
+                                  CustomWidget().showCustomToast(
+                                      message:
+                                      "Please Verify your phone number",
+                                      backgroundColor: Colors.red);
+                                }
+                                else if (
+                                registrationController.selectedImage.value == null &&
+                                    userType != "customer" &&
+                                    (widget.image == null || widget.image == "")
+                                ) {
+                                  CustomWidget().showCustomToast(
+                                    message: "Please upload profile picture",
+                                    backgroundColor: Colors.red,
+                                  );
+                                  return;
+                                }
+                                else
+                                  {
+                                    registrationController.googleDriverRegistration(
+                                        socialUserId: widget.socialUserId,
+                                        displayName: widget.fullname,
+                                        email: widget.email,
+                                        photoURL: widget.image, login_type: widget.socialType, countryCode: widget.countryCode);
+                                  }
+
+                              }
+                            }
+
+
+
+                            else {
                               if (registrationController.selectedImage.value ==
                                       null &&
                                   userType != "customer") {

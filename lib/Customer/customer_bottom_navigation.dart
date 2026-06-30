@@ -29,6 +29,7 @@ class _CustomerBottomNavigationState extends State<CustomerBottomNavigation> {
 
   @override
   void initState() {
+
     super.initState();
     currentIndex = widget.index;
     eventsFromIndex = widget.eventsFromIndex;

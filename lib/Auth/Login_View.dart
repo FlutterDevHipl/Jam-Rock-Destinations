@@ -362,7 +362,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child:
                       GestureDetector(
                         onTap: () {
-                          // loginController.signInWithApple();
+                          loginController.signInWithApple();
                         },
                         child: Container(
                           height: 55,
@@ -402,7 +402,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Expanded(
             child: GestureDetector(
               onTap: () {
-                // loginController.signInWithGoogle();
+                loginController.signInWithGoogle();
               },
               child: Container(
                 height: 55,

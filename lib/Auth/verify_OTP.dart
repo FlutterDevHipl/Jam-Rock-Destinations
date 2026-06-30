@@ -183,6 +183,7 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
                           contactValue: widget.emailorphone,
                           type: widget.signupType.toString().toLowerCase(),
                           userType: userType,
+                          countryCode: widget.countryCode
                         );
                       },
                       child: CustomWidget().buildTextWidget(
@@ -255,7 +256,7 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
                     Get.back();
                   },
                   child: CustomWidget().buildTextWidget(
-                    title: "Change Email Address?",
+                    title: widget.signupType=="email"?"Change Email Address?":"Change Phone Number?",
                     textColor: AppColors.green,
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
